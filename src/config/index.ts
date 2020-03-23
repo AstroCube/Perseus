@@ -27,12 +27,17 @@ export default {
         prefix: '/api',
     },
     emails: {
-        apiKey: '',
-        domain: ''
+        host: process.env.SMTP_HOST,
+        port: process.env.SMTP_PORT,
+        secure: process.env.SMTP_SECURE,
+        auth: {
+            user: process.env.SMTP_AUTH_USER,
+            pass: process.env.SMTP_AUTH_PASSWORD
+        }
     },
     redis: {
         port: 6379,
-        host: '127.0.0.1',
-        auth_pass: ''
+        host: process.env.REDIS_HOST,
+        auth_pass: process.env.REDIS_PASS
     }
 };

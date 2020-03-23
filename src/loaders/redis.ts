@@ -1,5 +1,6 @@
 import { ClientOpts, RedisClient } from "redis";
+import * as redis from "redis";
 
-export default (opts: ClientOpts): RedisClient => {
-  return require('redis').createClient(opts);
+export default async (opts: ClientOpts): Promise<RedisClient> => {
+  return await redis.createClient(opts);
 }
