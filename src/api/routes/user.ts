@@ -78,7 +78,25 @@ export default (app: Router) => {
     async (req: Request, res: Response, next: NextFunction) => {
       try {
         const service: UserService = Container.get(UserService);
-        const updated = await service.updatePassword(req.currentUser._id, req.body as IPasswordUpdate);
+        const updated = await service.updatePassword(req.currentUser, req.body as IPasswordUpdate);
+        return res.status(200).json(updated);
+      } catch (e) {
+        next(e);
+      }
+    });
+
+  route.put(
+    '/update-mail-verification',
+    middlewares.authentication,
+    celebrate({
+      body: Joi.object({
+        email: Joi.string().required()
+      })
+    }),
+    async (req: Request, res: Response, next: NextFunction) => {
+      try {
+        const service: UserService = Container.get(UserService);
+        const updated = await service.mailUpdateValidation(req.currentUser, req.body.email);
         return res.status(200).json(updated);
       } catch (e) {
         next(e);

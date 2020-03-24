@@ -53,3 +53,9 @@ export interface IPasswordUpdate {
   actual: string;
   password: string;
 }
+
+export interface IMailUpdateVerification {
+  user: IUser;
+  code: number;
+  update: string;
+}

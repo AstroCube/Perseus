@@ -4,12 +4,17 @@ import { IPaginateResult } from "mongoose";
 import { Logger } from "winston";
 import argon2 from "argon2";
 import { randomBytes } from "crypto";
+import { EventDispatcher, EventDispatcherInterface } from "../decorators/eventDispatcher";
+import events from "../subscribers/events";
+import { RedisClient } from "redis";
 
 @Service()
 export default class UserService {
   constructor(
-    @Inject('userModel') private userModel : Models.UserModel,
-    @Inject('logger') private logger : Logger
+    @Inject('userModel') private userModel: Models.UserModel,
+    @Inject('logger') private logger: Logger,
+    @Inject('redis') private redis: RedisClient,
+    @EventDispatcher() private dispatcher: EventDispatcherInterface
   ){}
 
   public async viewUser(id : string): Promise<IUser> {
@@ -49,17 +54,32 @@ export default class UserService {
     }
   }
 
-  public async updatePassword(id: string, update: IPasswordUpdate): Promise<Boolean> {
-    const userRecord = await this.userModel.findById(id);
-    if (!userRecord) throw new Error('User not registered');
-    const validPassword = await argon2.verify(userRecord.password, update.actual);
-    if (validPassword) {
-      const salt = randomBytes(32);
-      const hashedPassword = await argon2.hash(update.password, {salt});
-      const updated = this.userModel.findByIdAndUpdate(id, {password: hashedPassword, salt: salt});
-      if (updated) return true;
-    } else {
-      throw new Error('Invalid password');
+  public async updatePassword(user: IUser, update: IPasswordUpdate): Promise<Boolean> {
+    try {
+      const validPassword = await argon2.verify(user.password, update.actual);
+      if (validPassword) {
+        const salt = randomBytes(32);
+        const hashedPassword = await argon2.hash(update.password, {salt});
+        const updated = this.userModel.findByIdAndUpdate(user._id, {password: hashedPassword, salt: salt});
+        if (updated) return true;
+      } else {
+        throw new Error('Invalid password');
+      }
+    } catch (e) {
+      this.logger.error("There was an error creating mail validation: %o", e);
+      throw e;
+    }
+  }
+
+  public async mailUpdateValidation(user: IUser, mail: string): Promise<Boolean> {
+    try {
+      const random = Math.floor(Math.pow(10, 6-1) + Math.random() * (Math.pow(6, 6) - Math.pow(6, 6-1) - 1));
+      if (this.redis.exists("verification_" + user._id)) throw new Error("Username already verifying");
+      this.dispatcher.dispatch(events.user.mailUpdate, {user: user, code: random, mail: mail});
+      return true;
+    } catch (e) {
+      this.logger.error("There was an error creating mail validation: %o", e);
+      throw e;
     }
   }
 
