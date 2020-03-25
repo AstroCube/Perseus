@@ -32,7 +32,7 @@ const User = new mongoose.Schema(
     }],
     skin: String,
     session: {
-      lastSeen: String,
+      lastSeen: Number,
       lastGame: String,
       lastLobby: String,
       premium: Boolean

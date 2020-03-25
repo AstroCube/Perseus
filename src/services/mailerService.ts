@@ -26,6 +26,7 @@ export default class MailerService {
       html: mail
     };
 
+    // @ts-ignore
     return await this.mailClient.sendMail(mailOptions);
   }
 

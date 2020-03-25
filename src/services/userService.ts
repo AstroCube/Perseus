@@ -1,19 +1,19 @@
 import { Inject, Service } from "typedi";
-import { IPasswordUpdate, IUser } from "../interfaces/IUser";
+import { IMailUpdateVerification, IPasswordUpdate, IUser } from "../interfaces/IUser";
 import { IPaginateResult } from "mongoose";
 import { Logger } from "winston";
 import argon2 from "argon2";
 import { randomBytes } from "crypto";
 import { EventDispatcher, EventDispatcherInterface } from "../decorators/eventDispatcher";
 import events from "../subscribers/events";
-import { RedisClient } from "redis";
+import RedisService from "./redisService";
 
 @Service()
 export default class UserService {
   constructor(
     @Inject('userModel') private userModel: Models.UserModel,
     @Inject('logger') private logger: Logger,
-    @Inject('redis') private redis: RedisClient,
+    @Inject() private redis: RedisService,
     @EventDispatcher() private dispatcher: EventDispatcherInterface
   ){}
 
@@ -60,7 +60,7 @@ export default class UserService {
       if (validPassword) {
         const salt = randomBytes(32);
         const hashedPassword = await argon2.hash(update.password, {salt});
-        const updated = this.userModel.findByIdAndUpdate(user._id, {password: hashedPassword, salt: salt});
+        const updated = await this.userModel.findByIdAndUpdate(user._id, {password: hashedPassword, salt: salt});
         if (updated) return true;
       } else {
         throw new Error('Invalid password');
@@ -74,11 +74,28 @@ export default class UserService {
   public async mailUpdateValidation(user: IUser, mail: string): Promise<Boolean> {
     try {
       const random = Math.floor(Math.pow(10, 6-1) + Math.random() * (Math.pow(6, 6) - Math.pow(6, 6-1) - 1));
-      if (this.redis.exists("verification_" + user._id)) throw new Error("Username already verifying");
+      if (await this.redis.existsKey("verification_" + user._id)) throw new Error("Username already verifying");
       this.dispatcher.dispatch(events.user.mailUpdate, {user: user, code: random, mail: mail});
       return true;
     } catch (e) {
       this.logger.error("There was an error creating mail validation: %o", e);
+      throw e;
+    }
+  }
+
+  public async mailUpdate(verification: IMailUpdateVerification): Promise<IUser> {
+    try {
+      const passphrase = "verification_" + verification.user._id;
+      if (!await this.redis.existsKey(passphrase)) throw new Error("Mail update was not authorized before");
+      const verifiy = await this.redis.getKey(passphrase);
+      if (verifiy !== verification.code + "") throw new Error("Verification code is invalid");
+      const updated = await this.userModel.findByIdAndUpdate(verification.user._id, {email: verification.update}, {new: true});
+      await this.redis.deleteKey(passphrase);
+      Reflect.deleteProperty(updated, 'password');
+      Reflect.deleteProperty(updated, 'salt');
+      return updated;
+    } catch (e) {
+      this.logger.error("There was an error updating mail: %o");
       throw e;
     }
   }

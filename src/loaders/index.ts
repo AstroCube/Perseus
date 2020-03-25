@@ -8,6 +8,7 @@ import Logger from './logger';
 import config from '../config';
 import { TransportOptions } from "nodemailer";
 
+
 export default async ({ expressApp }) => {
     const mongoConnection = await mongooseLoader();
     Logger.info('MongoDB successfully connected');

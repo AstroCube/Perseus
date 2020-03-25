@@ -4,7 +4,7 @@ import events from './events';
 import { IMailUpdateVerification } from "../interfaces/IUser";
 import MailerService from "../services/mailerService";
 import { Logger } from "winston";
-import { RedisClient } from "redis";
+import RedisService from "../services/redisService";
 
 @EventSubscriber()
 export default class UserSubscriber {
@@ -13,9 +13,9 @@ export default class UserSubscriber {
   public onUserSignIn(update: IMailUpdateVerification) {
     const Logger: Logger = Container.get('logger');
     const mailer: MailerService = Container.get(MailerService);
-    const redis: RedisClient = Container.get('redis');
+    const redis: RedisService = Container.get(RedisService);
     try {
-      redis.set("verification_" + update.user._id, update.code + "");
+      redis.setKey("verification_" + update.user._id, update.code + "");
       mailer.mailUpdate(update);
     } catch (e) {
       Logger.error("Error while sending verification request %o", e);

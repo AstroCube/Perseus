@@ -85,7 +85,7 @@ export default (app: Router) => {
       }
     });
 
-  route.put(
+  route.post(
     '/update-mail-verification',
     middlewares.authentication,
     celebrate({
@@ -97,6 +97,25 @@ export default (app: Router) => {
       try {
         const service: UserService = Container.get(UserService);
         const updated = await service.mailUpdateValidation(req.currentUser, req.body.email);
+        return res.status(200).json(updated);
+      } catch (e) {
+        next(e);
+      }
+    });
+
+  route.post(
+    '/update-mail',
+    middlewares.authentication,
+    celebrate({
+      body: Joi.object({
+        update: Joi.string().required(),
+        code: Joi.number().required()
+      })
+    }),
+    async (req: Request, res: Response, next: NextFunction) => {
+      try {
+        const service: UserService = Container.get(UserService);
+        const updated = await service.mailUpdate({user: req.currentUser, update: req.body.update, code: req.body.code});
         return res.status(200).json(updated);
       } catch (e) {
         next(e);
