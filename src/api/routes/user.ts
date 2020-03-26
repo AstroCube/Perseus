@@ -18,7 +18,9 @@ export default (app: Router) => {
     async (req: Request, res: Response, next: NextFunction) => {
       try {
         const service : UserService = Container.get(UserService);
-        if (Types.ObjectId.isValid(req.params.id)) {
+        const request: string = req.params.id;
+        console.log(request);
+        if (Types.ObjectId.isValid(request)) {
           const user: IUser = await service.viewUser(req.params.id);
           return res.status(200).json(user);
         } else {
