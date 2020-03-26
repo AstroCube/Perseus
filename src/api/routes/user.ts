@@ -3,8 +3,9 @@ import { Container } from "typedi";
 import UserService from "../../services/userService";
 import middlewares from '../middlewares';
 import { IPasswordUpdate, IUser } from "../../interfaces/IUser";
-import { IPaginateResult } from "mongoose";
+import { IPaginateResult, Types } from "mongoose";
 import { celebrate, Joi } from "celebrate";
+import mongoose from "../../loaders/mongoose";
 const route = Router();
 
 export default (app: Router) => {
@@ -19,8 +20,13 @@ export default (app: Router) => {
     async (req: Request, res: Response, next: NextFunction) => {
       try {
         const service : UserService = Container.get(UserService);
-        const user : IUser = await service.viewUser(req.params.id);
-        return res.status(200).json(user);
+        if (Types.ObjectId.isValid(req.params.id)) {
+          const user: IUser = await service.viewUser(req.params.id);
+          return res.status(200).json(user);
+        } else {
+          const user: IUser = await service.getUserByName(req.params.id);
+          return res.status(200).json(user);
+        }
       } catch (e) {
         next(e);
       }

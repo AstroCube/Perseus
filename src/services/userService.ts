@@ -30,6 +30,19 @@ export default class UserService {
     }
   }
 
+  public async getUserByName(username : string): Promise<IUser> {
+    try {
+      const userRecord = await this.userModel.findOne({username: username});
+      if (!userRecord) throw new Error("User was not registered.");
+      Reflect.deleteProperty(userRecord, 'password');
+      Reflect.deleteProperty(userRecord, 'salt');
+      return userRecord.toObject();
+    } catch (e) {
+      this.logger.error(e);
+      throw e;
+    }
+  }
+
   public async listUsers(page : number): Promise<IPaginateResult<IUser>> {
     try {
       return await this.userModel.paginate({}, { page: page, perPage: 10 });
