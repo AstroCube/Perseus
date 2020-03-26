@@ -27,7 +27,6 @@ export default (app: Router) => {
           return res.status(200).json(user);
         }
       } catch (e) {
-        console.log(e);
         next(e);
       }
     });
