@@ -16,7 +16,6 @@ export default (app: Router) => {
     '/view/:id',
     middlewares.authentication,
     middlewares.userAttachment,
-    middlewares.permissions("user.read"),
     async (req: Request, res: Response, next: NextFunction) => {
       try {
         const service : UserService = Container.get(UserService);

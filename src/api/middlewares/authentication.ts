@@ -1,5 +1,4 @@
 import jwt from 'express-jwt';
-import config from '../../config';
 
 const getTokenFromHeader = req => {
   if (
@@ -12,7 +11,6 @@ const getTokenFromHeader = req => {
 };
 
 const authentication = jwt({
-  secret: config.jwtSecret,
   userProperty: 'token',
   getToken: getTokenFromHeader,
 });
