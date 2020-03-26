@@ -13,8 +13,8 @@ export default class UserService {
   constructor(
     @Inject('userModel') private userModel: Models.UserModel,
     @Inject('logger') private logger: Logger,
-    @Inject() private redis: RedisService,
-    //@EventDispatcher() private dispatcher: EventDispatcherInterface
+    //@Inject() private redis: RedisService,
+    @EventDispatcher() private dispatcher: EventDispatcherInterface
   ){}
 
   public async viewUser(id : string): Promise<IUser> {
@@ -86,20 +86,20 @@ export default class UserService {
 
   public async mailUpdateValidation(user: IUser, mail: string): Promise<Boolean> {
     return null;
-    try {
+    /*try {
       const random = Math.floor(Math.pow(10, 6-1) + Math.random() * (Math.pow(6, 6) - Math.pow(6, 6-1) - 1));
       if (await this.redis.existsKey("verification_" + user._id)) throw new Error("Username already verifying");
-      //this.dispatcher.dispatch(events.user.mailUpdate, {user: user, code: random, mail: mail});
+      this.dispatcher.dispatch(events.user.mailUpdate, {user: user, code: random, mail: mail});
       return true;
     } catch (e) {
       this.logger.error("There was an error creating mail validation: %o", e);
       throw e;
-    }
+    }*/
   }
 
   public async mailUpdate(verification: IMailUpdateVerification): Promise<IUser> {
     return null;
-    try {
+    /*try {
       const passphrase = "verification_" + verification.user._id;
       if (!await this.redis.existsKey(passphrase)) throw new Error("Mail update was not authorized before");
       const verifiy = await this.redis.getKey(passphrase);
@@ -112,7 +112,7 @@ export default class UserService {
     } catch (e) {
       this.logger.error("There was an error updating mail: %o");
       throw e;
-    }
+    }*/
   }
 
 }
