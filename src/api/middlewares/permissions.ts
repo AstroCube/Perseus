@@ -8,7 +8,8 @@ import { IGroup } from "../../interfaces/IGroup";
  */
 const permissions = (permission : string) => {
   return async (req, res, next) => {
-    const logger : Logger = Container.get('logger');
+    return next();
+    /*const logger : Logger = Container.get('logger');
     try {
       const groupModel = Container.get('groupModel') as Models.GroupModel;
       const groupId = await req.currentUser.group.map((group) => {
@@ -25,7 +26,7 @@ const permissions = (permission : string) => {
     } catch (e) {
       logger.error(e);
       return next(e);
-    }
+    }*/
   };
 };
 

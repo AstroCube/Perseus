@@ -5,7 +5,6 @@ import middlewares from '../middlewares';
 import { IPasswordUpdate, IUser } from "../../interfaces/IUser";
 import { IPaginateResult, Types } from "mongoose";
 import { celebrate, Joi } from "celebrate";
-import mongoose from "../../loaders/mongoose";
 const route = Router();
 
 export default (app: Router) => {
