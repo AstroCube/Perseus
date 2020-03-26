@@ -33,14 +33,15 @@ const User = new mongoose.Schema(
     skin: String,
     session: {
       lastSeen: Number,
-      lastGame: String,
-      lastLobby: String,
-      premium: Boolean
+      lastGame: {type: String, default: "register"},
+      lastLobby: {type: String, default: "main_lobby"},
+      premium: {type: Boolean, default: false}
     },
-    verified: Boolean,
-    level: Number,
-    experience: Number,
+    verified: {type: Boolean, default: false},
+    level: {type: Number, default: 1},
+    experience: {type: Number, default: 0},
     address: [{
+      _id: String,
       number: String,
       country: String,
       primary: String
@@ -51,9 +52,9 @@ const User = new mongoose.Schema(
       refresh: String,
       stamp: String
     },
-    language: String,
+    language: {type: String, default: 'es'},
     publicInfo: {
-      gender: Number,
+      gender: {type: Number, default: 0},
       occupation: String,
       interests: String,
       email: String,
@@ -65,16 +66,20 @@ const User = new mongoose.Schema(
     },
     settings: {
       adminChat: {
-        active: Boolean,
-        logs: Boolean,
-        punishments: Boolean
+        active: {type: Boolean, default: false},
+        logs: {type: Boolean, default: false},
+        punishments: {type: Boolean, default: false}
       },
       general: {
-        gifts: Boolean,
-        friends: Boolean,
-        parties: Boolean,
-        status: Boolean,
-        hiding: Boolean
+        gifts: {type: Boolean, default: false},
+        friends: {type: Boolean, default: false},
+        parties: {type: Boolean, default: false},
+        status: {type: Boolean, default: false},
+        hiding: {type: Boolean, default: false}
+      },
+      forum: {
+        subscribe: {type: Boolean, default: false},
+        quoteAlert: {type: Boolean, default: false}
       }
     }
   },

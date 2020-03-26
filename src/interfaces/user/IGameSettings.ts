@@ -1,6 +1,7 @@
 export interface IGameSettings {
   adminChat: IAdminChatSettings;
   general: IGeneralSettings;
+  forum: IForumSettings;
 }
 
 export interface IAdminChatSettings {
@@ -15,4 +16,9 @@ export interface IGeneralSettings {
   parties: boolean;
   status: boolean;
   hiding: boolean;
+}
+
+export interface IForumSettings {
+  subscribe: boolean;
+  quoteAlert: boolean;
 }
