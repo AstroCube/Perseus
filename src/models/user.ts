@@ -59,6 +59,7 @@ const User = new mongoose.Schema(
       occupation: String,
       interests: String,
       email: String,
+      location: String,
       twitter: String,
       reddit: String,
       steam: String,
