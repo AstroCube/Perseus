@@ -1,7 +1,7 @@
 import { IUser } from '../interfaces/IUser';
 import mongoose, { Schema } from "mongoose";
 import { mongoosePagination } from "ts-mongoose-pagination";
-import * as autopopulate from "mongoose-autopopulate";
+import autoPopulate = require('mongoose-autopopulate');
 
 
 const User = new mongoose.Schema(
@@ -88,5 +88,5 @@ const User = new mongoose.Schema(
 );
 
 User.plugin(mongoosePagination);
-User.plugin(autopopulate);
+User.plugin(autoPopulate);
 export default mongoose.model<IUser & mongoose.Document>('User', User);
