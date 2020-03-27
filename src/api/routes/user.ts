@@ -21,11 +21,9 @@ export default (app: Router) => {
         const request: string = req.params.id;
         if (Types.ObjectId.isValid(request)) {
           const user: IUser = await service.viewUser(req.params.id);
-          console.log(user);
           return res.status(200).json(user);
         } else {
           const user: IUser = await service.getUserByName(req.params.id);
-          console.log(user);
           return res.status(200).json(user);
         }
       } catch (e) {
