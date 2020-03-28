@@ -72,6 +72,20 @@ export default (app: Router) => {
     });
 
   route.put(
+    '/update-profile',
+    middlewares.authentication,
+    middlewares.userAttachment,
+    async (req: Request, res: Response, next: NextFunction) => {
+      try {
+        const service : UserService = Container.get(UserService);
+        const user : IUser = await service.updateUser(req.currentUser._id, req.body as IUser);
+        return res.status(200).json(user);
+      } catch (e) {
+        next(e);
+      }
+    });
+
+  route.put(
     '/update-password',
     middlewares.authentication,
     celebrate({
