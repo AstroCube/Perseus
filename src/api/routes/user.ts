@@ -88,6 +88,7 @@ export default (app: Router) => {
   route.put(
     '/update-password',
     middlewares.authentication,
+    middlewares.userAttachment,
     celebrate({
       body: Joi.object({
         actual: Joi.string().required(),
@@ -107,6 +108,7 @@ export default (app: Router) => {
   route.get(
     '/update-mail-verification',
     middlewares.authentication,
+    middlewares.userAttachment,
     celebrate({
       body: Joi.object({
         email: Joi.string().required()
@@ -125,6 +127,7 @@ export default (app: Router) => {
   route.post(
     '/update-mail',
     middlewares.authentication,
+    middlewares.userAttachment,
     celebrate({
       body: Joi.object({
         update: Joi.string().required(),
