@@ -84,12 +84,11 @@ export default class UserService {
     }
   }
 
-  public async mailUpdateValidation(user: IUser, mail: string): Promise<Boolean> {
-    return null;
+  public async mailUpdateValidation(user: IUser): Promise<Boolean> {
     try {
       const random = Math.floor(Math.pow(10, 6-1) + Math.random() * (Math.pow(6, 6) - Math.pow(6, 6-1) - 1));
       if (await this.redis.existsKey("verification_" + user._id)) throw new Error("Username already verifying");
-      this.dispatcher.dispatch(events.user.mailUpdate, {user: user, code: random, mail: mail});
+      this.dispatcher.dispatch(events.user.mailUpdate, {user: user, code: random});
       return true;
     } catch (e) {
       this.logger.error("There was an error creating mail validation: %o", e);
@@ -98,7 +97,6 @@ export default class UserService {
   }
 
   public async mailUpdate(verification: IMailUpdateVerification): Promise<IUser> {
-    return null;
     try {
       const passphrase = "verification_" + verification.user._id;
       if (!await this.redis.existsKey(passphrase)) throw new Error("Mail update was not authorized before");

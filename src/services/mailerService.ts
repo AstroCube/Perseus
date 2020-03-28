@@ -21,12 +21,11 @@ export default class MailerService {
 
     let mailOptions = {
       from: config.emails.auth.user,
-      to: update,
+      to: update.user.email,
       subject: 'Actualización de correo',
       html: mail
     };
 
-    // @ts-ignore
     return await this.mailClient.sendMail(mailOptions);
   }
 
