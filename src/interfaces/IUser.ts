@@ -4,7 +4,7 @@ import { IPublicInfo } from "./user/IPublicInfo";
 import { IGameSettings } from "./user/IGameSettings";
 import { IGroup } from "./IGroup";
 
-export interface IUser extends IModel{
+export interface IUser extends IModel {
   username: string;
   display: string;
   email: string;

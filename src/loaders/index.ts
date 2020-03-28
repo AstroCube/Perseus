@@ -38,6 +38,18 @@ export default async ({ expressApp }) => {
         name: 'groupModel',
         model: require('../models/group').default
     };
+    const serverModel = {
+        name: 'serverModel',
+        model: require('../models/server').default
+    };
+    const clusterModel = {
+        name: 'clusterModel',
+        model: require('../models/cluster').default
+    };
+    const gamemodeModel = {
+        name: 'gamemodeModel',
+        model: require('../models/gamemode').default
+    };
 
     const { agenda } = await dependencyInjectorLoader({
         mailer,
@@ -45,7 +57,10 @@ export default async ({ expressApp }) => {
         mongoConnection,
         models: [
           userModel,
-          groupModel
+          groupModel,
+          serverModel,
+          clusterModel,
+          gamemodeModel
         ],
     });
     Logger.info('Dependency injector loaded');
