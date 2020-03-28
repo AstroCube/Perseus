@@ -57,6 +57,8 @@ export default class ServerService {
   public async updateServer(id : string, updatable : IServer): Promise<IServer> {
     try {
       Reflect.deleteProperty(updatable, 'cluster');
+      Reflect.deleteProperty(updatable, 'slug');
+      Reflect.deleteProperty(updatable, 'type');
       const serverRecord: IServer = await this.serverModel.findByIdAndUpdate(id, updatable, {new: true});
       if (!serverRecord) throw new Error("Server was not updated correctly.");
       return serverRecord;
