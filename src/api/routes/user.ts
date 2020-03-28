@@ -115,7 +115,7 @@ export default (app: Router) => {
     async (req: Request, res: Response, next: NextFunction) => {
       try {
         const service: UserService = Container.get(UserService);
-        const updated = await service.mailUpdateValidation(req.currentUser, req.body.email);
+        const updated = await service.mailUpdateValidation(req.currentUser);
         return res.status(200).json(updated);
       } catch (e) {
         next(e);
