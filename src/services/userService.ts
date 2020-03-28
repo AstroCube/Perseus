@@ -69,7 +69,16 @@ export default class UserService {
 
   public async updatePassword(user: IUser, update: IPasswordUpdate): Promise<Boolean> {
     try {
-      const validPassword = await argon2.verify(user.password, update.actual);
+      /*
+        This should be one of the only cases where the model should be called directly in order to get the
+        password.
+
+        You should NEVER retrieve the final user a password. In order to get the user you must always use
+        viewUser() to prevent passwords leaking.
+       */
+      const fullQueried: IUser = await this.userModel.findById(user._id);
+
+      const validPassword = await argon2.verify(fullQueried.password, update.actual);
       if (validPassword) {
         const salt = randomBytes(32);
         const hashedPassword = await argon2.hash(update.password, {salt});
@@ -79,7 +88,7 @@ export default class UserService {
         throw new Error('Invalid password');
       }
     } catch (e) {
-      this.logger.error("There was an error creating mail validation: %o", e);
+      this.logger.error("There was an error password update: %o", e);
       throw e;
     }
   }
