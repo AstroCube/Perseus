@@ -104,7 +104,7 @@ export default (app: Router) => {
       }
     });
 
-  route.post(
+  route.get(
     '/update-mail-verification',
     middlewares.authentication,
     celebrate({
