@@ -8,7 +8,7 @@ const route = Router();
 
 export default (app: Router) => {
 
-  app.use('/authentication', route);
+  app.use('/session', route);
 
   route.post(
     '/auth-session',
@@ -56,7 +56,7 @@ export default (app: Router) => {
       try {
         const session: SessionService = Container.get(SessionService);
         await session.serverSwitch(req.body);
-        return res.json({switched: true}).status(200);
+        return res.json(true).status(200);
       } catch (e) {
         return next(e);
       }
