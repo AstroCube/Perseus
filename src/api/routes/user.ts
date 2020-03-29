@@ -32,6 +32,19 @@ export default (app: Router) => {
     });
 
   route.get(
+    '/view-game/:id',
+    middlewares.cluster,
+    async (req: Request, res: Response, next: NextFunction) => {
+      try {
+        const service : UserService = Container.get(UserService);
+        const user: IUser = await service.viewUser(req.params.id);
+        return res.status(200).json(user);
+      } catch (e) {
+        next(e);
+      }
+    });
+
+  route.get(
     '/list/:page?',
     middlewares.authentication,
     middlewares.userAttachment,
@@ -61,6 +74,19 @@ export default (app: Router) => {
     middlewares.authentication,
     middlewares.userAttachment,
     middlewares.permissions("user.update"),
+    async (req: Request, res: Response, next: NextFunction) => {
+      try {
+        const service : UserService = Container.get(UserService);
+        const user : IUser = await service.updateUser(req.params.id, req.body as IUser);
+        return res.status(200).json(user);
+      } catch (e) {
+        next(e);
+      }
+    });
+
+  route.put(
+    '/update-game/:id',
+    middlewares.cluster,
     async (req: Request, res: Response, next: NextFunction) => {
       try {
         const service : UserService = Container.get(UserService);

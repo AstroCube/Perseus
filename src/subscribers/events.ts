@@ -1,5 +1,6 @@
 export default {
   user: {
-    mailUpdate: 'onMailUpdate'
+    mailUpdate: 'onMailUpdate',
+    serverLogin: 'onServerLogin'
   },
 };

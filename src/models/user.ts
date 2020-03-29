@@ -33,7 +33,7 @@ const User = new mongoose.Schema(
     }],
     skin: String,
     session: {
-      lastSeen: Number,
+      lastSeen: {type: Number, default: 0},
       lastGame: {type: String, default: "register"},
       lastLobby: {type: String, default: "main_lobby"},
       premium: {type: Boolean, default: false}
@@ -42,7 +42,7 @@ const User = new mongoose.Schema(
     level: {type: Number, default: 1},
     experience: {type: Number, default: 0},
     address: [{
-      _id: String,
+      _id: false,
       number: String,
       country: String,
       primary: String

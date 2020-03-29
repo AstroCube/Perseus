@@ -5,8 +5,6 @@ import { ICluster } from "../interfaces/ICluster";
 import ClusterService from "./clusterService";
 import jwt from "jsonwebtoken";
 import config from "../config";
-import { IUser } from "../interfaces/IUser";
-
 @Service()
 export default class ServerService {
 

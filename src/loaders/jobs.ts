@@ -1,13 +1,14 @@
 import config from '../config';
-//import EmailSequenceJob from '../jobs/emailSequence';
 import Agenda from 'agenda';
+import UnregisteredClearSequenceJob from "../jobs/unregisteredSequence";
 
 export default ({ agenda }: { agenda: Agenda }) => {
-    /*agenda.define(
-        'send-email',
+    agenda.define(
+        'unregistered-clean',
         { priority: 'high', concurrency: config.agenda.concurrency },
-        new EmailSequenceJob().handler,
-    );*/
+        new UnregisteredClearSequenceJob().handler,
+    );
 
+    agenda.every('60 minutes', 'unregistered-clean');
     agenda.start();
 };

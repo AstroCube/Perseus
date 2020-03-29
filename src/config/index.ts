@@ -39,5 +39,6 @@ export default {
         port: 6379,
         host: process.env.REDIS_HOST,
         auth_pass: process.env.REDIS_PASS
-    }
+    },
+    defaultGroup: process.env.DEFAULT_GROUP
 };

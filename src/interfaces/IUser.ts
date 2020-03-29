@@ -59,3 +59,9 @@ export interface IMailUpdateVerification {
   code: number;
   update: string;
 }
+
+export interface IServerAuthentication {
+  user: string;
+  password: string;
+  address: string;
+}
