@@ -16,6 +16,7 @@ export default class ServerService {
 
   public async loadServer(authorization: IServer): Promise<IServerAuthResponse> {
     try {
+      Reflect.deleteProperty(authorization, '_id');
       const cluster: ICluster = await this.clusterService.viewCluster(authorization.cluster);
       const serverRecord: IServer = await this.serverModel.create({
         ...authorization,
