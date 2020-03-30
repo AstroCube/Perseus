@@ -1,7 +1,5 @@
 import { Router, Request, Response, NextFunction } from "express";
 import { Container } from "typedi";
-import { celebrate, Joi } from "celebrate";
-import AuthService from "../../services/authService";
 import { Logger } from "winston";
 import ServerService from "../../services/serverService";
 import { IServer, IServerAuthResponse } from "../../interfaces/IServer";
