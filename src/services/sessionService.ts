@@ -15,7 +15,7 @@ export default class SessionService {
   public async authenticateSessionCheck(session: IAuthenticationSession): Promise<IAuthenticationResponse> {
 
     try {
-      const registered: IUser = await this.userModel.findOneAndUpdate({name: session.username}, {session: {online: true}}, {new: true});
+      const registered: IUser = await this.userModel.findOneAndUpdate({username: session.username}, {session: {online: true}}, {new: true});
       if (registered) return {
         user: registered,
         registered: registered.password !== undefined,
