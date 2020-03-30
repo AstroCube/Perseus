@@ -15,17 +15,6 @@ export default (app: Router) => {
 
   route.post(
     '/connect',
-    celebrate({
-      body: Joi.object({
-        slug: Joi.string().required(),
-        type: Joi.string().required(),
-        cluster: Joi.string().required(),
-        gamemode: [Joi.string(), Joi.allow(null)],
-        subGamemode: [Joi.string(), Joi.allow(null)],
-        maxRunning: [Joi.string(), Joi.allow(null)],
-        maxTotal: [Joi.string(), Joi.allow(null)]
-      })
-    }),
     async (req: Request, res: Response, next: NextFunction) => {
       const logger : Logger = Container.get('logger');
       try {
