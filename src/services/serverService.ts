@@ -24,6 +24,8 @@ export default class ServerService {
         players: [],
         matches: []
       });
+      this.logger.debug(serverRecord);
+      this.logger.info("Successfully loaded server %o to the database", serverRecord._id);
       if (!serverRecord) throw new Error("Server could not be created");
       return {server: serverRecord, token: ServerService.generateToken(serverRecord._id)};
     } catch (e) {
