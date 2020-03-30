@@ -38,6 +38,7 @@ export default (app: Router) => {
       try {
         const service : UserService = Container.get(UserService);
         const user: IUser = await service.viewUser(req.params.id);
+        console.log(user);
         return res.status(200).json(user);
       } catch (e) {
         next(e);
