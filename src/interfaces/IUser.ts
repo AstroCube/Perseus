@@ -30,7 +30,8 @@ export interface IUserGroup {
 }
 
 export interface IGameSession {
-  lastSeen: number;
+  lastSeen: Date;
+  online: boolean;
   lastGame: string;
   lastLobby: string;
   premium: boolean;

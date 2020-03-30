@@ -70,9 +70,6 @@ export default class AuthService {
         {
           password: hashedPassword,
           salt: salt,
-          session: {
-            lastSeen: 0
-          },
           $push: {
             address: {
               number: register.address,

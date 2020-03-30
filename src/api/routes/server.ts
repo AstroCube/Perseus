@@ -17,7 +17,6 @@ export default (app: Router) => {
       const logger : Logger = Container.get('logger');
       try {
         const service: ServerService = Container.get(ServerService);
-        console.log(req.body);
         const server: IServerAuthResponse = await service.loadServer(req.body as IServer);
         return res.json(server).status(200);
       } catch (e) {
@@ -80,9 +79,9 @@ export default (app: Router) => {
       try {
         const service: ServerService = Container.get(ServerService);
         await service.disconnectServer(req.currentServer._id);
-        return res.json({disconnected: true}).status(200);
+        return res.json(true).status(200);
       } catch (e) {
-        logger.error( e );
+        logger.error(e);
         return next(e);
       }
     });

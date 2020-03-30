@@ -15,7 +15,7 @@ export default class SessionService {
   public async authenticateSessionCheck(session: IAuthenticationSession): Promise<IAuthenticationResponse> {
 
     try {
-      const registered: IUser = await this.userModel.findOne({name: session.username});
+      const registered: IUser = await this.userModel.findOneAndUpdate({name: session.username}, {session: {online: true}}, {new: true});
       if (registered) return {
         user: registered,
         registered: registered.password !== undefined,
@@ -35,6 +35,10 @@ export default class SessionService {
         user: session.username,
         display: session.username,
         skin: session.username,
+        session: {
+          lastSeen: new Date(),
+          online: true
+        },
         groups: [{
           group: config.defaultGroup
         }]
@@ -55,7 +59,8 @@ export default class SessionService {
   public async serverDisconnect(user: string): Promise<void> {
     try {
       let userRecord = await this.userModel.findById(user);
-      userRecord.session.lastSeen = new Date().getTime();
+      userRecord.session.lastSeen = new Date();
+      userRecord.session.online = false;
       await userRecord.save();
     } catch (e) {
       this.logger.error('There was an error logging out an user: %o', e);
