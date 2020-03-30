@@ -47,8 +47,8 @@ export default (app: Router) => {
     celebrate({
       body: Joi.object({
         user: Joi.string().required(),
-        server: Joi.string(),
-        lobby: Joi.string()
+        server: [Joi.string(), Joi.allow(null)],
+        lobby: [Joi.string(), Joi.allow(null)]
       })
     }),
     cluster,

@@ -20,10 +20,10 @@ export default (app: Router) => {
         slug: Joi.string().required(),
         type: Joi.string().required(),
         cluster: Joi.string().required(),
-        gamemode: Joi.string(),
-        subGamemode: Joi.string(),
-        maxRunning: Joi.string(),
-        maxTotal: Joi.string()
+        gamemode: [Joi.string(), Joi.allow(null)],
+        subGamemode: [Joi.string(), Joi.allow(null)],
+        maxRunning: [Joi.string(), Joi.allow(null)],
+        maxTotal: [Joi.string(), Joi.allow(null)]
       })
     }),
     async (req: Request, res: Response, next: NextFunction) => {
