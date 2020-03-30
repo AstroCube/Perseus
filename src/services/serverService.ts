@@ -24,8 +24,7 @@ export default class ServerService {
         players: [],
         matches: []
       });
-      this.logger.debug(serverRecord);
-      this.logger.info("Successfully loaded server %o to the database", serverRecord._id);
+      this.logger.info("Successfully loaded server %o to the database with name " + serverRecord.slug, serverRecord._id);
       if (!serverRecord) throw new Error("Server could not be created");
       return {server: serverRecord, token: ServerService.generateToken(serverRecord._id)};
     } catch (e) {
@@ -72,6 +71,7 @@ export default class ServerService {
   public async disconnectServer(id: string): Promise<void> {
     try {
       await this.serverModel.findByIdAndDelete(id);
+      this.logger.info("Successfully disconnected server %o", id);
     } catch (e) {
       this.logger.error(e);
       throw e;
