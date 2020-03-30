@@ -31,7 +31,6 @@ export default class UserSubscriber {
     try {
       if (!login.user.address.some(address => address.number === login.address.number)) {
         login.user.address.push(login.address);
-        login.user.session.lastSeen = 0;
         await service.updateUser(login.user._id, login.user);
       }
     } catch (e) {
