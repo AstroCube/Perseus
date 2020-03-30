@@ -32,7 +32,7 @@ export default class SessionService {
       };
 
       const created: IUser = await this.userModel.create({
-        user: session.username,
+        username: session.username,
         display: session.username,
         skin: session.username,
         session: {
