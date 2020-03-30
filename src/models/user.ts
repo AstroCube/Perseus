@@ -33,7 +33,7 @@ const User = new mongoose.Schema(
     }],
     skin: String,
     session: {
-      lastSeen: Date,
+      lastSeen: { type: Date, default: Date.now },
       online: {type: Boolean, default: false},
       lastGame: {type: String, default: "register"},
       lastLobby: {type: String, default: "main_lobby"},
