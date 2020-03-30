@@ -45,6 +45,19 @@ export default (app: Router) => {
     });
 
   route.get(
+    '/find-game/:username',
+    middlewares.cluster,
+    async (req: Request, res: Response, next: NextFunction) => {
+      try {
+        const service : UserService = Container.get(UserService);
+        const user: IUser = await service.getUserByName(req.params.username);
+        return res.status(200).json(user);
+      } catch (e) {
+        next(e);
+      }
+    });
+
+  route.get(
     '/list/:page?',
     middlewares.authentication,
     middlewares.userAttachment,
