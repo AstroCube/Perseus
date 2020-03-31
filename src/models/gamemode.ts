@@ -4,7 +4,6 @@ import { IGamemode } from "../interfaces/IGamemode";
 
 const Gamemode = new mongoose.Schema(
   {
-    name: String,
     lobby: String,
     navigator: String,
     slot: Number,

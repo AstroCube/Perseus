@@ -8,9 +8,9 @@ export interface IGamemode {
 
 export interface ISubGamemode {
   name: string;
-  selectable_map: string;
-  min_players: number;
-  max_players: number;
+  selectableMap: string;
+  minPlayers: number;
+  maxPlayers: number;
   permission: string;
   group: string;
 }
