@@ -32,7 +32,7 @@ export default (app: Router) => {
     '/login-server',
     celebrate({
       body: Joi.object({
-        username: Joi.string().required(),
+        user: Joi.string().required(),
         password: Joi.string().required(),
         address: Joi.string().required()
       })
@@ -51,7 +51,7 @@ export default (app: Router) => {
     '/register-server',
     celebrate({
       body: Joi.object({
-        username: Joi.string().required(),
+        user: Joi.string().required(),
         password: Joi.string().required(),
         address: Joi.string().required()
       })
