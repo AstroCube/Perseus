@@ -54,7 +54,7 @@ export default class AuthService {
         this.dispatcher.dispatch(events.user.serverLogin, {user: userRecord, address});
         return true;
       } else {
-        throw new Error('Unauthorized');
+        throw new Error('UnauthorizedError');
       }
     } catch (e) {
       this.logger.error('There was an error logging user to the server: %o', e);
