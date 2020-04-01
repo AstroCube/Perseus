@@ -1,5 +1,4 @@
 import { IModel } from "./IModel";
-import { Languages } from "./user/Languages";
 import { IPublicInfo } from "./user/IPublicInfo";
 import { IGameSettings } from "./user/IGameSettings";
 import { IGroup } from "./IGroup";
@@ -18,7 +17,7 @@ export interface IUser extends IModel {
   experience: number;
   address: IUserIP[];
   discord: IUserDiscord;
-  language: Languages;
+  language: string;
   publicInfo: IPublicInfo;
   settings: IGameSettings;
 }
