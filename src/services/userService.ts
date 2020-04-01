@@ -1,5 +1,5 @@
 import { Inject, Service } from "typedi";
-import { IMailUpdateVerification, IPasswordUpdate, IUser } from "../interfaces/IUser";
+import {IMailRegister, IMailUpdateVerification, IPasswordUpdate, IUser} from "../interfaces/IUser";
 import { IPaginateResult } from "mongoose";
 import { Logger } from "winston";
 import argon2 from "argon2";
@@ -109,16 +109,56 @@ export default class UserService {
   public async mailUpdate(verification: IMailUpdateVerification): Promise<IUser> {
     try {
       const passphrase = "verification_" + verification.user._id;
-      if (!await this.redis.existsKey(passphrase)) throw new Error("Mail update was not authorized before");
+      if (!await this.redis.existsKey(passphrase)) { throw new Error("Mail update was not authorized before"); }
       const verifiy = await this.redis.getKey(passphrase);
-      if (verifiy !== verification.code + "") throw new Error("Verification code is invalid");
+      if (verifiy !== verification.code + "") { throw new Error("Verification code is invalid"); }
       const updated = await this.userModel.findByIdAndUpdate(verification.user._id, {email: verification.update}, {new: true});
       await this.redis.deleteKey(passphrase);
       Reflect.deleteProperty(updated, 'password');
       Reflect.deleteProperty(updated, 'salt');
       return updated;
     } catch (e) {
-      this.logger.error("There was an error updating mail: %o");
+      this.logger.error("There was an error updating mail: %o", e);
+      throw e;
+    }
+  }
+
+  public async verifyUser(verification: IMailRegister, host: string): Promise<Boolean> {
+    try {
+
+      const userRecord: IUser = await this.viewUser(verification.user);
+      if (userRecord.verified) throw new Error("The user has already verified an email");
+      const usedEmail: IUser[] = await this.userModel.find({email: verification.email});
+      if (usedEmail.length > 0) throw new Error("This email is already in use");
+      if (await this.redis.existsKey("mailverify_" + verification.user)) throw new Error("Validation already queried");
+
+      const random = Math.floor((Math.random() * 100) + 54);
+      const encodedMail = new Buffer(verification.email).toString('base64');
+      const encodedUser = new Buffer(verification.user).toString('base64');
+      const link = "http://" + host + "/api/user/verify?mail=" + encodedMail + "&user=" + encodedUser + "&id=" + random;
+      this.dispatcher.dispatch(events.user.mailUpdate, {user: userRecord, code: random, link: link});
+      this.logger.info('User %o is trying to verify with email %e', userRecord.username, verification.email);
+      return true;
+    } catch (e) {
+      this.logger.error("There was an error verifying mail: %o", e);
+      throw e;
+    }
+  }
+
+  public async verifyCode(verification: IMailRegister): Promise<Boolean> {
+    try {
+      const key = "mailverify_" + verification.user;
+      if (!await this.redis.existsKey(key)) throw new Error("NotFound");
+      if (await this.redis.getKey(key) !== verification.code) throw new Error("Invalid verification code");
+      let userRecord: IUser = await this.viewUser(verification.user);
+      userRecord.verified = true;
+      userRecord.email = verification.email;
+      await this.updateUser(userRecord._id, userRecord);
+      await this.redis.deleteKey(key);
+      this.logger.info('User %o successfully verified with email %e', userRecord.username, verification.email);
+      return true;
+    } catch (e) {
+      this.logger.error("There was an error verifying mail: %o", e);
       throw e;
     }
   }

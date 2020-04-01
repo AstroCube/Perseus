@@ -1,7 +1,7 @@
 import { Container } from 'typedi';
 import { EventSubscriber, On } from 'event-dispatch';
 import events from './events';
-import { IMailUpdateVerification, IUser, IUserIP } from "../interfaces/IUser";
+import {IMailUpdateVerification, IMailVerifyRequest, IUser, IUserIP} from "../interfaces/IUser";
 import MailerService from "../services/mailerService";
 import { Logger } from "winston";
 import RedisService from "../services/redisService";
@@ -35,6 +35,22 @@ export default class UserSubscriber {
       }
     } catch (e) {
       Logger.error("Error while executing login event %o", e);
+      throw e;
+    }
+  }
+
+  @On(events.user.mailVerifyRequest)
+  public async onMailVerifyRequest(verification: IMailVerifyRequest) {
+    const Logger: Logger = Container.get('logger');
+    const mailer: MailerService = Container.get(MailerService);
+    const redis: RedisService = Container.get(RedisService);
+    try {
+      const key = "mailverify_" + verification.user._id;
+      await redis.setKey(key, verification.code);
+      await redis.setKeyExpiration(key, 600);
+      await mailer.mailVerify(verification);
+    } catch (e) {
+      Logger.error("Error while sending verification request %o", e);
       throw e;
     }
   }

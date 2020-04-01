@@ -1,6 +1,7 @@
 export default {
   user: {
     mailUpdate: 'onMailUpdate',
-    serverLogin: 'onServerLogin'
+    serverLogin: 'onServerLogin',
+    mailVerifyRequest: 'onMailVerifyRequest'
   },
 };

@@ -1,5 +1,5 @@
 import { Inject, Service } from "typedi";
-import { IMailUpdateVerification, IUser } from "../interfaces/IUser";
+import {IMailUpdateVerification, IMailVerifyRequest, IUser} from "../interfaces/IUser";
 import * as fs from "fs";
 import * as Mail from "nodemailer/lib/mailer";
 import config from "../config";
@@ -14,7 +14,7 @@ export default class MailerService {
   public async mailUpdate(update: IMailUpdateVerification) {
 
     const date: Date = new Date();
-    let mail: string = await fs.readFileSync("../assets/templates/update.html", {encoding: 'utf-8'});
+    let mail: string = fs.readFileSync("../assets/templates/update.html", {encoding: 'utf-8'});
     mail = mail.replace("%%username%%", update.user.display);
     mail = mail.replace("%%code%%", update.code + "");
     mail = mail.replace("%%date%%", date.getFullYear() + "");
@@ -23,6 +23,25 @@ export default class MailerService {
       from: config.emails.auth.user,
       to: update.user.email,
       subject: 'Actualización de correo',
+      html: mail
+    };
+
+    return await this.mailClient.sendMail(mailOptions);
+  }
+
+  public async mailVerify(update: IMailVerifyRequest) {
+
+    const date: Date = new Date();
+    let mail: string = fs.readFileSync("../assets/templates/verify.html", {encoding: 'utf-8'});
+    mail = mail.replace("%%display%%", update.user.display);
+    mail = mail.replace("%%skin%%", update.user.skin);
+    mail = mail.replace("%%link%%", update.link);
+    mail = mail.replace("%%date%%", date.getFullYear() + "");
+
+    let mailOptions = {
+      from: config.emails.auth.user,
+      to: update.user.email,
+      subject: 'Verifica tu correo electrónico',
       html: mail
     };
 

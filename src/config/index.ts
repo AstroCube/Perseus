@@ -25,6 +25,7 @@ export default {
     },
     api: {
         prefix: '/api',
+        frontend: 'https://www.seocraft.net'
     },
     emails: {
         host: process.env.SMTP_HOST,

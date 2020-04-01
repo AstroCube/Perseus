@@ -60,6 +60,18 @@ export interface IMailUpdateVerification {
   update: string;
 }
 
+export interface IMailRegister {
+  user: string;
+  email: string;
+  code: string;
+}
+
+export interface IMailVerifyRequest {
+  user: IUser;
+  code: string;
+  link: string;
+}
+
 export interface IServerAuthentication {
   user: string;
   password: string;

@@ -2,7 +2,8 @@ import { Router, Request, Response, NextFunction } from "express";
 import { Container } from "typedi";
 import UserService from "../../services/userService";
 import middlewares from '../middlewares';
-import { IPasswordUpdate, IUser } from "../../interfaces/IUser";
+import config from '../../config';
+import {IMailRegister, IPasswordUpdate, IUser} from "../../interfaces/IUser";
 import { IPaginateResult, Types } from "mongoose";
 import { celebrate, Joi } from "celebrate";
 const route = Router();
@@ -183,4 +184,47 @@ export default (app: Router) => {
       }
     });
 
+    route.post(
+        '/verify-mail',
+        middlewares.authentication,
+        middlewares.userAttachment,
+        celebrate({
+            body: Joi.object({
+                user: Joi.string().required(),
+                email: Joi.string().required()
+            })
+        }),
+        async (req: Request, res: Response, next: NextFunction) => {
+            try {
+                const service: UserService = Container.get(UserService);
+                const updated = await service.verifyUser(req.body as IMailRegister, req.get("host"));
+                return res.status(200).json(updated);
+            } catch (e) {
+                next(e);
+            }
+        });
+
+    route.get(
+        '/verify-code',
+        middlewares.authentication,
+        middlewares.userAttachment,
+        celebrate({
+            body: Joi.object({
+                user: Joi.string().required(),
+                email: Joi.string().required()
+            })
+        }),
+        async (req: Request, res: Response, next: NextFunction) => {
+            try {
+                const service: UserService = Container.get(UserService);
+                await service.verifyCode({
+                    email: new Buffer(req.query.email, 'base64').toString('ascii'),
+                    user: new Buffer(req.query.user, 'base64').toString('ascii'),
+                    code: req.query.id
+                });
+                return res.redirect(config.api.frontend + '/login?verified=true');
+            } catch (e) {
+                return res.redirect(config.api.frontend + '/login?verified=false');
+            }
+        });
 };
