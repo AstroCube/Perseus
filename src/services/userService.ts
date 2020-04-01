@@ -23,7 +23,6 @@ export default class UserService {
       if (!userRecord) throw new Error("User was not registered.");
       Reflect.deleteProperty(userRecord, 'password');
       Reflect.deleteProperty(userRecord, 'salt');
-      this.logger.debug(userRecord);
       return userRecord.toObject();
     } catch (e) {
       this.logger.error(e);
@@ -61,6 +60,7 @@ export default class UserService {
       if (!userRecord) throw new Error("User was not registered.");
       Reflect.deleteProperty(userRecord, 'password');
       Reflect.deleteProperty(userRecord, 'salt');
+      this.logger.info('Username %o updated successfully', updatable.username);
       return userRecord.toObject();
     } catch (e) {
       this.logger.error(e);
