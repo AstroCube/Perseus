@@ -196,8 +196,10 @@ export default (app: Router) => {
         }),
         async (req: Request, res: Response, next: NextFunction) => {
             try {
+                console.log("Was queried");
                 const service: UserService = Container.get(UserService);
                 const updated = await service.verifyUser(req.body as IMailRegister, req.get("host"));
+                console.log("Was fuckin called");
                 return res.status(200).json(updated);
             } catch (e) {
                 next(e);
