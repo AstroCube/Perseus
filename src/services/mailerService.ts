@@ -16,7 +16,7 @@ export default class MailerService {
   public async mailUpdate(update: IMailUpdateVerification) {
     try {
       const date: Date = new Date();
-      let mail: string = fs.readFileSync("../assets/templates/update.html", {encoding: 'utf-8'});
+      let mail: string = fs.readFileSync(__dirname + "assets/templates/update.html", {encoding: 'utf-8'});
       mail = mail.replace("%%username%%", update.user.display);
       mail = mail.replace("%%code%%", update.code + "");
       mail = mail.replace("%%date%%", date.getFullYear() + "");

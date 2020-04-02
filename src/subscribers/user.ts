@@ -11,13 +11,13 @@ import UserService from "../services/userService";
 export default class UserSubscriber {
 
   @On(events.user.mailUpdate)
-  public onUserMailUpdate(update: IMailUpdateVerification) {
+  public async onUserMailUpdate(update: IMailUpdateVerification) {
     const Logger: Logger = Container.get('logger');
     const mailer: MailerService = Container.get(MailerService);
     const redis: RedisService = Container.get(RedisService);
     try {
-      redis.setKey("verification_" + update.user._id, update.code + "");
-      mailer.mailUpdate(update);
+      await redis.setKey("verification_" + update.user._id, update.code + "");
+      await mailer.mailUpdate(update);
     } catch (e) {
       Logger.error("Error while sending verification request %o", e);
       throw e;
@@ -46,10 +46,8 @@ export default class UserSubscriber {
     const redis: RedisService = Container.get(RedisService);
     try {
       const key = "mailverify_" + verification.user._id;
-      console.log(key);
       await redis.setKey(key, verification.code);
       await redis.setKeyExpiration(key, 600);
-      console.log(redis.getKey(key));
       await mailer.mailVerify(verification);
     } catch (e) {
       Logger.error("Error while sending verification request %o", e);
