@@ -7,6 +7,7 @@ import mailLoader from './mailer';
 import Logger from './logger';
 import config from '../config';
 import { TransportOptions } from "nodemailer";
+import './events';
 
 
 export default async ({ expressApp }) => {

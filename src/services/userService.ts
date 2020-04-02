@@ -137,7 +137,7 @@ export default class UserService {
       const link = "http://" + host + "/api/user/verify?mail=" + encodedMail + "&user=" + encodedUser + "&id=" + random;
 
       this.dispatcher.dispatch(events.user.mailVerifyRequest, {user: userRecord, code: random, link: link});
-      this.logger.info('User %o is trying to verify with email %e', userRecord.username, verification.email);
+      this.logger.info('User %o is trying to verify with email ' + verification.email, userRecord.username);
       return true;
     } catch (e) {
       this.logger.error("There was an error verifying mail: %o", e);
