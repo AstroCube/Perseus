@@ -1,8 +1,9 @@
 import {Container, Inject, Service} from "typedi";
 import {Logger} from "winston";
-import {IMailUpdateVerification, IMailVerifyRequest, IUser} from "../interfaces/IUser";
-import * as fs from "fs";
+import {IMailUpdateVerification, IMailVerifyRequest} from "../interfaces/IUser";
 import * as Mail from "nodemailer/lib/mailer";
+import verifyTemplate from 'templates/verify.html';
+import updateTemplate from 'template/update.html';
 import config from "../config";
 
 @Service()
@@ -16,7 +17,7 @@ export default class MailerService {
   public async mailUpdate(update: IMailUpdateVerification) {
     try {
       const date: Date = new Date();
-      let mail: string = fs.readFileSync(__dirname + "/templates/update.html", {encoding: 'utf-8'});
+      let mail = updateTemplate;
       mail = mail.replace("%%username%%", update.user.display);
       mail = mail.replace("%%code%%", update.code + "");
       mail = mail.replace("%%date%%", date.getFullYear() + "");
@@ -37,7 +38,7 @@ export default class MailerService {
   public async mailVerify(update: IMailVerifyRequest) {
     try {
       const date: Date = new Date();
-      let mail: string = fs.readFileSync(__dirname + "/templates/verify.html", {encoding: 'utf-8'});
+      let mail: string = verifyTemplate;
       this.logger.debug(mail);
       mail = mail.replace("%%display%%", update.user.display);
       mail = mail.replace("%%skin%%", update.user.skin);
