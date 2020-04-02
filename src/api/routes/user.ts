@@ -186,8 +186,7 @@ export default (app: Router) => {
 
     route.post(
         '/verify-mail',
-        middlewares.authentication,
-        middlewares.userAttachment,
+        middlewares.cluster,
         celebrate({
             body: Joi.object({
                 user: Joi.string().required(),
@@ -199,7 +198,6 @@ export default (app: Router) => {
                 console.log("Was queried");
                 const service: UserService = Container.get(UserService);
                 const updated = await service.verifyUser(req.body as IMailRegister, req.get("host"));
-                console.log("Was fuckin called");
                 return res.status(200).json(updated);
             } catch (e) {
                 next(e);
@@ -208,8 +206,7 @@ export default (app: Router) => {
 
     route.get(
         '/verify-code',
-        middlewares.authentication,
-        middlewares.userAttachment,
+        middlewares.cluster,
         celebrate({
             body: Joi.object({
                 user: Joi.string().required(),
