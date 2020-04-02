@@ -126,11 +126,8 @@ export default class UserService {
   public async verifyUser(verification: IMailRegister, host: string): Promise<Boolean> {
     try {
       const userRecord: IUser = await this.viewUser(verification.user);
-      console.log("User");
       if (userRecord.verified) throw new Error("The user has already verified an email");
-      console.log("Verified");
       const usedEmail: IUser[] = await this.userModel.find({email: verification.email});
-      console.log("Used email");
       if (usedEmail.length > 0) throw new Error("This email is already in use");
       if (await this.redis.existsKey("mailverify_" + verification.user)) throw new Error("Validation already queried");
 
@@ -139,7 +136,6 @@ export default class UserService {
       const encodedUser = new Buffer(verification.user).toString('base64');
       const link = "http://" + host + "/api/user/verify?mail=" + encodedMail + "&user=" + encodedUser + "&id=" + random;
 
-      console.log("Created");
       this.dispatcher.dispatch(events.user.mailVerifyRequest, {user: userRecord, code: random, link: link});
       this.logger.info('User %o is trying to verify with email %e', userRecord.username, verification.email);
       return true;

@@ -46,8 +46,10 @@ export default class UserSubscriber {
     const redis: RedisService = Container.get(RedisService);
     try {
       const key = "mailverify_" + verification.user._id;
+      console.log(key);
       await redis.setKey(key, verification.code);
       await redis.setKeyExpiration(key, 600);
+      console.log(redis.getKey(key));
       await mailer.mailVerify(verification);
     } catch (e) {
       Logger.error("Error while sending verification request %o", e);
