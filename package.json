@@ -5,7 +5,7 @@
   "main": "src/app.ts",
   "scripts": {
     "build": "tsc",
-    "postbuild": "ts-node ./tools/build",
+    "postbuild": "npx ts-node ./tools/build",
     "heroku-postbuild": "npm run build",
     "start": "nodemon",
     "load-models": "ts-node  --transpile-only ./tests/generate.ts",

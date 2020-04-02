@@ -3,7 +3,8 @@ import {Logger} from "winston";
 import {IMailUpdateVerification, IMailVerifyRequest} from "../interfaces/IUser";
 import * as Mail from "nodemailer/lib/mailer";
 import config from "../config";
-import templates from './templates';
+import updateTempate from "../templates/update.html";
+import verifyTemplate from "../templates/verify.html";
 
 @Service()
 export default class MailerService {
@@ -16,7 +17,7 @@ export default class MailerService {
   public async mailUpdate(update: IMailUpdateVerification) {
     try {
       const date: Date = new Date();
-      let mail = templates.update;
+      let mail = updateTempate;
       mail = mail.replace("%%username%%", update.user.display);
       mail = mail.replace("%%code%%", update.code + "");
       mail = mail.replace("%%date%%", date.getFullYear() + "");
@@ -37,7 +38,7 @@ export default class MailerService {
   public async mailVerify(update: IMailVerifyRequest) {
     try {
       const date: Date = new Date();
-      let mail: string = templates.verify;
+      let mail: string = verifyTemplate;
       this.logger.debug(mail);
       mail = mail.replace("%%display%%", update.user.display);
       mail = mail.replace("%%skin%%", update.user.skin);
