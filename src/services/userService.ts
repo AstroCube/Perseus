@@ -125,7 +125,6 @@ export default class UserService {
 
   public async verifyUser(verification: IMailRegister, host: string): Promise<Boolean> {
     try {
-
       const userRecord: IUser = await this.viewUser(verification.user);
       if (userRecord.verified) throw new Error("The user has already verified an email");
       const usedEmail: IUser[] = await this.userModel.find({email: verification.email});
@@ -136,7 +135,7 @@ export default class UserService {
       const encodedMail = new Buffer(verification.email).toString('base64');
       const encodedUser = new Buffer(verification.user).toString('base64');
       const link = "http://" + host + "/api/user/verify?mail=" + encodedMail + "&user=" + encodedUser + "&id=" + random;
-      this.dispatcher.dispatch(events.user.mailUpdate, {user: userRecord, code: random, link: link});
+      this.dispatcher.dispatch(events.user.mailVerifyRequest, {user: userRecord, code: random, link: link});
       this.logger.info('User %o is trying to verify with email %e', userRecord.username, verification.email);
       return true;
     } catch (e) {

@@ -214,7 +214,7 @@ export default (app: Router) => {
                 email: Joi.string().required()
             })
         }),
-        async (req: Request, res: Response, next: NextFunction) => {
+        async (req: Request, res: Response) => {
             try {
                 const service: UserService = Container.get(UserService);
                 await service.verifyCode({
