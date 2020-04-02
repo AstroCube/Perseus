@@ -5,6 +5,7 @@
   "main": "src/app.ts",
   "scripts": {
     "build": "tsc",
+    "postbuild": "ts-node ./tools/build",
     "heroku-postbuild": "npm run build",
     "start": "nodemon",
     "load-models": "ts-node  --transpile-only ./tests/generate.ts",
@@ -43,6 +44,7 @@
     "nodemailer": "^6.4.6",
     "redis": "^3.0.2",
     "reflect-metadata": "^0.1.12",
+    "shelljs": "^0.8.3",
     "ts-mongoose-pagination": "^1.1.2",
     "typedi": "^0.8.0",
     "typescript": "^3.7.5",
