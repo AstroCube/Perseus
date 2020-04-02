@@ -37,7 +37,7 @@ export default class MailerService {
   public async mailVerify(update: IMailVerifyRequest) {
     try {
       const date: Date = new Date();
-      let mail: string = fs.readFileSync("../assets/templates/verify.html", {encoding: 'utf-8'});
+      let mail: string = fs.readFileSync(__dirname + "/assets/templates/verify.html", {encoding: 'utf-8'});
       this.logger.debug(mail);
       mail = mail.replace("%%display%%", update.user.display);
       mail = mail.replace("%%skin%%", update.user.skin);
