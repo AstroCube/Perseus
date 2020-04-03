@@ -16,7 +16,7 @@ export default class MailerService {
   public async mailUpdate(update: IMailUpdateVerification) {
     try {
       const date: Date = new Date();
-      let mail = fs.readFileSync("templates/update.html", {encoding: 'utf-8'});
+      let mail = fs.readFileSync(__dirname + "templates/update.html", {encoding: 'utf-8'});
       mail = mail.replace("%%username%%", update.user.display);
       mail = mail.replace("%%code%%", update.code + "");
       mail = mail.replace("%%date%%", date.getFullYear() + "");
@@ -37,7 +37,7 @@ export default class MailerService {
   public async mailVerify(update: IMailVerifyRequest) {
     try {
       const date: Date = new Date();
-      let mail: string = fs.readFileSync("templates/verify.html", {encoding: 'utf-8'});
+      let mail: string = fs.readFileSync(__dirname + "templates/verify.html", {encoding: 'utf-8'});
       this.logger.debug(mail);
       mail = mail.replace("%%display%%", update.user.display);
       mail = mail.replace("%%skin%%", update.user.skin);
