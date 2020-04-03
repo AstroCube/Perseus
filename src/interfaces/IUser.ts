@@ -69,6 +69,7 @@ export interface IMailRegister {
 export interface IMailVerifyRequest {
   user: IUser;
   code: string;
+  email: string;
   link: string;
 }
 

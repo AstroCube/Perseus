@@ -23,7 +23,7 @@ export default class MailerService {
 
       let mailOptions = {
         from: config.emails.auth.user,
-        to: update.user.email,
+        to: update.update,
         subject: 'Actualización de correo',
         html: mail
       };
@@ -46,7 +46,7 @@ export default class MailerService {
 
       let mailOptions = {
         from: config.emails.auth.user,
-        to: update.user.email,
+        to: update.email,
         subject: 'Verifica tu correo electrónico',
         html: mail
       };
