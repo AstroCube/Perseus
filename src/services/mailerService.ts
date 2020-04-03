@@ -1,5 +1,5 @@
 import * as fs from "fs";
-import {Container, Inject, Service} from "typedi";
+import {Inject, Service} from "typedi";
 import {Logger} from "winston";
 import {IMailUpdateVerification, IMailVerifyRequest} from "../interfaces/IUser";
 import * as Mail from "nodemailer/lib/mailer";
