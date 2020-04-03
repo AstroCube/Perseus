@@ -5,5 +5,6 @@ const buildFolder = './build/';
 const folders = new Set(['./src/services/templates']);
 
 folders.forEach((folder) => {
-    shell.cp('-R', folder, buildFolder);
+    const folderFinal = folder.replace('./src/', '');
+    shell.cp('-R', folder, buildFolder + folderFinal);
 });
