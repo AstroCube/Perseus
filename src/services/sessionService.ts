@@ -32,6 +32,13 @@ export default class SessionService {
         multiAccount: true
       };
 
+      const userGroups = [];
+      userGroups.push({
+        group: config.defaultGroup,
+        joined: new Date(),
+        comment: null
+      });
+
       const created: IUser = await this.userModel.create({
         username: session.username,
         display: session.username,
@@ -40,11 +47,7 @@ export default class SessionService {
           lastSeen: new Date(),
           online: true
         },
-        groups: [{
-          group: mongoose.Types.ObjectId(config.defaultGroup),
-          joined: new Date(),
-          comment: null
-        }]
+        groups: userGroups
       });
       if (!created) throw Error('The user was not created successfully');
       return {
