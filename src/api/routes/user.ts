@@ -209,13 +209,12 @@ export default (app: Router) => {
             try {
                 const service: UserService = Container.get(UserService);
                 await service.verifyCode({
-                    email: new Buffer(req.query.email, 'base64').toString('ascii'),
+                    email: new Buffer(req.query.mail, 'base64').toString('ascii'),
                     user: new Buffer(req.query.user, 'base64').toString('ascii'),
                     code: req.query.id
                 });
                 return res.redirect(config.api.frontend + '/login?verified=true');
             } catch (e) {
-                console.log(e);
                 return res.redirect(config.api.frontend + '/login?verified=false');
             }
         });
