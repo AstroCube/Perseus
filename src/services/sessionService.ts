@@ -3,8 +3,7 @@ import { IAuthenticationResponse, IAuthenticationSession, IServerSwitch } from "
 import { IUser } from "../interfaces/IUser";
 import config from '../config';
 import { Logger } from "winston";
-import { Schema } from "mongoose";
-import { ObjectId } from "bson";
+import * as mongoose from "mongoose";
 
 @Service()
 export default class SessionService {
@@ -42,7 +41,7 @@ export default class SessionService {
           online: true
         },
         groups: [{
-          group: new ObjectId(config.defaultGroup),
+          group: mongoose.Types.ObjectId(config.defaultGroup),
           joined: new Date(),
           comment: null
         }]
