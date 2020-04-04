@@ -41,5 +41,5 @@ export default {
         host: process.env.REDIS_HOST,
         auth_pass: process.env.REDIS_PASS
     },
-    defaultGroup: process.env.DEFAULT_GROUP
+    defaultGroup: '5b52b2048284865491b1f56a'
 };
