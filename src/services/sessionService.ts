@@ -40,7 +40,9 @@ export default class SessionService {
           online: true
         },
         groups: [{
-          group: config.defaultGroup
+          group: config.defaultGroup,
+          joined: new Date(),
+          comment: null
         }]
       });
       if (!created) throw Error('The user was not created successfully');
