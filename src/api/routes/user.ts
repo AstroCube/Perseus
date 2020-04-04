@@ -215,6 +215,7 @@ export default (app: Router) => {
                 });
                 return res.redirect(config.api.frontend + '/login?verified=true');
             } catch (e) {
+                console.log(e);
                 return res.redirect(config.api.frontend + '/login?verified=false');
             }
         });
