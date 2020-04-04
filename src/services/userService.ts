@@ -20,7 +20,7 @@ export default class UserService {
   public async viewUser(id : string): Promise<IUser> {
     try {
       const userRecord = await this.userModel.findById(id);
-      if (!userRecord) throw new Error("User was not registered.");
+      if (!userRecord) throw new Error("NotFound");
       Reflect.deleteProperty(userRecord, 'password');
       Reflect.deleteProperty(userRecord, 'salt');
       return userRecord.toObject();
@@ -33,7 +33,7 @@ export default class UserService {
   public async getUserByName(username : string): Promise<IUser> {
     try {
       const userRecord = await this.userModel.findOne({username: username});
-      if (!userRecord) throw new Error("User was not registered.");
+      if (!userRecord) throw new Error("NotFound");
       Reflect.deleteProperty(userRecord, 'password');
       Reflect.deleteProperty(userRecord, 'salt');
       return userRecord.toObject();
@@ -57,7 +57,7 @@ export default class UserService {
       Reflect.deleteProperty(updatable, 'password');
       Reflect.deleteProperty(updatable, 'salt');
       const userRecord = await this.userModel.findByIdAndUpdate(id, updatable, {new: true});
-      if (!userRecord) throw new Error("User was not registered.");
+      if (!userRecord) throw new Error("NotFound");
       Reflect.deleteProperty(userRecord, 'password');
       Reflect.deleteProperty(userRecord, 'salt');
       this.logger.info('Username %o updated successfully', updatable.username);
