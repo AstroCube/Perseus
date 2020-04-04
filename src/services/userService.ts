@@ -134,7 +134,7 @@ export default class UserService {
       const random = Math.floor((Math.random() * 100) + 54);
       const encodedMail = new Buffer(verification.email).toString('base64');
       const encodedUser = new Buffer(verification.user).toString('base64');
-      const link = "http://" + host + "/api/user/verify?mail=" + encodedMail + "&user=" + encodedUser + "&id=" + random;
+      const link = "https://" + host + "/api/users/verify-code?mail=" + encodedMail + "&user=" + encodedUser + "&id=" + random;
 
       this.dispatcher.dispatch(events.user.mailVerifyRequest, {user: userRecord, code: random, link: link, email: verification.email});
       this.logger.info('User %o is trying to verify with email ' + verification.email, userRecord.username);
