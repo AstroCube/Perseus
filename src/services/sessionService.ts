@@ -4,7 +4,7 @@ import { IUser } from "../interfaces/IUser";
 import config from '../config';
 import { Logger } from "winston";
 import { Schema } from "mongoose";
-import ObjectId = module
+import { ObjectId } from "bson";
 
 @Service()
 export default class SessionService {
