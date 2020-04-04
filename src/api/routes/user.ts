@@ -205,12 +205,6 @@ export default (app: Router) => {
 
     route.get(
         '/verify-code',
-        celebrate({
-            body: Joi.object({
-                user: Joi.string().required(),
-                email: Joi.string().required()
-            })
-        }),
         async (req: Request, res: Response) => {
             try {
                 const service: UserService = Container.get(UserService);
