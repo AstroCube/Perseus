@@ -16,9 +16,11 @@ const User = new mongoose.Schema(
     email: {
       type: String,
       lowercase: true,
-      sparse: true,
-      unique: true,
-      index: true
+      index: {
+        unique: true,
+        // @ts-ignore
+        partialFilterExpression: {email: { $type : "string" }}
+      }
     },
     password: String,
     salt: String,
