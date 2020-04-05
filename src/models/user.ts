@@ -46,7 +46,7 @@ const User = new mongoose.Schema(
       _id: false,
       number: String,
       country: String,
-      primary: String
+      primary: Boolean
     }],
     discord: {
       id: String,
