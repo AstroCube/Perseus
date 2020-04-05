@@ -16,12 +16,16 @@ export default class SessionService {
   public async authenticateSessionCheck(session: IAuthenticationSession): Promise<IAuthenticationResponse> {
 
     try {
-      const registered: IUser = await this.userModel.findOneAndUpdate({username: session.username}, {session: {online: true}}, {new: true});
-      if (registered) return {
-        user: registered,
-        registered: registered.password !== undefined,
-        multiAccount: false
-      };
+      let registered = await this.userModel.findOne({username: session.username});
+      if (registered) {
+        registered.session.online = true;
+        let final: IUser = await registered.save();
+        return {
+          user: final,
+          registered: final.password !== undefined,
+          multiAccount: false
+        };
+      }
 
       const multi: IUser = await this.userModel.findOne(
         {address: {number: session.address, primary: true}}
