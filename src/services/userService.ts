@@ -54,6 +54,7 @@ export default class UserService {
 
   public async updateUser(id : string, updatable : IUser): Promise<IUser> {
     try {
+      console.log(updatable);
       Reflect.deleteProperty(updatable, 'password');
       Reflect.deleteProperty(updatable, 'salt');
       const userRecord = await this.userModel.findByIdAndUpdate(id, updatable, {new: true});
