@@ -26,7 +26,9 @@ const Map = new mongoose.Schema(
       type: Schema.Types.ObjectId,
       ref: 'Gamemode'
     },
-    subGamemode: String,
+    subGamemode: [
+      String
+    ],
     description: String,
     rating: [
       {

@@ -7,7 +7,7 @@ export interface IMap {
   version: string;
   contributors: IMapContributors[];
   gamemode: string;
-  subGamemode: string;
+  subGamemode: string[];
   description: string;
   rating: IMapRating[];
 }
