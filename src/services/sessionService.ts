@@ -3,7 +3,6 @@ import { IAuthenticationResponse, IAuthenticationSession, IServerSwitch } from "
 import { IUser } from "../interfaces/IUser";
 import config from '../config';
 import { Logger } from "winston";
-import * as mongoose from "mongoose";
 
 @Service()
 export default class SessionService {

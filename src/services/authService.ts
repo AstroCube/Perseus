@@ -7,6 +7,7 @@ import { IServerAuthentication, IUser, IUserIP } from "../interfaces/IUser";
 import events from "../subscribers/events";
 import { EventDispatcher, EventDispatcherInterface } from "../decorators/eventDispatcher";
 import { randomBytes } from "crypto";
+import StatsService from "./statsService";
 
 @Service()
 export default class AuthService {
@@ -14,7 +15,8 @@ export default class AuthService {
   constructor(
     @Inject('userModel') private userModel : Models.UserModel,
     @EventDispatcher() private dispatcher: EventDispatcherInterface,
-    @Inject('logger') private logger
+    @Inject('logger') private logger,
+    private stats: StatsService
   ) {}
 
   public async signIn(email: string, password: string): Promise<{ user: IUser; token: string }> {
@@ -79,6 +81,7 @@ export default class AuthService {
           }
         }
       );
+      await this.stats.createStatsDocument(registeredUser._id);
       Reflect.deleteProperty(registeredUser, 'password');
       Reflect.deleteProperty(registeredUser, 'salt');
       return registeredUser;

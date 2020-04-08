@@ -51,6 +51,10 @@ export default async ({ expressApp }) => {
         name: 'gamemodeModel',
         model: require('../models/gamemode').default
     };
+    const statsModel = {
+        name: 'statsModel',
+        model: require('../models/stats').default
+    };
 
     const { agenda } = await dependencyInjectorLoader({
         mailer,
@@ -61,7 +65,8 @@ export default async ({ expressApp }) => {
           groupModel,
           serverModel,
           clusterModel,
-          gamemodeModel
+          gamemodeModel,
+          statsModel
         ],
     });
     Logger.info('Dependency injector loaded');

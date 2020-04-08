@@ -6,6 +6,7 @@ import { ICluster } from "../../interfaces/ICluster";
 import { IGamemode } from "../../interfaces/IGamemode";
 import { IMatch } from "../../interfaces/IMatch";
 import { IMap } from "../../interfaces/IMap";
+import { IStats } from "../../interfaces/IStats";
 
 declare global {
   namespace Express {
@@ -23,5 +24,6 @@ declare global {
     export type GamemodeModel = PaginateModel<IGamemode & Document>;
     export type MatchModel = PaginateModel<IMatch & Document>;
     export type GroupModel = PaginateModel<IGroup & Document>;
+    export type StatsModel = PaginateModel<IStats & Document>;
   }
 }
