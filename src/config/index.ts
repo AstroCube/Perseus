@@ -28,9 +28,9 @@ export default {
         frontend: 'https://www.seocraft.net'
     },
     emails: {
-        host: process.env.SMTP_HOST,
-        port: process.env.SMTP_PORT,
-        secure: process.env.SMTP_SECURE,
+        host: 'smtp.mi.com.co',
+        port: 465,
+        secure: true,
         auth: {
             user: process.env.SMTP_AUTH_USER,
             pass: process.env.SMTP_AUTH_PASSWORD
