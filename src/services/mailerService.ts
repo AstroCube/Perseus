@@ -38,6 +38,8 @@ export default class MailerService {
     try {
       const date: Date = new Date();
       let mail: string = fs.readFileSync(__dirname + "/templates/verify.html", {encoding: 'utf-8'});
+
+      console.log(update.user.display);
       mail = mail.replace("%%display%%", update.user.display);
       mail = mail.replace("%%skin%%", update.user.skin);
       mail = mail.replace("%%link%%", update.link);
