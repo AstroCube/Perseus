@@ -32,8 +32,8 @@ export default {
         port: 465,
         secure: true,
         auth: {
-            user: process.env.SMTP_AUTH_USER,
-            pass: process.env.SMTP_AUTH_PASSWORD
+            user: 'contacto@seocraft.net',
+            pass: 'OlaAdios24'
         }
     },
     redis: {
