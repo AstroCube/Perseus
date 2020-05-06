@@ -1,4 +1,6 @@
-export interface IMap {
+import {IModel} from "./IModel";
+
+export interface IMap extends IModel {
   name: string;
   file: string;
   configuration: string;

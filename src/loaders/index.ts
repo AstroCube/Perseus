@@ -35,6 +35,10 @@ export default async ({ expressApp }) => {
         name: 'userModel',
         model: require('../models/user').default
     };
+    const punishmentModel = {
+        name: 'punishmentModel',
+        model: require('../models/punishment').default
+    };
     const groupModel = {
         name: 'groupModel',
         model: require('../models/group').default
@@ -65,6 +69,7 @@ export default async ({ expressApp }) => {
           groupModel,
           serverModel,
           clusterModel,
+          punishmentModel,
           gamemodeModel,
           statsModel
         ],

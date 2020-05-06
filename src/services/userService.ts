@@ -7,7 +7,6 @@ import { randomBytes } from "crypto";
 import { EventDispatcher, EventDispatcherInterface } from "../decorators/eventDispatcher";
 import events from "../subscribers/events";
 import RedisService from "./redisService";
-import StatsService from "./statsService";
 
 @Service()
 export default class UserService {
