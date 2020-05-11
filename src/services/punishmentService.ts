@@ -13,7 +13,10 @@ export default class PunishmentService {
   public async createPunishment(punishment: IPunishment): Promise<IPunishment> {
     try {
       let model: IPunishment = await this.punishmentModel.create({
-        ...punishment
+        ...punishment,
+        issuer: punishment.issuer._id,
+        punished: punishment.punished._id,
+        match: punishment.match._id
       });
       if (!model) throw new Error("There was an error creating a punishments.");
       return model;

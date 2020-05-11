@@ -1,11 +1,10 @@
 import {IUser} from "./IUser";
 import {IMatch} from "./IMatch";
-import {Model} from "mongoose";
 import {IModel} from "./IModel";
 
 export interface IPunishment extends IModel {
     type: PunishmentType;
-    punisher: IUser;
+    issuer: IUser;
     punished: IUser;
     server: string;
     match: IMatch;
