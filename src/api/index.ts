@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import punishment from "./routes/punishment";
 import user from "./routes/user";
 import auth from "./routes/auth";
 import group from "./routes/group";
@@ -12,6 +13,7 @@ export default () => {
     auth(app);
     group(app);
     gamemode(app);
+    punishment(app);
     server(app);
     session(app);
     user(app);

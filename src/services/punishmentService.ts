@@ -1,19 +1,18 @@
-import { Service, Inject } from 'typedi';
-import {IPunishment, PunishmentType} from "../interfaces/IPunishment";
-import {IPaginateResult} from "mongoose";
-import {IGroup} from "../interfaces/IGroup";
+import {Inject, Service} from 'typedi';
+import {Logger} from "winston";
+import {IPunishment} from "../interfaces/IPunishment";
 
 @Service()
 export default class PunishmentService {
 
   constructor(
     @Inject('gamemodeModel') private punishmentModel: Models.PunishmentModel,
-    @Inject('logger') private logger
+    @Inject('logger') private logger: Logger
   ) {}
 
   public async createPunishment(punishment: IPunishment): Promise<IPunishment> {
     try {
-      let model = await this.punishmentModel.create({
+      let model: IPunishment = await this.punishmentModel.create({
         ...punishment
       });
       if (!model) throw new Error("There was an error creating a punishments.");
@@ -26,7 +25,7 @@ export default class PunishmentService {
 
   public async getPunishment(id: string): Promise<IPunishment> {
     try {
-      const punishment = await this.punishmentModel.findById(id);
+      const punishment: IPunishment = await this.punishmentModel.findById(id);
       if (!punishment) throw new Error("Queried punishment does not exist.");
       return punishment;
     } catch (e) {
@@ -35,30 +34,28 @@ export default class PunishmentService {
     }
   }
 
-  public async listPunishments(page : number): Promise<IPaginateResult<IPunishment>> {
+  public async listPunishments(query: any): Promise<IPunishment[]> {
     try {
-      return await this.punishmentModel.paginate({}, { page: page, perPage: 10 });
+      return await this.punishmentModel.find(query);
     } catch (e) {
       this.logger.error(e);
       throw e;
     }
   }
 
-  public async listUserPunishments(id: string, active: boolean,  type?: PunishmentType): Promise<IPunishment[]> {
+  public async getLastPunishment(query: any): Promise<IPunishment> {
     try {
-      const punishment = await this.punishmentModel.find({punished: id, active: active, type: type});
-      if (!punishment) throw new Error("Queried punishment does not exist.");
-      return punishment;
+      return await this.punishmentModel.findOne(query).sort("createdAt");
     } catch (e) {
       this.logger.error(e);
       throw e;
     }
   }
 
-  public async getLastPunishment(id: string, active: boolean,  type?: PunishmentType): Promise<IPunishment[]> {
+  public async updatePunishment(punishment: IPunishment): Promise<IPunishment> {
     try {
-      const punishment = await this.punishmentModel.find({punished: id, active: active, type: type});
-      if (!punishment) throw new Error("Queried punishment does not exist.");
+      const updatedPunishment: IPunishment = await this.punishmentModel.findByIdAndUpdate(punishment._id, punishment);
+      if (!updatedPunishment) throw new Error("Queried punishment does not exist");
       return punishment;
     } catch (e) {
       this.logger.error(e);
