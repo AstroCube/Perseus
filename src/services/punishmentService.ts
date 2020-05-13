@@ -48,6 +48,7 @@ export default class PunishmentService {
 
   public async getLastPunishment(query: any): Promise<IPunishment> {
     try {
+      this.logger.debug('Executing last punishment request');
       return await this.punishmentModel.findOne(query).sort("createdAt");
     } catch (e) {
       this.logger.error(e);
