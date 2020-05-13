@@ -12,6 +12,7 @@ export default class PunishmentService {
 
   public async createPunishment(punishment: IPunishment): Promise<IPunishment> {
     try {
+      this.logger.debug(punishment);
       let model: IPunishment = await this.punishmentModel.create({
         ...punishment,
         issuer: punishment.issuer._id,
