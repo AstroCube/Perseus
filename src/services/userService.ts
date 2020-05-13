@@ -19,7 +19,6 @@ export default class UserService {
 
   public async viewUser(id : string): Promise<IUser> {
     try {
-      this.logger.debug("Called ID:" + id);
       const userRecord = await this.userModel.findById(id);
       if (!userRecord) throw new Error("NotFound");
       Reflect.deleteProperty(userRecord, 'password');

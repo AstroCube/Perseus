@@ -6,13 +6,14 @@ import {IPunishment} from "../interfaces/IPunishment";
 export default class PunishmentService {
 
   constructor(
-    @Inject('gamemodeModel') private punishmentModel: Models.PunishmentModel,
+    @Inject('punishmentModel') private punishmentModel: Models.PunishmentModel,
     @Inject('logger') private logger: Logger
   ) {}
 
   public async createPunishment(punishment: IPunishment): Promise<IPunishment> {
     try {
 
+      Reflect.deleteProperty(punishment, '_id');
       let match = null;
       if (punishment.match !== null) match = punishment.match._id;
 
