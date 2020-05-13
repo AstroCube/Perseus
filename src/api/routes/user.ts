@@ -75,6 +75,21 @@ export default (app: Router) => {
       }
     });
 
+    route.get(
+        '/list-all/:own?',
+        middlewares.authentication,
+        middlewares.userAttachment,
+        middlewares.permissions("user.read"),
+        async (req: Request, res: Response, next: NextFunction) => {
+            try {
+                const service : UserService = Container.get(UserService);
+                const users: IUser[] = await service.listFullUsers(req.params.own, req.currentUser._id);
+                return res.status(200).json(users);
+            } catch (e) {
+                next(e);
+            }
+        });
+
   route.get(
     '/me',
     middlewares.authentication,
