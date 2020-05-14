@@ -1,9 +1,8 @@
 import { Router, Request, Response, NextFunction } from "express";
 import { Container } from "typedi";
 import {IPunishment} from "../../interfaces/IPunishment";
-import GamemodeService from "../../services/gamemodeService";
-import { IGamemode } from "../../interfaces/IGamemode";
 import PunishmentService from "../../services/punishmentService";
+import middlewares from "../middlewares";
 const route = Router();
 
 export default (app: Router) => {
@@ -12,15 +11,31 @@ export default (app: Router) => {
 
   route.post(
       '/create',
+      middlewares.authentication,
+      middlewares.userAttachment,
       async (req: Request, res: Response, next: NextFunction) => {
           try {
               const service: PunishmentService = Container.get(PunishmentService);
+              req.body.issuer = req.currentUser;
               const punishment: IPunishment = await service.createPunishment(req.body);
               return res.json(punishment).status(200);
           } catch (e) {
               return next(e);
           }
       });
+
+    route.post(
+        '/create',
+        middlewares.cluster,
+        async (req: Request, res: Response, next: NextFunction) => {
+            try {
+                const service: PunishmentService = Container.get(PunishmentService);
+                const punishment: IPunishment = await service.createPunishment(req.body);
+                return res.json(punishment).status(200);
+            } catch (e) {
+                return next(e);
+            }
+        });
 
   route.get(
     '/get/:id',
