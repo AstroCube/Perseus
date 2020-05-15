@@ -13,6 +13,8 @@ export default class PunishmentService {
   public async createPunishment(punishment: IPunishment): Promise<IPunishment> {
     try {
 
+
+      console.log(punishment);
       if (punishment._id) Reflect.deleteProperty(punishment, '_id');
       let match = null;
       if (punishment.match !== null) match = punishment.match._id;
