@@ -14,7 +14,7 @@ export default class PunishmentService {
     try {
 
       let match = undefined;
-      //if ( punishment.match || punishment.match !== null) match = punishment.match._id;
+      if (punishment.match) match = punishment.match._id;
 
       let model: IPunishment = await this.punishmentModel.create({
         ...punishment,

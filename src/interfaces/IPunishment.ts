@@ -19,5 +19,5 @@ export interface IPunishment extends IModel {
 }
 
 export enum PunishmentType {
-    Warn, Kick, Ban
+    Warn = "Warn", Kick = "Kick", Ban = "Ban"
 }

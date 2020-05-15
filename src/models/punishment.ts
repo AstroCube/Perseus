@@ -6,7 +6,7 @@ import autoPopulate = require('mongoose-autopopulate');
 
 const Punishment = new mongoose.Schema(
     {
-        type: { type: String, enum: ['warn', 'kick', 'ban', 'forum-ban'] },
+        type: { type: String, enum: ['Warn', 'Kick', 'Ban'] },
         issuer: {
             type: Schema.Types.ObjectId,
             ref: 'User'
