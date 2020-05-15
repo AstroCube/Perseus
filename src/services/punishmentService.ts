@@ -13,8 +13,8 @@ export default class PunishmentService {
   public async createPunishment(punishment: IPunishment): Promise<IPunishment> {
     try {
 
-      let match = null;
-      if ( punishment.match || punishment.match !== null) match = punishment.match._id;
+      let match = undefined;
+      //if ( punishment.match || punishment.match !== null) match = punishment.match._id;
 
       let model: IPunishment = await this.punishmentModel.create({
         ...punishment,
