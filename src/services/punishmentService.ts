@@ -44,8 +44,8 @@ export default class PunishmentService {
 
   public async listPunishments(query: any, page?: number, size?: number): Promise<IPaginateResult<IPunishment>> {
     try {
-      let finalPage = 1; if (page) finalPage = page;
-      let perPage = -1;  if (size) perPage = size;
+      let finalPage: number = 1; if (page) finalPage = page;
+      let perPage: number = -1;  if (size) perPage = size;
       return await this.punishmentModel.paginate(query, {sort: {createdAt: 1}, page: finalPage, perPage: perPage});
     } catch (e) {
       this.logger.error(e);
