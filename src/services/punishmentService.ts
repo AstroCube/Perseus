@@ -43,7 +43,7 @@ export default class PunishmentService {
 
   public async listPunishments(query: any): Promise<IPunishment[]> {
     try {
-      return await this.punishmentModel.find(query);
+      return await this.punishmentModel.find(query).sort("createdAt");
     } catch (e) {
       this.logger.error(e);
       throw e;
