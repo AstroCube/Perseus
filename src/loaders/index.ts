@@ -31,22 +31,6 @@ export default async ({ expressApp }) => {
     } as TransportOptions);
     Logger.info('Mailer successfully loaded');
 
-    const userModel = {
-        name: 'userModel',
-        model: require('../models/user').default
-    };
-    const punishmentModel = {
-        name: 'punishmentModel',
-        model: require('../models/punishment').default
-    };
-    const groupModel = {
-        name: 'groupModel',
-        model: require('../models/group').default
-    };
-    const serverModel = {
-        name: 'serverModel',
-        model: require('../models/server').default
-    };
     const clusterModel = {
         name: 'clusterModel',
         model: require('../models/cluster').default
@@ -55,9 +39,33 @@ export default async ({ expressApp }) => {
         name: 'gamemodeModel',
         model: require('../models/gamemode').default
     };
+    const groupModel = {
+        name: 'groupModel',
+        model: require('../models/group').default
+    };
+    const mapModel = {
+        name: 'mapModel',
+        model: require('../models/map').default
+    };
+    const matchModel = {
+        name: 'matchModel',
+        model: require('../models/match').default
+    };
+    const punishmentModel = {
+        name: 'punishmentModel',
+        model: require('../models/punishment').default
+    };
+    const serverModel = {
+        name: 'serverModel',
+        model: require('../models/server').default
+    };
     const statsModel = {
         name: 'statsModel',
         model: require('../models/stats').default
+    };
+    const userModel = {
+        name: 'userModel',
+        model: require('../models/user').default
     };
 
     const { agenda } = await dependencyInjectorLoader({
@@ -65,13 +73,15 @@ export default async ({ expressApp }) => {
         redisClient,
         mongoConnection,
         models: [
-          userModel,
-          groupModel,
-          serverModel,
-          clusterModel,
-          punishmentModel,
-          gamemodeModel,
-          statsModel
+            clusterModel,
+            gamemodeModel,
+            groupModel,
+            mapModel,
+            matchModel,
+            punishmentModel,
+            serverModel,
+            statsModel,
+            userModel
         ],
     });
     Logger.info('Dependency injector loaded');
