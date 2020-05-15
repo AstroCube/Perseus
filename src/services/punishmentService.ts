@@ -41,9 +41,11 @@ export default class PunishmentService {
     }
   }
 
-  public async listPunishments(query: any): Promise<IPunishment[]> {
+  public async listPunishments(query: any, page?: number, size?: number): Promise<IPunishment[]> {
     try {
-      return await this.punishmentModel.find(query).sort("createdAt");
+      const sortedPunishments: IPunishment[] = await this.punishmentModel.find(query).sort("createdAt");
+      if (!page || !size) return sortedPunishments;
+      return sortedPunishments.slice((page - 1) * size, page * size);
     } catch (e) {
       this.logger.error(e);
       throw e;

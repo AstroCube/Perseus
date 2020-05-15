@@ -54,7 +54,7 @@ export default (app: Router) => {
     async (req: Request, res: Response, next: NextFunction) => {
       try {
           const service: PunishmentService = Container.get(PunishmentService);
-          const punishment: IPunishment[] = await service.listPunishments(req.body);
+          const punishment: IPunishment[] = await service.listPunishments(req.body, req.query.page, req.query.size);
           return res.json(punishment).status(200);
       } catch (e) {
         return next(e);
