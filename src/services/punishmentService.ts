@@ -1,6 +1,7 @@
 import {Inject, Service} from 'typedi';
 import {Logger} from "winston";
 import {IPunishment} from "../interfaces/IPunishment";
+import {IPaginateResult} from "mongoose";
 
 @Service()
 export default class PunishmentService {
@@ -41,11 +42,9 @@ export default class PunishmentService {
     }
   }
 
-  public async listPunishments(query: any, page?: number, size?: number): Promise<IPunishment[]> {
+  public async listPunishments(query: any, page?: number, size?: number): Promise<IPaginateResult<IPunishment>> {
     try {
-      const sortedPunishments: IPunishment[] = await this.punishmentModel.find(query).sort("createdAt");
-      if (!page || !size) return sortedPunishments;
-      return sortedPunishments.slice((page - 1) * size, page * size);
+      return await this.punishmentModel.paginate(query, {sort: {createdAt: 1}, page: page, perPage: size});
     } catch (e) {
       this.logger.error(e);
       throw e;
