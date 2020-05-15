@@ -55,12 +55,7 @@ export default class PunishmentService {
                 'punished',
                 'match'
             ],
-            select: {
-              "punished.password": 0,
-              "punished.salt": 0,
-              "issuer.password": 0,
-              "issuer.salt": 0
-            }
+            select: "-punished.password -punished.salt -issuer.password -issuer.salt"
           });
     } catch (e) {
       this.logger.error(e);
