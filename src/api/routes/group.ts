@@ -43,7 +43,7 @@ export default (app: Router) => {
     });
 
     route.get(
-        '/manifest/:id',
+        '/manifest',
         middlewares.permissions("group.read"),
         async (req: Request, res: Response, next: NextFunction) => {
             try {
