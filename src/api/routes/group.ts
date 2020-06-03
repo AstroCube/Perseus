@@ -1,12 +1,11 @@
 import { Router, Request, Response, NextFunction } from "express";
 import { Container } from "typedi";
 import GroupService from "../../services/groupService";
-import { IGroup } from "../../interfaces/IGroup";
+import {IGroup, IPermissions} from "../../interfaces/IGroup";
 import middlewares from "../middlewares";
 import { celebrate, Joi } from "celebrate";
 import { IPaginateResult } from "mongoose";
 import { IUser } from "../../interfaces/IUser";
-import UserService from "../../services/userService";
 const route = Router();
 
 export default (app: Router) => {
@@ -42,6 +41,19 @@ export default (app: Router) => {
         return next(e);
       }
     });
+
+    route.get(
+        '/manifest/:id',
+        middlewares.permissions("group.read"),
+        async (req: Request, res: Response, next: NextFunction) => {
+            try {
+                const groupService : GroupService = Container.get(GroupService);
+                const permissions : IPermissions = await groupService.permissionsManifest(req.currentUser);
+                return res.json(permissions).status(200);
+            } catch (e) {
+                return next(e);
+            }
+        });
 
   route.get(
     '/list/:page?',

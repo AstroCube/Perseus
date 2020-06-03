@@ -1,6 +1,6 @@
 import { Service, Inject } from 'typedi';
 import { IUser } from '../interfaces/IUser';
-import { IGroup } from "../interfaces/IGroup";
+import {IGroup, IPermissions} from "../interfaces/IGroup";
 import { IPaginateResult } from "mongoose";
 import { Logger } from "winston";
 
@@ -78,6 +78,21 @@ export default class GroupService {
       Reflect.deleteProperty(userRecord, 'password');
       Reflect.deleteProperty(userRecord, 'salt');
       return userRecord;
+    } catch (e) {
+      this.logger.error(e);
+      throw e;
+    }
+  }
+
+  public async permissionsManifest(user: IUser): Promise<IPermissions> {
+    try {
+      let clearManifest = {};
+      await user.groups.map(async (group) => {
+        await Object.keys(group.group.web_permissions).forEach((key, index) => {
+          if (group.group.web_permissions[key]) clearManifest[key] = group.group.web_permissions[key];
+        });
+      });
+      return clearManifest as IPermissions;
     } catch (e) {
       this.logger.error(e);
       throw e;
