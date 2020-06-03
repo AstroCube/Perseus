@@ -44,7 +44,8 @@ export default (app: Router) => {
 
     route.get(
         '/manifest',
-        middlewares.permissions("group.read"),
+        middlewares.authentication,
+        middlewares.userAttachment,
         async (req: Request, res: Response, next: NextFunction) => {
             try {
                 const groupService : GroupService = Container.get(GroupService);
