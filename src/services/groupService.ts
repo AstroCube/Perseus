@@ -89,6 +89,7 @@ export default class GroupService {
       let clearManifest = {};
       await user.groups.map(async (group) => {
         await Object.keys(group.group.web_permissions).forEach((key, index) => {
+          console.log(key);
           if (group.group.web_permissions[key]) clearManifest[key] = group.group.web_permissions[key];
         });
       });
