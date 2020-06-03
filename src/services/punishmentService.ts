@@ -33,7 +33,9 @@ export default class PunishmentService {
 
   public async getPunishment(id: string): Promise<IPunishment> {
     try {
-      const punishment: IPunishment = await this.punishmentModel.findById(id);
+      const punishment: IPunishment = await this.punishmentModel.findById(id)
+          .populate('issuer punished match')
+          .select("-punished.password -punished.salt -issuer.password -issuer.salt");
       if (!punishment) throw new Error("Queried punishment does not exist.");
       return punishment;
     } catch (e) {
