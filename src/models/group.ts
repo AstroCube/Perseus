@@ -39,8 +39,7 @@ const Group = new mongoose.Schema(
           warn: Boolean,
           kick: Boolean,
           temp_ban: Boolean,
-          ban: Boolean,
-          forum_ban: Boolean
+          ban: Boolean
         }
       },
       appeals: {

@@ -48,8 +48,8 @@ export default (app: Router) => {
         middlewares.userAttachment,
         async (req: Request, res: Response, next: NextFunction) => {
             try {
-                const groupService : GroupService = Container.get(GroupService);
-                const permissions : IPermissions = await groupService.permissionsManifest(req.currentUser);
+                const groupService: GroupService = Container.get(GroupService);
+                const permissions: IPermissions = await groupService.permissionsManifest(req.currentUser);
                 return res.json(permissions).status(200);
             } catch (e) {
                 return next(e);

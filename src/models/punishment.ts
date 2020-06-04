@@ -24,7 +24,7 @@ const Punishment = new mongoose.Schema(
         silent: Boolean,
         reason: String,
         evidence: String,
-        expires: String,
+        expires: Number,
         automatic: Boolean,
         appealed: Boolean,
         active: Boolean
