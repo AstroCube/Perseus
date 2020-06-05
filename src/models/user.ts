@@ -25,7 +25,8 @@ const User = new mongoose.Schema(
       _id: false,
       group: {
         type: Schema.Types.ObjectId,
-        ref: 'Group'
+        ref: 'Group',
+        autoPopulate: true
       },
       joined: Schema.Types.Date,
       comment: String
