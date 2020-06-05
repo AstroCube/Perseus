@@ -11,7 +11,7 @@ export default (app: Router) => {
   app.use('/punishment', route);
 
   route.post(
-      '/create',
+      '/create-website',
       middlewares.authentication,
       middlewares.userAttachment,
       async (req: Request, res: Response, next: NextFunction) => {
