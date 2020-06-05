@@ -82,7 +82,7 @@ export default (app: Router) => {
         async (req: Request, res: Response, next: NextFunction) => {
             try {
                 const service : UserService = Container.get(UserService);
-                const users: IUser[] = await service.listFullUsers(req.params.own, req.currentUser._id);
+                const users: IUser[] = await service.listFullUsers(req.params.own, req.currentUser._id, req.query.search as string);
                 return res.status(200).json(users);
             } catch (e) {
                 next(e);
