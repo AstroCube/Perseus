@@ -94,7 +94,7 @@ export default class UserService {
       if (validPassword) {
         const salt = randomBytes(32);
         const hashedPassword = await argon2.hash(update.password, {salt});
-        const updated = await this.userModel.findByIdAndUpdate(user._id, {password: hashedPassword, salt: salt});
+        const updated = await this.userModel.findByIdAndUpdate(user._id, {password: hashedPassword, salt: salt.toString()});
         if (updated) return true;
       } else {
         throw new Error('Invalid password');

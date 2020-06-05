@@ -71,7 +71,7 @@ export default class AuthService {
       const registeredUser = await this.userModel.findByIdAndUpdate(register.user,
         {
           password: hashedPassword,
-          salt: salt,
+          salt: salt.toString(),
           $push: {
             address: {
               number: register.address,

@@ -12,7 +12,7 @@ export default class StatsService {
 
   public async createStatsDocument(id: string): Promise<IStats> {
     try {
-      return await this.statsModel.create({username:  id});
+      return await this.statsModel.create({username: id} as IStats);
     } catch (e) {
       this.logger.error('There was an error parsing user auth session %o', e);
     }
