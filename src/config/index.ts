@@ -26,7 +26,7 @@ export default {
     api: {
         prefix: '/api',
         frontend: 'https://www.seocraft.net',
-        dbDebug: true
+        dbDebug: false
     },
     emails: {
         host: 'smtp.mi.com.co',
