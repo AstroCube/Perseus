@@ -33,7 +33,7 @@ export default class UserService {
   public async listFullUsers(own?: string, id?: boolean, name?: string): Promise<IUser[]> {
     try {
       let query: any = {username: name.toLowerCase()};
-      if (!own) query = {_id: {$ne: id}, username: name.toLowerCase()};
+      if (!own) query = {_id: {$ne: id}, username: { $regex: name, $options: "i" }};
       return await this.userModel.find(query).select("_id username skin display");
     } catch (e) {
       this.logger.error(e);
