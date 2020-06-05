@@ -34,7 +34,7 @@ export default class UserService {
     try {
       let query = {};
       if (!own) query = {_id: {$ne: id}};
-      return await this.userModel.find();
+      return await this.userModel.find({}).select("_id username skin display");
     } catch (e) {
       this.logger.error(e);
       throw e;
