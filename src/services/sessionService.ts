@@ -1,6 +1,6 @@
 import { Inject, Service } from "typedi";
 import { IAuthenticationResponse, IAuthenticationSession, IServerSwitch } from "../interfaces/ISession";
-import { IUser } from "../interfaces/IUser";
+import {IGameSession, IUser, IUserIP} from "../interfaces/IUser";
 import config from '../config';
 import { Logger } from "winston";
 
@@ -27,7 +27,7 @@ export default class SessionService {
       }
 
       const multi: IUser = await this.userModel.findOne(
-        {address: {number: session.address, primary: true}}
+        {address: {number: session.address, primary: true} as IUserIP}
       );
       if (multi) return {
         user: multi,
@@ -49,9 +49,9 @@ export default class SessionService {
         session: {
           lastSeen: new Date(),
           online: true
-        },
+        } as IGameSession,
         groups: userGroups
-      });
+      } as IUser);
       if (!created) throw Error('The user was not created successfully');
       return {
         user: created,

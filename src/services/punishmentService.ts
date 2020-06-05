@@ -19,7 +19,9 @@ export default class PunishmentService {
 
       let model: IPunishment = await this.punishmentModel.create({
         ...punishment,
+        //@ts-ignore
         issuer: punishment.issuer._id,
+        //@ts-ignore
         punished: punishment.punished._id,
         match: match
       });

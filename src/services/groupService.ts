@@ -18,7 +18,7 @@ export default class GroupService {
       const groupRecord = await this.groupModel.create({
         ...group,
         createdBy: user._id
-      });
+      } as IGroup);
       if (!groupRecord) throw new Error("There was an error creating a group.");
       return groupRecord;
     } catch (e) {
