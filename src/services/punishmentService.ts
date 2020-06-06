@@ -22,18 +22,17 @@ export default class PunishmentService {
       if (punishment.match) match = punishment.match._id;
 
       if (issuer) {
-        const permissions: IPermissions = await this.groupService.permissionsManifest(punishment.issuer);
-        console.log(permissions);
-        if (!permissions.punishment.manage) {
-          if (punishment.type === PunishmentType.Warn && !permissions.punishment.create.warn) throw new Error("UnauthorizedError");
-          if (punishment.type === PunishmentType.Kick&& !permissions.punishment.create.kick) throw new Error("UnauthorizedError");
+        const permissions: IPermissions = await this.groupService.permissionsManifest(issuer);
+        if (!permissions.punishments.manage) {
+          if (punishment.type === PunishmentType.Warn && !permissions.punishments.create.warn) throw new Error("UnauthorizedError");
+          if (punishment.type === PunishmentType.Kick&& !permissions.punishments.create.kick) throw new Error("UnauthorizedError");
           if (
               (punishment.type === PunishmentType.Ban && punishment.expires === -1) &&
-              !permissions.punishment.create.ban
+              !permissions.punishments.create.ban
           ) throw new Error("UnauthorizedError");
           if (
               (punishment.type === PunishmentType.Ban && punishment.expires !== -1) &&
-              !permissions.punishment.create.temp_ban
+              !permissions.punishments.create.temp_ban
           ) throw new Error("UnauthorizedError");
         }
       }

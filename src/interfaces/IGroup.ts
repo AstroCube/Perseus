@@ -33,7 +33,7 @@ export interface IPermissions {
     manage: boolean;
   };
   view_ips: boolean;
-  punishment: IPunishmentPermissions;
+  punishments: IPunishmentPermissions;
   appeals: IAppealsPermissions;
   maps: {
     manage: boolean;
