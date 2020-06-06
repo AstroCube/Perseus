@@ -5,6 +5,5 @@ export interface IPunishmentPermissions {
     kick: boolean;
     temp_ban: boolean;
     ban: boolean;
-    forum_ban: boolean;
   }
 }

@@ -18,7 +18,7 @@ export default (app: Router) => {
           try {
               const service: PunishmentService = Container.get(PunishmentService);
               req.body.issuer = req.currentUser;
-              const punishment: IPunishment = await service.createPunishment(req.body);
+              const punishment: IPunishment = await service.createPunishment(req.body, req.currentUser);
               return res.json(punishment).status(200);
           } catch (e) {
               return next(e);
