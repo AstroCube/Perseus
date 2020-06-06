@@ -12,7 +12,7 @@ const permissions = (permission : string) => {
       });
       const accessible : IGroup[] = await groupModel.find({ _id: {$in: groupId},
         $or: [
-          {["permissions." + permission]: true},
+          {["web_permissions." + permission]: true},
           {admin: true}
         ]
       });

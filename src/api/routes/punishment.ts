@@ -76,6 +76,9 @@ export default (app: Router) => {
 
     route.put(
         '/update',
+        middlewares.authentication,
+        middlewares.userAttachment,
+        middlewares.permissions("punishments.manage"),
         async (req: Request, res: Response, next: NextFunction) => {
             try {
                 const service: PunishmentService = Container.get(PunishmentService);
