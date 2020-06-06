@@ -23,6 +23,7 @@ export default class PunishmentService {
 
       if (issuer) {
         const permissions: IPermissions = await this.groupService.permissionsManifest(punishment.issuer);
+        this.logger.debug(permissions);
         if (!permissions.punishment.manage) {
           if (punishment.type === PunishmentType.Warn && !permissions.punishment.create.warn) throw new Error("UnauthorizedError");
           if (punishment.type === PunishmentType.Kick&& !permissions.punishment.create.kick) throw new Error("UnauthorizedError");
