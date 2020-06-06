@@ -15,7 +15,10 @@ const Punishment = new mongoose.Schema(
             type: Schema.Types.ObjectId,
             ref: 'User'
         },
-        server: String,
+        server: {
+            type: String,
+            default: 'Website'
+        },
         match: {
             type: Schema.Types.ObjectId,
             ref: 'Match'
@@ -24,10 +27,22 @@ const Punishment = new mongoose.Schema(
         silent: Boolean,
         reason: String,
         evidence: String,
-        expires: Number,
-        automatic: Boolean,
-        appealed: Boolean,
-        active: Boolean
+        expires: {
+            type: Number,
+            default: -1
+        },
+        automatic: {
+            type: Boolean,
+            default: false
+        },
+        appealed: {
+            type: Boolean,
+            default: false
+        },
+        active: {
+            type: Boolean,
+            default: true
+        }
     },
     { timestamps: true }
 );

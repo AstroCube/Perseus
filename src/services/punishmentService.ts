@@ -59,6 +59,10 @@ export default class PunishmentService {
           .populate('issuer punished match')
           .select("-punished.password -punished.salt -issuer.password -issuer.salt");
       if (!punishment) throw new Error("Queried punishment does not exist.");
+      Reflect.deleteProperty(punishment, 'issuer.password');
+      Reflect.deleteProperty(punishment, 'issuer.salt');
+      Reflect.deleteProperty(punishment, 'punished.salt');
+      Reflect.deleteProperty(punishment, 'punished.salt');
       return punishment;
     } catch (e) {
       this.logger.error(e);
