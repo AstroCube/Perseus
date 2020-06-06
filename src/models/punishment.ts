@@ -9,11 +9,17 @@ const Punishment = new mongoose.Schema(
         type: { type: String, enum: ['Warn', 'Kick', 'Ban'] },
         issuer: {
             type: Schema.Types.ObjectId,
-            ref: 'User'
+            ref: 'User',
+            autopopulate: {
+                select: '-password -salt'
+            }
         },
         punished: {
             type: Schema.Types.ObjectId,
-            ref: 'User'
+            ref: 'User',
+            autopopulate: {
+                select: '-password -salt'
+            }
         },
         server: {
             type: String,

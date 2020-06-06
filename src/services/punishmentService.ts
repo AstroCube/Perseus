@@ -25,7 +25,7 @@ export default class PunishmentService {
         const permissions: IPermissions = await this.groupService.permissionsManifest(issuer);
         if (!permissions.punishments.manage) {
           if (punishment.type === PunishmentType.Warn && !permissions.punishments.create.warn) throw new Error("UnauthorizedError");
-          if (punishment.type === PunishmentType.Kick&& !permissions.punishments.create.kick) throw new Error("UnauthorizedError");
+          if (punishment.type === PunishmentType.Kick && !permissions.punishments.create.kick) throw new Error("UnauthorizedError");
           if (
               (punishment.type === PunishmentType.Ban && punishment.expires === -1) &&
               !permissions.punishments.create.ban
@@ -55,9 +55,7 @@ export default class PunishmentService {
 
   public async getPunishment(id: string): Promise<IPunishment> {
     try {
-      const punishment: IPunishment = await this.punishmentModel.findById(id)
-          .populate('issuer punished match')
-          .select({punished: {password: 0}, issuer: {password: 0}});
+      const punishment: IPunishment = await this.punishmentModel.findById(id);
       if (!punishment) throw new Error("Queried punishment does not exist.");
       return punishment;
     } catch (e) {
@@ -73,13 +71,7 @@ export default class PunishmentService {
       return await this.punishmentModel.paginate(query,
           {
             sort: {createdAt: 1},
-            page: finalPage, perPage: parseInt(String(perPage)),
-            populate: [
-                'issuer',
-                'punished',
-                'match'
-            ],
-            select: "-punished.password -punished.salt -issuer.password -issuer.salt"
+            page: finalPage, perPage: parseInt(String(perPage))
           });
     } catch (e) {
       this.logger.error(e);
