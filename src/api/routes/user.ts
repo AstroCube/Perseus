@@ -14,8 +14,6 @@ export default (app: Router) => {
 
   route.get(
     '/view/:id',
-    middlewares.authentication,
-    middlewares.userAttachment,
     async (req: Request, res: Response, next: NextFunction) => {
       try {
         const service : UserService = Container.get(UserService);
