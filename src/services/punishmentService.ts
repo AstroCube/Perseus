@@ -57,12 +57,8 @@ export default class PunishmentService {
     try {
       const punishment: IPunishment = await this.punishmentModel.findById(id)
           .populate('issuer punished match')
-          .select("-punished.password -punished.salt -issuer.password -issuer.salt");
+          .select({punished: {password: 0}, issuer: {password: 0}});
       if (!punishment) throw new Error("Queried punishment does not exist.");
-      Reflect.deleteProperty(punishment, 'issuer.password');
-      Reflect.deleteProperty(punishment, 'issuer.salt');
-      Reflect.deleteProperty(punishment, 'punished.salt');
-      Reflect.deleteProperty(punishment, 'punished.salt');
       return punishment;
     } catch (e) {
       this.logger.error(e);
