@@ -31,6 +31,10 @@ export default async ({ expressApp }) => {
     } as TransportOptions);
     Logger.info('Mailer successfully loaded');
 
+    const appealModel = {
+        name: 'appealModel',
+        model: require('../models/appeal').default
+    };
     const clusterModel = {
         name: 'clusterModel',
         model: require('../models/cluster').default
@@ -73,6 +77,7 @@ export default async ({ expressApp }) => {
         redisClient,
         mongoConnection,
         models: [
+            appealModel,
             clusterModel,
             gamemodeModel,
             groupModel,
