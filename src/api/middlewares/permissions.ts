@@ -8,10 +8,8 @@ const permissions = (permission : string) => {
     try {
       const groupModel = Container.get('groupModel') as Models.GroupModel;
       const groupId = await req.currentUser.groups.map((group) => {
-        console.log(group);
-        return group.id;
+        return group.group;
       });
-      console.log("web_permissions." + permission);
       const accessible : IGroup[] = await groupModel.find({ _id: {$in: groupId},
         $or: [
           {["web_permissions." + permission]: true},
