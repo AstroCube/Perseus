@@ -27,7 +27,8 @@ const Punishment = new mongoose.Schema(
         },
         match: {
             type: Schema.Types.ObjectId,
-            ref: 'Match'
+            ref: 'Match',
+            autopopulate: true
         },
         lastIp: String,
         silent: Boolean,
