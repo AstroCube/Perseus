@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import appeal from "./routes/appeal";
 import punishment from "./routes/punishment";
 import user from "./routes/user";
 import auth from "./routes/auth";
@@ -10,6 +11,7 @@ import session from "./routes/session";
 export default () => {
     const app = Router();
 
+    appeal(app);
     auth(app);
     group(app);
     gamemode(app);

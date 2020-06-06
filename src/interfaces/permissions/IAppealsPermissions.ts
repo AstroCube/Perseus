@@ -1,12 +1,16 @@
 export interface IAppealsPermissions {
   manage: boolean;
   transactional: {
-    comment: string;
-    close: string;
+    comment: IAppealPermissible;
+    close: IAppealPermissible;
     lock: boolean;
-    escalate: string;
-    appeal: string;
+    escalate: IAppealPermissible;
+    appeal: IAppealPermissible;
   }
   assign_escalated: boolean;
-  view: string;
+  view: IAppealPermissible;
+}
+
+export enum IAppealPermissible {
+  All = 'All', Involved = 'Involved', Own = 'Own', None = 'None'
 }
