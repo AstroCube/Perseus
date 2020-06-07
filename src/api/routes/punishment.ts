@@ -54,7 +54,7 @@ export default (app: Router) => {
     '/list',
     async (req: Request, res: Response, next: NextFunction) => {
       try {
-          let page: number = undefined; if (req.query.page) page = parseInt(<string>req.query.page);
+          let page: number = undefined; if (req.query.page  && req.query.page !== '-1') page = parseInt(<string>req.query.page);
           let perPage: number = 10; if (req.query.perPage) perPage = parseInt(<string>req.query.perPage);
 
           const service: PunishmentService = Container.get(PunishmentService);
