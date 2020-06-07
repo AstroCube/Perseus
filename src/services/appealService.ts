@@ -229,6 +229,7 @@ export default class AppealService {
     }
 
     private recursiveKey(obj: any, prefix?: string): string[] {
+        if (!prefix) prefix = '';
         return Object.keys(obj).reduce((res, el) => {
             if( Array.isArray(obj[el]) ) {
                 return res;
