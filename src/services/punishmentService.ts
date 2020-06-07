@@ -89,6 +89,7 @@ export default class PunishmentService {
   public async updatePunishment(punishment: IPunishment): Promise<IPunishment> {
     try {
       const updatedPunishment: IPunishment = await this.punishmentModel.findByIdAndUpdate(punishment._id, punishment);
+      console.log(updatedPunishment);
       if (!updatedPunishment) throw new Error("Queried punishment does not exist");
       return punishment;
     } catch (e) {
