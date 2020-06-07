@@ -3,6 +3,7 @@ import { IUser } from '../interfaces/IUser';
 import {IGroup, IPermissions} from "../interfaces/IGroup";
 import { IPaginateResult } from "mongoose";
 import { Logger } from "winston";
+import {IAppealPermissible} from "../interfaces/permissions/IAppealsPermissions";
 
 @Service()
 export default class GroupService {
@@ -88,9 +89,18 @@ export default class GroupService {
     try {
       let clearManifest = {};
       await user.groups.map(async (group) => {
-        await Object.keys(group.group.web_permissions).forEach((key, index) => {
-          if (group.group.web_permissions[key]) clearManifest[key] = group.group.web_permissions[key];
-        });
+        function iterate(obj) {
+          for (let property in obj) {
+            if (obj.hasOwnProperty(property)) {
+              if (typeof obj[property] == "object")
+                iterate(obj[property]);
+              else {
+                if (group.group.web_permissions[property]) clearManifest[property] = group.group.web_permissions[property];
+              }
+            }
+          }
+        }
+        iterate(group.group.web_permissions);
       });
       return clearManifest as IPermissions;
     } catch (e) {

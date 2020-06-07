@@ -188,7 +188,6 @@ export default class AppealService {
 
     private transactionalPermissions(manifest: IAppealsPermissions, user: IUser, type: IAppealPermissible): IAppealsPermissions {
         const manage = user.groups.some(g => g.group.web_permissions.appeals.manage === true);
-        iterate(manifest);
 
         function iterate(obj) {
             for (let property in obj) {
@@ -207,6 +206,7 @@ export default class AppealService {
             }
         }
 
+        iterate(manifest);
         return manifest;
     }
 
