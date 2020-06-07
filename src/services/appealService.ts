@@ -188,17 +188,25 @@ export default class AppealService {
 
     private transactionalPermissions(manifest: IAppealsPermissions, user: IUser, type: IAppealPermissible): IAppealsPermissions {
         const manage = user.groups.some(g => g.group.web_permissions.appeals.manage === true);
-        this.recursiveKey(manifest).forEach((key, index) => {
-            console.log(key);
-            if (key !== 'transactional') {
-                if (typeof manifest[key] === "boolean" &&
-                    (user.groups.some(g => g.group.web_permissions.appeals[key] === true || manage))
-                ) manifest[key] = true;
+        iterate(manifest);
 
-                if (manage && typeof manifest[key] !== "boolean") manifest[key] = IAppealPermissible.All;
-                else if (user.groups.some(g => g.group.web_permissions.appeals[key] === type)) manifest[key] = type;
+        function iterate(obj) {
+            for (let property in obj) {
+                if (obj.hasOwnProperty(property)) {
+                    if (typeof obj[property] == "object")
+                        iterate(obj[property]);
+                    else {
+                        if (typeof obj[property] === "boolean" &&
+                            (user.groups.some(g => g.group.web_permissions.appeals[property] === true || manage))
+                        ) obj[property] = true;
+
+                        if (manage && typeof obj[property] !== "boolean") obj[property] = IAppealPermissible.All;
+                        else if (user.groups.some(g => g.group.web_permissions.appeals[property] === type)) obj[property] = type;
+                    }
+                }
             }
-        });
+        }
+
         return manifest;
     }
 
@@ -227,19 +235,5 @@ export default class AppealService {
             )
         ) throw new Error("UnauthorizedError");
     }
-
-    private recursiveKey(obj: any, prefix?: string): string[] {
-        if (!prefix) prefix = '';
-        return Object.keys(obj).reduce((res, el) => {
-            if( Array.isArray(obj[el]) ) {
-                return res;
-            } else if( typeof obj[el] === 'object' && obj[el] !== null ) {
-                return [...res, ...this.recursiveKey(obj[el], prefix + el + '.')];
-            } else {
-                return [...res, prefix + el];
-            }
-        }, []);
-    }
-
 
 }
