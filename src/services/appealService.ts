@@ -189,6 +189,7 @@ export default class AppealService {
     private transactionalPermissions(manifest: IAppealsPermissions, user: IUser, type: IAppealPermissible): IAppealsPermissions {
         const manage = user.groups.some(g => g.group.web_permissions.appeals.manage === true);
         Object.keys(manifest).forEach((key, index) => {
+            console.log(key);
             if (key !== 'transactional') {
                 if (typeof manifest[key] === "boolean" &&
                     (user.groups.some(g => g.group.web_permissions.appeals[key] === true || manage))
