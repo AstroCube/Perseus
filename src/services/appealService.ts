@@ -34,7 +34,7 @@ export default class AppealService {
                     type: IAppealActionType.Create,
                     //@ts-ignore
                     user: requester._id,
-                    createdAt: null,
+                    createdAt: new Date(),
                     content: body.comment
                 },
                 requester
