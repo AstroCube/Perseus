@@ -188,7 +188,7 @@ export default class AppealService {
 
     private transactionalPermissions(manifest: IAppealsPermissions, user: IUser, type: IAppealPermissible): IAppealsPermissions {
         const manage = user.groups.some(g => g.group.web_permissions.appeals.manage === true);
-        Object.keys(manifest).forEach((key, index) => {
+        this.recursiveKey(manifest).forEach((key, index) => {
             console.log(key);
             if (key !== 'transactional') {
                 if (typeof manifest[key] === "boolean" &&
@@ -227,5 +227,18 @@ export default class AppealService {
             )
         ) throw new Error("UnauthorizedError");
     }
+
+    private recursiveKey(obj: any, prefix?: string): any {
+        Object.keys(obj).reduce((res, el) => {
+            if( Array.isArray(obj[el]) ) {
+                return res;
+            } else if( typeof obj[el] === 'object' && obj[el] !== null ) {
+                return [...res, ...this.recursiveKey(obj[el], prefix + el + '.')];
+            } else {
+                return [...res, prefix + el];
+            }
+        }, []);
+    }
+
 
 }
