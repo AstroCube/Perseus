@@ -49,7 +49,7 @@ export default (app: Router) => {
                 let perPage: number = 10; if (req.query.perPage) perPage = req.query.perPage as unknown as number;
 
                 const service: AppealService = Container.get(AppealService);
-                const appeal: IPaginateResult<IAppeal> = await service.listAppeals(req.body, page, perPage, req.currentUser);
+                const appeal: IPaginateResult<IAppeal> = await service.listAppeals(req.body, page, perPage, req.currentUser, req.query.own as unknown as boolean);
                 return res.json(appeal).status(200);
             } catch (e) {
                 return next(e);
