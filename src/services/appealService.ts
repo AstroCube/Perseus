@@ -5,6 +5,7 @@ import {IAppeal, IAppealAction, IAppealActionType, IAppealCreation} from "../int
 import {IUser} from "../interfaces/IUser";
 import {IAppealPermissible, IAppealsPermissions} from "../interfaces/permissions/IAppealsPermissions";
 import PunishmentService from "./punishmentService";
+import {IPunishment} from "../interfaces/IPunishment";
 
 @Service()
 export default class AppealService {
@@ -149,7 +150,7 @@ export default class AppealService {
             case IAppealActionType.Create: {
                 if (appeal.punishment.appealed) throw new Error("Already created");
                 if (appeal.punishment.punished._id === user._id) throw new Error("UnauthorizedError");
-                await this.punishmentService.updatePunishment({_id: appeal.punishment._id, appealed: true});
+                await this.punishmentService.updatePunishment({_id: appeal.punishment._id, appealed: true} as IPunishment);
                 break;
             }
             default: {
