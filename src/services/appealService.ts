@@ -90,6 +90,7 @@ export default class AppealService {
     public async generateAction(id: string, action: IAppealAction, user: IUser): Promise<IAppeal> {
         let appeal = await this.appealModel.findById(id);
         const manifest = await this.getAppealPermissions(user);
+        let punishment = appeal.punishment;
         switch (action.type) {
             case IAppealActionType.Open: {
                 if (!appeal.closed) throw new Error("Already opened");
@@ -125,16 +126,16 @@ export default class AppealService {
                 if (appeal.appealed) throw new Error("Already appealed");
                 AppealService.moderationPermissionChecking(appeal, manifest, user, 'appeal');
                 appeal.appealed = true;
-                appeal.punishment.active = false;
-                await this.punishmentService.updatePunishment(appeal.punishment);
+                punishment.active = false;
+                await this.punishmentService.updatePunishment(punishment);
                 break;
             }
             case IAppealActionType.UnAppeal: {
                 if (!appeal.appealed) throw new Error("Already UnAppealed");
                 AppealService.moderationPermissionChecking(appeal, manifest, user, 'appeal');
                 appeal.appealed = false;
-                appeal.punishment.active = true;
-                await this.punishmentService.updatePunishment(appeal.punishment);
+                punishment.active = true;
+                await this.punishmentService.updatePunishment(punishment);
                 break;
             }
             case IAppealActionType.Supervised: {
@@ -148,8 +149,8 @@ export default class AppealService {
             case IAppealActionType.Create: {
                 if (appeal.punishment.appealed) throw new Error("Already created");
                 if (appeal.punishment.punished._id === user._id) throw new Error("UnauthorizedError");
-                appeal.punishment.appealed = true;
-                await this.punishmentService.updatePunishment(appeal.punishment);
+                punishment.appealed = true;
+                await this.punishmentService.updatePunishment(punishment);
                 break;
             }
             default: {
