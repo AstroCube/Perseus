@@ -4,6 +4,7 @@ import {IAppeal} from "../../interfaces/IAppeal";
 import AppealService from "../../services/appealService";
 import { IPaginateResult } from "mongoose";
 import middlewares from "../middlewares";
+import {IAppealsPermissions} from "../../interfaces/permissions/IAppealsPermissions";
 const route = Router();
 
 export default (app: Router) => {
@@ -31,7 +32,7 @@ export default (app: Router) => {
         async (req: Request, res: Response, next: NextFunction) => {
             try {
                 const service: AppealService = Container.get(AppealService);
-                const appeal: IAppeal = await service.getAppeal(req.params.id);
+                const appeal: IAppeal = await service.getAppeal(req.params.id, req.currentUser);
                 return res.json(appeal).status(200);
             } catch (e) {
                 return next(e);
@@ -44,8 +45,8 @@ export default (app: Router) => {
         middlewares.userAttachment,
         async (req: Request, res: Response, next: NextFunction) => {
             try {
-                let page: number = 1; if (req.query.page) page = req.query.page;
-                let perPage: number = 10; if (req.query.perPage) perPage = req.query.perPage;
+                let page: number = 1; if (req.query.page) page = req.query.page as unknown as number;
+                let perPage: number = 10; if (req.query.perPage) perPage = req.query.perPage as unknown as number;
 
                 const service: AppealService = Container.get(AppealService);
                 const appeal: IPaginateResult<IAppeal> = await service.listAppeals(req.body, page, perPage, req.currentUser);
@@ -62,7 +63,21 @@ export default (app: Router) => {
         async (req: Request, res: Response, next: NextFunction) => {
             try {
                 const service: AppealService = Container.get(AppealService);
-                const appeal: IAppeal = await service.generateAction(req.params.id, req.body);
+                const appeal: IAppeal = await service.generateAction(req.params.id, req.body, req.currentUser);
+                return res.json(appeal).status(200);
+            } catch (e) {
+                return next(e);
+            }
+        });
+
+    route.get(
+        '/permissions',
+        middlewares.authentication,
+        middlewares.userAttachment,
+        async (req: Request, res: Response, next: NextFunction) => {
+            try {
+                const service: AppealService = Container.get(AppealService);
+                const appeal: IAppealsPermissions = await service.getAppealPermissions(req.currentUser);
                 return res.json(appeal).status(200);
             } catch (e) {
                 return next(e);

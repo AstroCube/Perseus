@@ -18,6 +18,7 @@ export default class AppealService {
     public async createAppeal(body: IAppealCreation, requester: IUser): Promise<IAppeal> {
         try {
 
+            //@ts-ignore
             const existingAppeal: IAppeal = await this.appealModel.findOne({punishment: body.punishment});
             if (existingAppeal) throw new Error("Already Appealed");
 
@@ -35,16 +36,30 @@ export default class AppealService {
                     user: requester._id,
                     createdAt: null,
                     content: body.comment
-                });
+                },
+                requester
+                );
         } catch (e) {
             this.logger.error(e);
             throw e;
         }
     }
 
-    public async getAppeal(id: string): Promise<IAppeal> {
+    public async getAppeal(id: string, user: IUser): Promise<IAppeal> {
         try {
-            return this.appealModel.findById(id);
+            const manifest = await this.getAppealPermissions(user);
+            const appeal: IAppeal = await this.appealModel.findById(id);
+
+            if (
+                (!manifest.manage && manifest.view !== IAppealPermissible.All) &&
+                (
+                    appeal.punishment.punished._id !== user._id &&
+                    appeal.punishment.issuer._id !== user._id &&
+                    appeal.supervisor._id !== user._id
+                )
+            ) throw new Error("UnauthorizedError");
+
+            return appeal;
         } catch (e) {
             this.logger.error(e);
             throw e;
@@ -54,73 +69,95 @@ export default class AppealService {
     public async listAppeals(query: any, page: number, perPage: number, user: IUser): Promise<IPaginateResult<IAppeal>> {
         try {
             const manifest = await this.getAppealPermissions(user);
-            //if (manifest.view === IAppealPermissible.Own)
+            let encapsulation = null;
+            if (manifest.view === IAppealPermissible.Own) encapsulation = {punished: user._id, appealed: true};
+            if (manifest.view === IAppealPermissible.Involved) encapsulation =
+                {$or: [{punished: user._id, appealed: true}, {issuer: user._id, appealed: true}]};
 
-            return this.appealModel.paginate(query, {page, perPage});
+            if (encapsulation !== null) {
+                const punishments = await this.punishmentService.listPunishments(encapsulation, page, perPage);
+                return await this.appealModel.paginate({...query, $or: [{punishment: {$in: punishments}}, {supervisor: user._id}]});
+            }
+
+            return await this.appealModel.paginate(query, {page, perPage});
         } catch (e) {
             this.logger.error(e);
             throw e;
         }
     }
 
-    public async generateAction(id: string, action: IAppealAction): Promise<IAppeal> {
-        try {
-            let appeal = await this.appealModel.findById(id);
-
-            switch (action.type) {
-                case IAppealActionType.Open: {
-                    appeal.closed = false;
-                    break;
-                }
-                case IAppealActionType.Close: {
-                    appeal.closed = true;
-                    break;
-                }
-                case IAppealActionType.Lock: {
-                    appeal.locked = true;
-                    break;
-                }
-                case IAppealActionType.Unlock: {
-                    appeal.locked = false;
-                    break;
-                }
-                case IAppealActionType.Escalate: {
-                    appeal.escalated = true;
-                    break;
-                }
-                case IAppealActionType.Appeal: {
-                    appeal.appealed = true;
-                    appeal.punishment.active = false;
-                    await this.punishmentService.updatePunishment(appeal.punishment);
-                    break;
-                }
-                case IAppealActionType.UnAppeal: {
-                    appeal.appealed = false;
-                    appeal.punishment.active = true;
-                    await this.punishmentService.updatePunishment(appeal.punishment);
-                    break;
-                }
-                case IAppealActionType.Supervised: {
-                    // @ts-ignore
-                    appeal.supervisor = action.user._id;
-                    break;
-                }
-                case IAppealActionType.Create: {
-                    appeal.punishment.appealed = true;
-                    await this.punishmentService.updatePunishment(appeal.punishment);
-                    break;
-                }
-                default: {
-                    break;
-                }
+    public async generateAction(id: string, action: IAppealAction, user: IUser): Promise<IAppeal> {
+        let appeal = await this.appealModel.findById(id);
+        const manifest = await this.getAppealPermissions(user);
+        switch (action.type) {
+            case IAppealActionType.Open: {
+                if (!appeal.closed) throw new Error("Already opened");
+                AppealService.moderationPermissionChecking(appeal, manifest, user, 'close');
+                appeal.closed = false;
+                break;
             }
-
-            appeal.actions.push(action);
-            return await appeal.save();
-        } catch (e) {
-            this.logger.error(e);
-            throw e;
+            case IAppealActionType.Close: {
+                if (appeal.closed) throw new Error("Already closed");
+                AppealService.moderationPermissionChecking(appeal, manifest, user, 'close');
+                appeal.closed = true;
+                break;
+            }
+            case IAppealActionType.Lock: {
+                if (appeal.locked) throw new Error("Already locked");
+                if (manifest.manage || manifest.transactional.lock) throw new Error("UnauthorizedError");
+                appeal.locked = true;
+                break;
+            }
+            case IAppealActionType.Unlock: {
+                if (!appeal.locked) throw new Error("Already unlocked");
+                if (manifest.manage || manifest.transactional.lock) throw new Error("UnauthorizedError");
+                appeal.locked = false;
+                break;
+            }
+            case IAppealActionType.Escalate: {
+                if (appeal.escalated) throw new Error("Already escalated");
+                AppealService.moderationPermissionChecking(appeal, manifest, user, 'escalate', true);
+                appeal.escalated = true;
+                break;
+            }
+            case IAppealActionType.Appeal: {
+                if (appeal.appealed) throw new Error("Already appealed");
+                AppealService.moderationPermissionChecking(appeal, manifest, user, 'appeal');
+                appeal.appealed = true;
+                appeal.punishment.active = false;
+                await this.punishmentService.updatePunishment(appeal.punishment);
+                break;
+            }
+            case IAppealActionType.UnAppeal: {
+                if (!appeal.appealed) throw new Error("Already UnAppealed");
+                AppealService.moderationPermissionChecking(appeal, manifest, user, 'appeal');
+                appeal.appealed = false;
+                appeal.punishment.active = true;
+                await this.punishmentService.updatePunishment(appeal.punishment);
+                break;
+            }
+            case IAppealActionType.Supervised: {
+                if (!appeal.escalated) throw new Error("Not escalated");
+                if (appeal.supervisor) throw new Error("Already supervised");
+                if (!manifest.assign_escalated) throw new Error("UnauthorizedError");
+                // @ts-ignore
+                appeal.supervisor = action.user._id;
+                break;
+            }
+            case IAppealActionType.Create: {
+                if (appeal.punishment.appealed) throw new Error("Already created");
+                if (appeal.punishment.punished._id === user._id) throw new Error("UnauthorizedError");
+                appeal.punishment.appealed = true;
+                await this.punishmentService.updatePunishment(appeal.punishment);
+                break;
+            }
+            default: {
+                break;
+            }
         }
+
+        appeal.actions.push(action);
+        return await appeal.save();
     }
 
     public async getAppealPermissions(user: IUser): Promise<IAppealsPermissions> {
@@ -154,10 +191,36 @@ export default class AppealService {
                 (user.groups.some(g => g.group.web_permissions.appeals[key] === true || manage))
             ) manifest[key] = true;
 
-            if (manage) manifest[key] = IAppealPermissible.All;
+            if (manage && typeof manifest[key] !== "boolean") manifest[key] = IAppealPermissible.All;
             else if (user.groups.some(g => g.group.web_permissions.appeals[key] === type)) manifest[key] = type;
         });
         return manifest;
+    }
+
+    private static moderationPermissionChecking(appeal: IAppeal, manifest: IAppealsPermissions, user: IUser, permission: string, escalate?: boolean): void {
+        if (
+            (
+                !manifest.manage &&
+                manifest.transactional[permission] !== IAppealPermissible.All
+            ) &&
+            (
+                (
+                    !escalate &&
+                    (
+                        (manifest.transactional[permission] === IAppealPermissible.Involved && appeal.punishment.issuer._id !== user._id) ||
+                        (manifest.transactional[permission] !== IAppealPermissible.Involved)
+                    )
+                ) ||
+                (
+                    escalate &&
+                    (
+                        (manifest.transactional[permission] === IAppealPermissible.Own && appeal.punishment.punished._id !== user._id) ||
+                        (manifest.transactional[permission] === IAppealPermissible.Involved && appeal.punishment.issuer._id !== user._id) ||
+                        (manifest.transactional[permission] === IAppealPermissible.None)
+                    )
+                )
+            )
+        ) throw new Error("UnauthorizedError");
     }
 
 }
