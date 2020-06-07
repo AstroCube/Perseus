@@ -74,7 +74,7 @@ export default class AppealService {
             if (manifest.view === IAppealPermissible.Involved) encapsulation =
                 {$or: [{punished: user._id, appealed: true}, {issuer: user._id, appealed: true}]};
 
-            if (encapsulation !== null) {
+            if (encapsulation !== null || own) {
                 const punishments = await this.punishmentService.listPunishments(encapsulation, page, perPage);
                 if (own) await this.appealModel.paginate({...query, punishment: {$in: punishments}}, {page, perPage});
                 return await this.appealModel.paginate({...query, $or: [{punishment: {$in: punishments}}, {supervisor: user._id}]}, {page, perPage});
