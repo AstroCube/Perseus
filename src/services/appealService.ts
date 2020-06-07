@@ -228,8 +228,8 @@ export default class AppealService {
         ) throw new Error("UnauthorizedError");
     }
 
-    private recursiveKey(obj: any, prefix?: string): any {
-        Object.keys(obj).reduce((res, el) => {
+    private recursiveKey(obj: any, prefix?: string): string[] {
+        return Object.keys(obj).reduce((res, el) => {
             if( Array.isArray(obj[el]) ) {
                 return res;
             } else if( typeof obj[el] === 'object' && obj[el] !== null ) {
