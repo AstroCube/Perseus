@@ -54,8 +54,11 @@ export default (app: Router) => {
     '/list',
     async (req: Request, res: Response, next: NextFunction) => {
       try {
+          let page: number = undefined; if (req.query.page) page = parseInt(<string>req.query.page);
+          let perPage: number = 10; if (req.query.perPage) perPage = parseInt(<string>req.query.perPage);
+
           const service: PunishmentService = Container.get(PunishmentService);
-          const punishment: IPaginateResult<IPunishment> = await service.listPunishments(req.body, parseInt(<string>req.query.page), parseInt(<string>req.query.size));
+          const punishment: IPaginateResult<IPunishment> = await service.listPunishments(req.body, page, perPage);
           return res.json(punishment).status(200);
       } catch (e) {
         return next(e);

@@ -45,8 +45,8 @@ export default (app: Router) => {
         middlewares.userAttachment,
         async (req: Request, res: Response, next: NextFunction) => {
             try {
-                let page: number = 1; if (req.query.page) page = req.query.page as unknown as number;
-                let perPage: number = 10; if (req.query.perPage) perPage = req.query.perPage as unknown as number;
+                let page: number = undefined; if (req.query.page) page = parseInt(<string>req.query.page);
+                let perPage: number = 10; if (req.query.perPage) perPage = parseInt(<string>req.query.perPage);
 
                 const service: AppealService = Container.get(AppealService);
                 const appeal: IPaginateResult<IAppeal> = await service.listAppeals(req.body, page, perPage, req.currentUser, req.query.own as unknown as boolean);
