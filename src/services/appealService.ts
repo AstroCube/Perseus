@@ -212,24 +212,34 @@ export default class AppealService {
 
     private static moderationPermissionChecking(appeal: IAppeal, manifest: IAppealsPermissions, user: IUser, permission: string, escalate?: boolean): void {
         if (
-            (
-                !manifest.manage &&
-                manifest.transactional[permission] !== IAppealPermissible.All
-            ) &&
+                (
+                    !this.info.permissions.manage &&
+                    this.info.permissions.transactional[permission] !== IAppealPermissible.All
+                ) &&
             (
                 (
                     !escalate &&
                     (
-                        (manifest.transactional[permission] === IAppealPermissible.Involved && appeal.punishment.issuer._id !== user._id) ||
-                        (manifest.transactional[permission] !== IAppealPermissible.Involved)
+                        (
+                            permission === 'comment' &&
+                            (
+                                (
+                                    (this.info.permissions.transactional[permission] === IAppealPermissible.Involved || this.info.permissions.transactional[permission] === IAppealPermissible.Own)  &&
+                                    (this.info.appeal.punishment.issuer._id !== this.info.user._id && this.info.appeal.punishment.punished._id !== this.info.user._id)
+                                ) ||
+                                (this.info.permissions.transactional[permission] === IAppealPermissible.None)
+                            )
+                        ) ||
+                        (this.info.permissions.transactional[permission] === IAppealPermissible.Involved && this.info.appeal.punishment.issuer._id !== this.info.user._id) ||
+                        (this.info.permissions.transactional[permission] !== IAppealPermissible.Involved)
                     )
                 ) ||
                 (
                     escalate &&
                     (
-                        (manifest.transactional[permission] === IAppealPermissible.Own && appeal.punishment.punished._id !== user._id) ||
-                        (manifest.transactional[permission] === IAppealPermissible.Involved && appeal.punishment.issuer._id !== user._id) ||
-                        (manifest.transactional[permission] === IAppealPermissible.None)
+                        (this.info.permissions.transactional[permission] === IAppealPermissible.Own && this.info.appeal.punishment.punished._id !== this.info.user._id) ||
+                        (this.info.permissions.transactional[permission] === IAppealPermissible.Involved && this.info.appeal.punishment.issuer._id !== this.info.user._id) ||
+                        (this.info.permissions.transactional[permission] === IAppealPermissible.None)
                     )
                 )
             )
