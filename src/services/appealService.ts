@@ -127,16 +127,14 @@ export default class AppealService {
                 if (appeal.appealed) throw new Error("Already appealed");
                 AppealService.moderationPermissionChecking(appeal, manifest, user, 'appeal');
                 appeal.appealed = true;
-                punishment.active = false;
-                await this.punishmentService.updatePunishment(punishment);
+                await this.punishmentService.updatePunishment({_id: appeal.punishment._id, active: false} as IPunishment);
                 break;
             }
             case IAppealActionType.UnAppeal: {
                 if (!appeal.appealed) throw new Error("Already UnAppealed");
                 AppealService.moderationPermissionChecking(appeal, manifest, user, 'appeal');
                 appeal.appealed = false;
-                punishment.active = true;
-                await this.punishmentService.updatePunishment(punishment);
+                await this.punishmentService.updatePunishment({_id: appeal.punishment._id, active: true} as IPunishment);
                 break;
             }
             case IAppealActionType.Supervised: {
