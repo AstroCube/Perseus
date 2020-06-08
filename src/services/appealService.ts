@@ -193,6 +193,7 @@ export default class AppealService {
                     if (typeof obj[property] == "object")
                         iterate(obj[property]);
                     else {
+                        console.log(property + ": " + typeof obj[property]);
                         if (typeof obj[property] === "boolean" &&
                             (user.groups.some(g => g.group.web_permissions.appeals[property] === true || manage))
                         ) obj[property] = true;
