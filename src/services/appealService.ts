@@ -214,31 +214,18 @@ export default class AppealService {
                 manifest.transactional[permission] !== IAppealPermissible.All
             ) &&
             (
+                (permission === 'comment' || permission) &&
                 (
-                    !escalate &&
                     (
-                        permission === 'comment' &&
-                        (
-                            (
-                                (manifest.transactional[permission] === IAppealPermissible.Involved || manifest.transactional[permission] === IAppealPermissible.Own)  &&
-                                (appeal.punishment.issuer._id !== user._id && appeal.punishment.punished._id !== user._id)
-                            ) ||
-                            (manifest.transactional[permission] === IAppealPermissible.None)
-                        )
+                        (manifest.transactional[permission] === IAppealPermissible.Involved || manifest.transactional[permission] === IAppealPermissible.Own)  &&
+                        (appeal.punishment.issuer._id !== user._id && appeal.punishment.punished._id !== user._id)
                     ) ||
-                    (
-                        (manifest.transactional[permission] === IAppealPermissible.Involved && appeal.punishment.issuer._id !== user._id) ||
-                        (manifest.transactional[permission] !== IAppealPermissible.Involved)
-                    )
-                ) ||
-                (
-                    escalate &&
-                    (
-                        (manifest.transactional[permission] === IAppealPermissible.Own && appeal.punishment.punished._id !== user._id) ||
-                        (manifest.transactional[permission] === IAppealPermissible.Involved && appeal.punishment.issuer._id !== user._id) ||
-                        (manifest.transactional[permission] === IAppealPermissible.None)
-                    )
+                    (manifest.transactional[permission] === IAppealPermissible.None)
                 )
+            ) ||
+            (
+                (manifest.transactional[permission] === IAppealPermissible.Involved && appeal.punishment.issuer._id !== user._id) ||
+                (manifest.transactional[permission] !== IAppealPermissible.Involved)
             )
         ) throw new Error("UnauthorizedError");
     }
