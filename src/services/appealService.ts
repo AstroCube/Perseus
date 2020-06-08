@@ -107,13 +107,13 @@ export default class AppealService {
             }
             case IAppealActionType.Lock: {
                 if (appeal.locked) throw new Error("Already locked");
-                if (manifest.manage || manifest.transactional.lock) throw new Error("UnauthorizedError");
+                if (!manifest.manage && !manifest.transactional.lock) throw new Error("UnauthorizedError");
                 appeal.locked = true;
                 break;
             }
             case IAppealActionType.Unlock: {
                 if (!appeal.locked) throw new Error("Already unlocked");
-                if (manifest.manage || manifest.transactional.lock) throw new Error("UnauthorizedError");
+                if (!manifest.manage && !manifest.transactional.lock) throw new Error("UnauthorizedError");
                 appeal.locked = false;
                 break;
             }
@@ -193,11 +193,9 @@ export default class AppealService {
                     if (typeof obj[property] == "object")
                         iterate(obj[property]);
                     else {
-                        console.log(property + ": " + typeof obj[property]);
                         if (typeof obj[property] === "boolean" &&
-                            (user.groups.some(g => g.group.web_permissions.appeals[property] === true || manage))
+                            (manage || user.groups.some(g => g.group.web_permissions.appeals[property] === true))
                         ) obj[property] = true;
-
                         if (manage && typeof obj[property] !== "boolean") obj[property] = IAppealPermissible.All;
                         else if (user.groups.some(g => g.group.web_permissions.appeals[property] === type)) obj[property] = type;
                     }
