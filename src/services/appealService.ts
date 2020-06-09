@@ -53,6 +53,7 @@ export default class AppealService {
 
             if (
                 (!manifest.manage && manifest.view !== IAppealPermissible.All) &&
+                (appeal.supervisor && appeal.supervisor._id.toString() !== user._id.toString()) &&
                 (
                     (appeal.punishment.punished._id.toString() !== user._id.toString() &&
                     appeal.punishment.issuer._id.toString() !== user._id.toString())
