@@ -189,11 +189,13 @@ export default class AppealService {
         const manage = user.groups.some(g => g.group.web_permissions.appeals.manage === true);
         dotty.deepKeys(manifest, {leavesOnly: true}).forEach((key) => {
             if (typeof AppealService.getNode(key, manifest) === "boolean") {
-                if (manage || user.groups.some(g => dotty.get(g.group.web_permissions.appeals, key))) {
+                if (manage || user.groups.some(g => dotty.exists(g.group.web_permissions.appeals, key) &&
+                    dotty.get(g.group.web_permissions.appeals, key))) {
                     console.log("Booleaned " + key);
                 }
             } else {
-                if (manage || user.groups.some(g => dotty.get(g.group.web_permissions.appeals, key) === type)) {
+                if (manage || user.groups.some(g => dotty.exists(g.group.web_permissions.appeals, key) &&
+                    dotty.get(g.group.web_permissions.appeals, key) === type)) {
                     console.log("Keyed" + key);
                 }
             }
