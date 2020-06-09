@@ -187,11 +187,15 @@ export default class AppealService {
     private transactionalPermissions(manifest: IAppealsPermissions, user: IUser, type: IAppealPermissible): IAppealsPermissions {
         const manage = user.groups.some(g => g.group.web_permissions.appeals.manage === true);
 
-        function iterate(obj) {
+        function iterate(obj, prefix?) {
             for (let property in obj) {
                 if (obj.hasOwnProperty(property)) {
                     if (typeof obj[property] == "object")
-                        iterate(obj[property]);
+                        if (!prefix) {
+                            iterate(obj[property], property + '.');
+                        } else {
+                            iterate(obj[property], prefix + '.' + property + '.');
+                        }
                     else {
 
                         if (typeof AppealService.getNode(property, obj) === "boolean") {
