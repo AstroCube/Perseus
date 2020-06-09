@@ -200,7 +200,10 @@ export default class AppealService {
                         else if (user.groups.some(g => {
                             if (g.group.web_permissions.appeals[property] &&
                                 g.group.web_permissions.appeals[property].toString().toLowerCase() === type.toString().toLowerCase()
-                            ) return g;
+                            ) {
+                                console.log("Group " + g.group.name + " works at " + property);
+                                return g;
+                            }
                         })) obj[property] = type;
                     }
                 }
