@@ -51,18 +51,12 @@ export default class AppealService {
             const manifest = await this.getAppealPermissions(user);
             const appeal: IAppeal = await this.appealModel.findById(id);
 
-            this.logger.debug('Punished: ' + appeal.punishment.punished._id);
-            this.logger.debug('Punisher: ' + appeal.punishment.issuer._id);
-            this.logger.debug('Query: ' + user._id);
-            this.logger.debug('IsPunished: ' + (appeal.punishment.punished._id.toString() === user._id.toString()));
-            this.logger.debug('IsIssuer: ' + (appeal.punishment.issuer._id.toString() === user._id.toString()));
-
             if (
-                (appeal.supervisor && appeal.supervisor._id !== user._id) ||
+                (appeal.supervisor && appeal.supervisor._id.toString() !== user._id.toString()) ||
                 (!manifest.manage && manifest.view !== IAppealPermissible.All) &&
                 (
-                    (appeal.punishment.punished._id !== user._id &&
-                    appeal.punishment.issuer._id !== user._id)
+                    (appeal.punishment.punished._id.toString() !== user._id.toString() &&
+                    appeal.punishment.issuer._id.toString() !== user._id.toString())
                 )
             ) throw new Error("UnauthorizedError");
 
