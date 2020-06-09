@@ -206,27 +206,37 @@ export default class AppealService {
         return manifest;
     }
 
-    private static moderationPermissionChecking(appeal: IAppeal, manifest: IAppealsPermissions, user: IUser, permission: string, escalate?: boolean): void {
-        if (
+    private static moderationPermissionChecking(appeal: IAppeal, manifest: IAppealsPermissions, user: IUser, permission: string, moderate?: boolean): void {
+        if (!
+            (manifest.manage || AppealService.getNode(permission, manifest) === IAppealPermissible.All) ||
             (
-                !manifest.manage &&
-                manifest.transactional[permission] !== IAppealPermissible.All
-            ) &&
-            (
-                (permission === 'comment' || permission) &&
+                moderate &&
                 (
+                    AppealService.getNode(permission, manifest) === IAppealPermissible.Involved &&
                     (
-                        (manifest.transactional[permission] === IAppealPermissible.Involved || manifest.transactional[permission] === IAppealPermissible.Own)  &&
-                        (appeal.punishment.issuer._id !== user._id && appeal.punishment.punished._id !== user._id)
-                    ) ||
-                    (manifest.transactional[permission] === IAppealPermissible.None)
+                        appeal.punishment.issuer._id === user._id ||
+                        (appeal.supervisor && appeal.supervisor._id === user._id)
+                    )
                 )
             ) ||
             (
-                (manifest.transactional[permission] === IAppealPermissible.Involved && appeal.punishment.issuer._id !== user._id) ||
-                (manifest.transactional[permission] !== IAppealPermissible.Involved)
+                (
+                    (
+                        AppealService.getNode(permission, manifest) === IAppealPermissible.Involved ||
+                        AppealService.getNode(permission, manifest) === IAppealPermissible.Own
+                    ) &&
+                    (
+                        appeal.punishment.issuer._id === user._id ||
+                        appeal.punishment.punished._id === user._id ||
+                        (appeal.supervisor && appeal.supervisor._id === user._id)
+                    )
+                )
             )
         ) throw new Error("UnauthorizedError");
+    }
+
+    private static getNode(obj, manifest): any{
+        return obj.split('.').reduce((p,prop) => p[prop], manifest);
     }
 
 }
