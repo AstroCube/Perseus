@@ -206,11 +206,11 @@ export default class AppealService {
 
     private static moderationPermissionChecking(appeal: IAppeal, manifest: IAppealsPermissions, user: IUser, permission: string, moderate?: boolean): void {
         if (!(
-            (manifest.manage || AppealService.getNode(permission, manifest) === IAppealPermissible.All) ||
+            (manifest.manage || dotty.get(manifest, permission) === IAppealPermissible.All) ||
             (
                 moderate &&
                 (
-                    AppealService.getNode(permission, manifest) === IAppealPermissible.Involved &&
+                    dotty.get(manifest, permission) === IAppealPermissible.Involved &&
                     (
                         appeal.punishment.issuer._id.toString() === user._id.toString() ||
                         (appeal.supervisor && appeal.supervisor._id.toString() === user._id.toString())
@@ -220,8 +220,8 @@ export default class AppealService {
             (
                 (
                     (
-                        AppealService.getNode(permission, manifest) === IAppealPermissible.Involved ||
-                        AppealService.getNode(permission, manifest) === IAppealPermissible.Own
+                        dotty.get(manifest, permission) === IAppealPermissible.Involved ||
+                        dotty.get(manifest, permission) === IAppealPermissible.Own
                     ) &&
                     (
                         appeal.punishment.issuer._id.toString() === user._id.toString() ||
@@ -232,11 +232,6 @@ export default class AppealService {
             )
         )
         ) throw new Error("UnauthorizedError");
-    }
-
-    private static getNode(obj, manifest): any {
-        if (!manifest) return manifest;
-        return obj.split('.').reduce((p,prop) => p[prop], manifest);
     }
 
 }
