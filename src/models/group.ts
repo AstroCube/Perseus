@@ -44,7 +44,7 @@ const Group = new mongoose.Schema(
       },
       appeals: {
         manage: Boolean,
-        transitional: {
+        transactional: {
           comment: { type: String, enum: ['all', 'involved'] },
           close: { type: String, enum: ['all', 'involved'] },
           lock: Boolean,
