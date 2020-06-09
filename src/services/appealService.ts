@@ -191,12 +191,12 @@ export default class AppealService {
             if (typeof dotty.deepKeys(manifest, key) === "boolean") {
                 if (manage || user.groups.some(g => dotty.exists(g.group.web_permissions.appeals, key) &&
                     dotty.get(g.group.web_permissions.appeals, key))) {
-                    console.log("Booleaned " + key);
+                    dotty.put(manifest, key, true);
                 }
             } else {
                 if (manage || user.groups.some(g => dotty.exists(g.group.web_permissions.appeals, key) &&
                     dotty.get(g.group.web_permissions.appeals, key) === type)) {
-                    console.log("Keyed" + key);
+                    dotty.put(manifest, key, type);
                 }
             }
         });
