@@ -198,7 +198,11 @@ export default class AppealService {
                             (manage || user.groups.some(g => g.group.web_permissions.appeals[property] === true))
                         ) obj[property] = true;
                         if (manage && typeof obj[property] !== "boolean") obj[property] = IAppealPermissible.All;
-                        else if (user.groups.some(g => g.group.web_permissions.appeals[property].toString().toLowerCase() === type.toString().toLowerCase())) obj[property] = type;
+                        else if (user.groups.some(g => {
+                            if (g.group.web_permissions.appeals[property] &&
+                                g.group.web_permissions.appeals[property].toString().toLowerCase() === type.toString().toLowerCase()
+                            ) return g;
+                        })) obj[property] = type;
                     }
                 }
             }
