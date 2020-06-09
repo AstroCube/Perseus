@@ -54,8 +54,8 @@ export default class AppealService {
             this.logger.debug('Punished: ' + appeal.punishment.punished._id);
             this.logger.debug('Punisher: ' + appeal.punishment.issuer._id);
             this.logger.debug('Query: ' + user._id);
-            this.logger.debug('IsPunished: ' + (appeal.punishment.punished._id == user._id));
-            this.logger.debug('IsIssuer: ' + (appeal.punishment.issuer._id == user._id));
+            this.logger.debug('IsPunished: ' + (String(appeal.punishment.punished._id) === String(user._id)));
+            this.logger.debug('IsIssuer: ' + (String(appeal.punishment.issuer._id) === String(user._id)));
 
             if (
                 (appeal.supervisor && appeal.supervisor._id !== user._id) ||
