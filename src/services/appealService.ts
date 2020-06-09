@@ -51,6 +51,10 @@ export default class AppealService {
             const manifest = await this.getAppealPermissions(user);
             const appeal: IAppeal = await this.appealModel.findById(id);
 
+            this.logger.debug('Punished: ' + appeal.punishment.punished._id);
+            this.logger.debug('Punisher: ' + appeal.punishment.issuer._id);
+            this.logger.debug('Query: ' + user._id);
+
             if (
                 (appeal.supervisor && appeal.supervisor._id !== user._id) ||
                 (!manifest.manage && manifest.view !== IAppealPermissible.All) &&
