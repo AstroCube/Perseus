@@ -194,11 +194,11 @@ export default class AppealService {
                         iterate(obj[property]);
                     else {
                         if (typeof obj[property] === "boolean" &&
-                            (user.groups.some(g =>  AppealService.getNode(g.group.web_permissions.appeals, property) === true || manage))
+                            (user.groups.some(g =>  AppealService.getNode(property, g.group.web_permissions.appeals) === true || manage))
                         ) obj[property] = true;
 
                         if (manage && typeof obj[property] !== "boolean") obj[property] = IAppealPermissible.All;
-                        else if (user.groups.some(g => AppealService.getNode(g.group.web_permissions.appeals, property) === type || manage)) obj[property] = type;
+                        else if (user.groups.some(g => AppealService.getNode(property, g.group.web_permissions.appeals) === type || manage)) obj[property] = type;
                     }
                 }
             }
@@ -239,7 +239,7 @@ export default class AppealService {
     }
 
     private static getNode(obj, manifest): any {
-        if (!obj) return obj;
+        if (!manifest) return manifest;
         return obj.split('.').reduce((p,prop) => p[prop], manifest);
     }
 
