@@ -176,7 +176,6 @@ export default class AppealService {
             };
 
             manifest = await this.transactionalPermissions(manifest, user, IAppealPermissible.Involved);
-            console.log(manifest);
             manifest = await this.transactionalPermissions(manifest, user, IAppealPermissible.All);
             return manifest;
         } catch (e) {
