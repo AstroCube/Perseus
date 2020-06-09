@@ -198,7 +198,8 @@ export default class AppealService {
                         ) obj[property] = true;
                         if (manage && typeof obj[property] !== "boolean") obj[property] = IAppealPermissible.All;
                         else if (user.groups.some(g => {
-                            console.log("Group " + g.group.name + " should have " + type + " at " + obj[property] + " but has " + g.group.web_permissions.appeals[property]);
+                            console.log(g);
+                            console.log("Group " + g.group.name + " should have " + type + " at " + property + " but has " + g.group.web_permissions.appeals[property]);
                             if (g.group.web_permissions.appeals[property] &&
                                 g.group.web_permissions.appeals[property].toString().toLowerCase() === type.toString().toLowerCase()
                             ) return g;
