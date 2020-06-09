@@ -188,9 +188,7 @@ export default class AppealService {
     private transactionalPermissions(manifest: IAppealsPermissions, user: IUser, type: IAppealPermissible): IAppealsPermissions {
         const manage = user.groups.some(g => g.group.web_permissions.appeals.manage === true);
         dotty.deepKeys(manifest, {leavesOnly: true}).forEach((key) => {
-            console.log(key);
-            /*
-            if (typeof AppealService.getNode(key, manifest) === "boolean") {
+            if (typeof dotty.deepKeys(manifest, key) === "boolean") {
                 if (manage || user.groups.some(g => dotty.exists(g.group.web_permissions.appeals, key) &&
                     dotty.get(g.group.web_permissions.appeals, key))) {
                     console.log("Booleaned " + key);
@@ -201,7 +199,6 @@ export default class AppealService {
                     console.log("Keyed" + key);
                 }
             }
-             */
         });
 
         return manifest;
