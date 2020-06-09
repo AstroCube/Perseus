@@ -190,7 +190,7 @@ export default class AppealService {
         function iterate(obj) {
             for (let property in obj) {
                 if (obj.hasOwnProperty(property)) {
-                    console.log("Property:" + obj[property]);
+                    console.log("Property: " + property + obj[property]);
                     if (typeof obj[property] == "object")
                         iterate(obj[property]);
                     else {
