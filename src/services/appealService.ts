@@ -175,8 +175,8 @@ export default class AppealService {
                 view: IAppealPermissible.None
             };
 
-            manifest = this.transactionalPermissions(manifest, user, IAppealPermissible.Involved);
-            manifest = this.transactionalPermissions(manifest, user, IAppealPermissible.All);
+            manifest = await this.transactionalPermissions(manifest, user, IAppealPermissible.Involved);
+            manifest = await this.transactionalPermissions(manifest, user, IAppealPermissible.All);
             return manifest;
         } catch (e) {
             this.logger.error(e);
@@ -190,6 +190,7 @@ export default class AppealService {
         function iterate(obj) {
             for (let property in obj) {
                 if (obj.hasOwnProperty(property)) {
+                    console.log("Property:" + obj[property]);
                     if (typeof obj[property] == "object")
                         iterate(obj[property]);
                     else {
