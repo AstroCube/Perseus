@@ -3,6 +3,7 @@ import { IUser } from '../interfaces/IUser';
 import {IGroup, IPermissions} from "../interfaces/IGroup";
 import { IPaginateResult } from "mongoose";
 import { Logger } from "winston";
+import dotty = require('dotty');
 
 @Service()
 export default class GroupService {
@@ -88,8 +89,8 @@ export default class GroupService {
     try {
       let clearManifest = {};
       await user.groups.map(async (group) => {
-        await Object.keys(group.group.web_permissions).forEach((key, index) => {
-          if (group.group.web_permissions[key]) clearManifest[key] = group.group.web_permissions[key];
+        dotty.deepKeys(group, {leavesOnly: true}).forEach((key) => {
+          if (dotty.get(group, key)) dotty.put(clearManifest, key, true);
         });
       });
       return clearManifest as IPermissions;
