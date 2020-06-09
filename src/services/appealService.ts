@@ -207,13 +207,7 @@ export default class AppealService {
     }
 
     private static moderationPermissionChecking(appeal: IAppeal, manifest: IAppealsPermissions, user: IUser, permission: string, moderate?: boolean): void {
-
-        console.log(
-            (appeal.punishment.issuer._id.toString() === user._id.toString() && AppealService.getNode(permission, manifest) === IAppealPermissible.Involved && moderate) ||
-            (manifest.manage || AppealService.getNode(permission, manifest) === IAppealPermissible.All)
-        );
-
-        if (!
+        if (!(
             (manifest.manage || AppealService.getNode(permission, manifest) === IAppealPermissible.All) ||
             (
                 moderate &&
@@ -238,6 +232,7 @@ export default class AppealService {
                     )
                 )
             )
+        )
         ) throw new Error("UnauthorizedError");
     }
 
