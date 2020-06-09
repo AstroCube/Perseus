@@ -195,13 +195,11 @@ export default class AppealService {
         }
 
         objectDeepKeys(manifest).forEach((key) => {
-            console.log("Key " + key);
+            console.log("Key " + key + " typeof " + (typeof key));
             if (typeof AppealService.getNode(key, manifest) === "boolean") {
-                console.log(key + " is a boolean");
             }
 
             if (typeof AppealService.getNode(key,  manifest) !== "boolean") {
-                console.log(key + " is not a boolean");
             }
         });
 
