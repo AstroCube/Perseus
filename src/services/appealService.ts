@@ -185,24 +185,26 @@ export default class AppealService {
     }
 
     private transactionalPermissions(manifest: IAppealsPermissions, user: IUser, type: IAppealPermissible): IAppealsPermissions {
-        manifest.manage = user.groups.some(g => g.group.web_permissions.appeals.manage === true);
-        manifest.transactional.lock = user.groups.some(g => g.group.web_permissions.appeals.transactional.lock === true);
-        manifest.assign_escalated = user.groups.some(g => g.group.web_permissions.appeals.assign_escalated === true);
-        if (transactional('comment') || manifest.manage)
-            manifest.transactional.comment = type;
-        if (transactional('close')|| manifest.manage)
-            manifest.transactional.close = type;
-        if (transactional('escalate') || manifest.manage)
-            manifest.transactional.escalate = type;
-        if (transactional('appeal') || manifest.manage)
-            manifest.transactional.appeal = type;
-        if (user.groups.some(g => g.group.web_permissions.appeals.view === type) || manifest.manage)
-            manifest.view = type;
+        const manage = user.groups.some(g => g.group.web_permissions.appeals.manage === true);
 
-        function transactional(property): boolean {
-            return user.groups.some(g => g.group.web_permissions.appeals.transactional[property] === type);
+        function iterate(obj) {
+            for (let property in obj) {
+                if (obj.hasOwnProperty(property)) {
+                    if (typeof obj[property] == "object")
+                        iterate(obj[property]);
+                    else {
+                        if (typeof obj[property] === "boolean" &&
+                            (user.groups.some(g =>  AppealService.getNode(g.group.web_permissions.appeals, property) === true || manage))
+                        ) obj[property] = true;
+
+                        if (manage && typeof obj[property] !== "boolean") obj[property] = IAppealPermissible.All;
+                        else if (user.groups.some(g => AppealService.getNode(g.group.web_permissions.appeals, property) === type || manage)) obj[property] = type;
+                    }
+                }
+            }
         }
 
+        iterate(manifest);
         return manifest;
     }
 
