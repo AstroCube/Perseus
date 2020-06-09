@@ -95,13 +95,13 @@ export default class AppealService {
         switch (action.type) {
             case IAppealActionType.Open: {
                 if (!appeal.closed) throw new Error("Already opened");
-                AppealService.moderationPermissionChecking(appeal, manifest, user, 'close');
+                AppealService.moderationPermissionChecking(appeal, manifest, user, 'transactional.close');
                 appeal.closed = false;
                 break;
             }
             case IAppealActionType.Close: {
                 if (appeal.closed) throw new Error("Already closed");
-                AppealService.moderationPermissionChecking(appeal, manifest, user, 'close');
+                AppealService.moderationPermissionChecking(appeal, manifest, user, 'transactional.close');
                 appeal.closed = true;
                 break;
             }
@@ -119,20 +119,20 @@ export default class AppealService {
             }
             case IAppealActionType.Escalate: {
                 if (appeal.escalated) throw new Error("Already escalated");
-                AppealService.moderationPermissionChecking(appeal, manifest, user, 'escalate', true);
+                AppealService.moderationPermissionChecking(appeal, manifest, user, 'transactional.escalate', true);
                 appeal.escalated = true;
                 break;
             }
             case IAppealActionType.Appeal: {
                 if (appeal.appealed) throw new Error("Already appealed");
-                AppealService.moderationPermissionChecking(appeal, manifest, user, 'appeal');
+                AppealService.moderationPermissionChecking(appeal, manifest, user, 'transactional.appeal');
                 appeal.appealed = true;
                 await this.punishmentService.updatePunishment({_id: appeal.punishment._id, active: false} as IPunishment);
                 break;
             }
             case IAppealActionType.UnAppeal: {
                 if (!appeal.appealed) throw new Error("Already UnAppealed");
-                AppealService.moderationPermissionChecking(appeal, manifest, user, 'appeal');
+                AppealService.moderationPermissionChecking(appeal, manifest, user, 'transactional.appeal');
                 appeal.appealed = false;
                 await this.punishmentService.updatePunishment({_id: appeal.punishment._id, active: true} as IPunishment);
                 break;
