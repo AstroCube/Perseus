@@ -238,7 +238,8 @@ export default class AppealService {
         ) throw new Error("UnauthorizedError");
     }
 
-    private static getNode(obj, manifest): any{
+    private static getNode(obj, manifest): any {
+        if (!obj) return obj;
         return obj.split('.').reduce((p,prop) => p[prop], manifest);
     }
 
