@@ -6,6 +6,7 @@ import {IUser} from "../interfaces/IUser";
 import {IAppealPermissible, IAppealsPermissions} from "../interfaces/permissions/IAppealsPermissions";
 import PunishmentService from "./punishmentService";
 import {IPunishment} from "../interfaces/IPunishment";
+import dotty = require('dotty');
 
 @Service()
 export default class AppealService {
@@ -186,24 +187,17 @@ export default class AppealService {
 
     private transactionalPermissions(manifest: IAppealsPermissions, user: IUser, type: IAppealPermissible): IAppealsPermissions {
         const manage = user.groups.some(g => g.group.web_permissions.appeals.manage === true);
-
-        function objectDeepKeys(obj){
-            return Object.keys(obj)
-                .filter(key => obj[key] instanceof Object)
-                .map(key => objectDeepKeys(obj[key]).map(k => `${key}.${k}`))
-                .reduce((x, y) => x.concat(y), Object.keys(obj))
-        }
-
-        objectDeepKeys(manifest).forEach((key) => {
-            console.log("Key " + key + " typeof " + (typeof AppealService.getNode(key, manifest)));
+        dotty.deepKeys(manifest, {leavesOnly: true}).forEach((key) => {
             if (typeof AppealService.getNode(key, manifest) === "boolean") {
-            }
-
-            if (typeof AppealService.getNode(key,  manifest) !== "boolean") {
+                if (manage || user.groups.some(g => dotty.get(g.group.web_permissions.appeals, key))) {
+                    console.log("Booleaned " + key);
+                }
+            } else {
+                if (manage || user.groups.some(g => dotty.get(g.group.web_permissions.appeals, key) === type)) {
+                    console.log("Keyed" + key);
+                }
             }
         });
-
-
 
         return manifest;
     }

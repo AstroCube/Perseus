@@ -33,6 +33,7 @@
     "celebrate": "^12.1.1",
     "cors": "^2.8.4",
     "dotenv": "^8.2.0",
+    "dotty": "^0.1.0",
     "event-dispatch": "^0.4.1",
     "express": "^4.17.1",
     "express-jwt": "^5.3.3",
