@@ -188,11 +188,12 @@ export default class AppealService {
         const manage = user.groups.some(g => g.group.web_permissions.appeals.manage === true);
 
         objectDeepKeys(manage).forEach((key) => {
+            console.log("Key " + key);
             if (typeof AppealService.getNode(key, manifest) === "boolean") {
                 console.log(key + " is a boolean");
             }
 
-            if (typeof AppealService.getNode(key,  manifest !== "boolean")) {
+            if (typeof AppealService.getNode(key,  manifest) !== "boolean") {
                 console.log(key + " is not a boolean");
             }
         });
