@@ -207,10 +207,6 @@ export default class AppealService {
     }
 
     private static moderationPermissionChecking(appeal: IAppeal, manifest: IAppealsPermissions, user: IUser, permission: string, moderate?: boolean): void {
-        console.log(permission);
-        console.log(this.getNode(permission, manifest));
-        console.log(appeal.punishment.issuer._id === user._id);
-
         if (!
             (manifest.manage || AppealService.getNode(permission, manifest) === IAppealPermissible.All) ||
             (
@@ -218,8 +214,8 @@ export default class AppealService {
                 (
                     AppealService.getNode(permission, manifest) === IAppealPermissible.Involved &&
                     (
-                        appeal.punishment.issuer._id === user._id ||
-                        (appeal.supervisor && appeal.supervisor._id === user._id)
+                        appeal.punishment.issuer._id.toString() === user._id.toString() ||
+                        (appeal.supervisor && appeal.supervisor._id.toString() === user._id.toString())
                     )
                 )
             ) ||
@@ -230,9 +226,9 @@ export default class AppealService {
                         AppealService.getNode(permission, manifest) === IAppealPermissible.Own
                     ) &&
                     (
-                        appeal.punishment.issuer._id === user._id ||
-                        appeal.punishment.punished._id === user._id ||
-                        (appeal.supervisor && appeal.supervisor._id === user._id)
+                        appeal.punishment.issuer._id.toString() === user._id.toString() ||
+                        appeal.punishment.punished._id.toString() === user._id.toString() ||
+                        (appeal.supervisor && appeal.supervisor._id.toString() === user._id.toString())
                     )
                 )
             )
