@@ -190,15 +190,15 @@ export default class AppealService {
         function iterate(obj) {
             for (let property in obj) {
                 if (obj.hasOwnProperty(property)) {
-                    console.log("Property: " + property + obj[property]);
                     if (typeof obj[property] == "object")
                         iterate(obj[property]);
                     else {
+                        console.log("Property " + property + " " + obj[property]);
                         if (typeof obj[property] === "boolean" &&
                             (manage || user.groups.some(g => g.group.web_permissions.appeals[property] === true))
                         ) obj[property] = true;
                         if (manage && typeof obj[property] !== "boolean") obj[property] = IAppealPermissible.All;
-                        else if (user.groups.some(g => g.group.web_permissions.appeals[property] === type)) obj[property] = type;
+                        else if (user.groups.some(g => g.group.web_permissions.appeals[property].toString().toLowerCase() === type.toString().toLowerCase())) obj[property] = type;
                     }
                 }
             }
