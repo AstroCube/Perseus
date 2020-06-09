@@ -188,13 +188,13 @@ export default class AppealService {
         manifest.manage = user.groups.some(g => g.group.web_permissions.appeals.manage === true);
         manifest.transactional.lock = user.groups.some(g => g.group.web_permissions.appeals.transactional.lock === true);
         manifest.assign_escalated = user.groups.some(g => g.group.web_permissions.appeals.assign_escalated === true);
-        if (transactional('comment') || manifest.manage)
+        if (transactional('transactional.comment') || manifest.manage)
             manifest.transactional.comment = type;
-        if (transactional('close')|| manifest.manage)
+        if (transactional('transactional.close')|| manifest.manage)
             manifest.transactional.close = type;
-        if (transactional('escalate') || manifest.manage)
+        if (transactional('transactional.escalate') || manifest.manage)
             manifest.transactional.escalate = type;
-        if (transactional('appeal') || manifest.manage)
+        if (transactional('transactional.appeal') || manifest.manage)
             manifest.transactional.appeal = type;
         if (user.groups.some(g => g.group.web_permissions.appeals.view === type) || manifest.manage)
             manifest.view = type;
