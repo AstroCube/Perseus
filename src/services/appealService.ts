@@ -207,6 +207,9 @@ export default class AppealService {
     }
 
     private static moderationPermissionChecking(appeal: IAppeal, manifest: IAppealsPermissions, user: IUser, permission: string, moderate?: boolean): void {
+        console.log(permission);
+        console.log(this.getNode(permission, manifest));
+
         if (!
             (manifest.manage || AppealService.getNode(permission, manifest) === IAppealPermissible.All) ||
             (
