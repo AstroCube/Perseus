@@ -187,31 +187,23 @@ export default class AppealService {
     private transactionalPermissions(manifest: IAppealsPermissions, user: IUser, type: IAppealPermissible): IAppealsPermissions {
         const manage = user.groups.some(g => g.group.web_permissions.appeals.manage === true);
 
-        function iterate(obj, prefix?) {
-            for (let property in obj) {
-                if (obj.hasOwnProperty(property)) {
-                    if (typeof obj[property] == "object")
-                        if (!prefix) {
-                            iterate(obj[property], property + '.');
-                        } else {
-                            iterate(obj[property], prefix + '.' + property + '.');
-                        }
-                    else {
-                        const propertyFinal = prefix + '.' + property;
-
-                        if (typeof AppealService.getNode(propertyFinal, obj) === "boolean") {
-                            console.log(propertyFinal + " is a boolean");
-                        }
-
-                        if (typeof AppealService.getNode(propertyFinal,  obj !== "boolean")) {
-                            console.log(propertyFinal + " is not a boolean");
-                        }
-                    }
-                }
+        objectDeepKeys(manage).forEach((key) => {
+            if (typeof AppealService.getNode(key, manifest) === "boolean") {
+                console.log(key + " is a boolean");
             }
+
+            if (typeof AppealService.getNode(key,  manifest !== "boolean")) {
+                console.log(key + " is not a boolean");
+            }
+        });
+
+        function objectDeepKeys(obj){
+            return Object.keys(obj)
+                .filter(key => obj[key] instanceof Object)
+                .map(key => objectDeepKeys(obj[key]).map(k => `${key}.${k}`))
+                .reduce((x, y) => x.concat(y), Object.keys(obj))
         }
 
-        iterate(manifest);
         return manifest;
     }
 
