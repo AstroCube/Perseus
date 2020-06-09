@@ -56,7 +56,6 @@ export default class AppealService {
             this.logger.debug('Query: ' + user._id);
 
             if (
-                (appeal.supervisor && appeal.supervisor._id !== user._id) ||
                 (!manifest.manage && manifest.view !== IAppealPermissible.All) &&
                 (
                     (appeal.punishment.punished._id !== user._id &&
