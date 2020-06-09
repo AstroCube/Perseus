@@ -194,17 +194,12 @@ export default class AppealService {
                         iterate(obj[property]);
                     else {
 
-                        if (typeof obj[property] === "boolean" &&
-                            (user.groups.some(g => AppealService.getNode(property, g.group.web_permissions.appeals) === true) || manage)
-                        ) {
-                            console.log(property + " working as " + type);
-                            obj[property] = true;
+                        if (typeof AppealService.getNode(property, obj) === "boolean") {
+                            console.log(property + " is a boolean");
                         }
 
-                        if (manage && typeof obj[property] !== "boolean") obj[property] = IAppealPermissible.All;
-                        else if (user.groups.some(g => AppealService.getNode(property, g.group.web_permissions.appeals) === type || manage)) {
-                            console.log(property + " working as " + type);
-                            obj[property] = type;
+                        if (typeof AppealService.getNode(property,  obj !== "boolean")) {
+                            console.log(property + " is not a boolean");
                         }
                     }
                 }
