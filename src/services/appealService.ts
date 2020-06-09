@@ -197,13 +197,14 @@ export default class AppealService {
                             iterate(obj[property], prefix + '.' + property + '.');
                         }
                     else {
+                        const propertyFinal = prefix + '.' + property;
 
-                        if (typeof AppealService.getNode(property, obj) === "boolean") {
-                            console.log(property + " is a boolean");
+                        if (typeof AppealService.getNode(propertyFinal, obj) === "boolean") {
+                            console.log(propertyFinal + " is a boolean");
                         }
 
-                        if (typeof AppealService.getNode(property,  obj !== "boolean")) {
-                            console.log(property + " is not a boolean");
+                        if (typeof AppealService.getNode(propertyFinal,  obj !== "boolean")) {
+                            console.log(propertyFinal + " is not a boolean");
                         }
                     }
                 }
