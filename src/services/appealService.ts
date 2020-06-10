@@ -77,9 +77,11 @@ export default class AppealService {
                 {$or: [{punished: user._id, appealed: true}, {issuer: user._id, appealed: true}]};
 
             if (encapsulation !== null || own) {
-                const punishments = await this.punishmentService.listPunishments(encapsulation, page, perPage);
-                if (own) await this.appealModel.paginate({...query, punishment: {$in: punishments}}, {page, perPage});
-                return await this.appealModel.paginate({...query, $or: [{punishment: {$in: punishments}}, {supervisor: user._id}]}, {page, perPage});
+                let punishments: IPaginateResult<IPunishment> = await this.punishmentService.listPunishments(encapsulation, -1, perPage);
+                let punishmentIds = await punishments.data.map(p => p._id);
+                console.log(punishmentIds);
+                if (own) await this.appealModel.paginate({...query, punishment: {$in: punishmentIds}}, {page, perPage});
+                return await this.appealModel.paginate({...query, $or: [{punishment: {$in: punishmentIds}}, {supervisor: user._id}]}, {page, perPage});
             }
 
             return await this.appealModel.paginate(query, {page, perPage});
@@ -92,7 +94,6 @@ export default class AppealService {
     public async generateAction(id: string, action: IAppealAction, user: IUser): Promise<IAppeal> {
         let appeal = await this.appealModel.findById(id);
         const manifest = await this.getAppealPermissions(user);
-        let punishment = appeal.punishment;
         switch (action.type) {
             case IAppealActionType.Open: {
                 if (!appeal.closed) throw new Error("Already opened");
