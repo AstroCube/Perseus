@@ -78,6 +78,7 @@ export default class AppealService {
 
             if (encapsulation !== null || own) {
                 let punishments: IPaginateResult<IPunishment> = await this.punishmentService.listPunishments(encapsulation, -1, perPage);
+                console.log(punishments);
                 let punishmentIds = await punishments.data.map(p => p._id);
                 console.log(punishmentIds);
                 if (own) await this.appealModel.paginate({...query, punishment: {$in: punishmentIds}}, {page, perPage});
