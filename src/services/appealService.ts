@@ -77,7 +77,7 @@ export default class AppealService {
                 {$or: [{punished: user._id, appealed: true}, {issuer: user._id, appealed: true}]};
 
             if (encapsulation !== null || own) {
-                let punishments: IPaginateResult<IPunishment> = await this.punishmentService.listPunishments(encapsulation, -1, perPage);
+                let punishments: IPaginateResult<IPunishment> = await this.punishmentService.listPunishments(encapsulation, undefined, perPage);
                 console.log(punishments);
                 let punishmentIds = await punishments.data.map(p => p._id);
                 console.log(punishmentIds);
