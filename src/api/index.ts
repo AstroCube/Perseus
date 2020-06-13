@@ -7,6 +7,7 @@ import group from "./routes/group";
 import gamemode from "./routes/gamemode";
 import server from "./routes/server";
 import session from "./routes/session";
+import report from "./routes/report";
 
 export default () => {
     const app = Router();
@@ -16,6 +17,7 @@ export default () => {
     group(app);
     gamemode(app);
     punishment(app);
+    report(app);
     server(app);
     session(app);
     user(app);

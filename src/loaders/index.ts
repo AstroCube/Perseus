@@ -59,6 +59,10 @@ export default async ({ expressApp }) => {
         name: 'punishmentModel',
         model: require('../models/punishment').default
     };
+    const reportModel = {
+        name: 'reportModel',
+        model: require('../models/report').default
+    };
     const serverModel = {
         name: 'serverModel',
         model: require('../models/server').default
@@ -84,6 +88,7 @@ export default async ({ expressApp }) => {
             mapModel,
             matchModel,
             punishmentModel,
+            reportModel,
             serverModel,
             statsModel,
             userModel

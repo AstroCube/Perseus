@@ -52,14 +52,15 @@ export default class AppealService {
             const manifest = await this.getAppealPermissions(user);
             const appeal: IAppeal = await this.appealModel.findById(id);
 
-            if ((appeal.supervisor && appeal.supervisor._id.toString() !== user._id.toString())) throw new Error("UnauthorizedError");
-            if (
-                (!manifest.manage && manifest.view !== IAppealPermissible.All) &&
-                (
-                    (appeal.punishment.punished._id.toString() !== user._id.toString() &&
-                    appeal.punishment.issuer._id.toString() !== user._id.toString())
-                )
-            ) throw new Error("UnauthorizedError");
+            if (!manifest.manage && manifest.view !== IAppealPermissible.All) {
+                if ((appeal.supervisor && appeal.supervisor._id.toString() !== user._id.toString())) throw new Error("UnauthorizedError");
+                if (
+                    (
+                        (appeal.punishment.punished._id.toString() !== user._id.toString() &&
+                            appeal.punishment.issuer._id.toString() !== user._id.toString())
+                    )
+                ) throw new Error("UnauthorizedError");
+            }
 
             return appeal;
         } catch (e) {
@@ -78,9 +79,7 @@ export default class AppealService {
 
             if (encapsulation !== null || own) {
                 let punishments: IPaginateResult<IPunishment> = await this.punishmentService.listPunishments(encapsulation, undefined, perPage);
-                console.log(punishments);
                 let punishmentIds = await punishments.data.map(p => p._id);
-                console.log(punishmentIds);
                 if (own) await this.appealModel.paginate({...query, punishment: {$in: punishmentIds}}, {page, perPage});
                 return await this.appealModel.paginate({...query, $or: [{punishment: {$in: punishmentIds}}, {supervisor: user._id}]}, {page, perPage});
             }
@@ -155,6 +154,7 @@ export default class AppealService {
                 break;
             }
             default: {
+                if  (appeal.closed) throw new Error("Can not comment while closed");
                 break;
             }
         }
@@ -188,7 +188,7 @@ export default class AppealService {
     }
 
     private transactionalPermissions(manifest: IAppealsPermissions, user: IUser, type: IAppealPermissible): IAppealsPermissions {
-        const manage = user.groups.some(g => g.group.web_permissions.appeals.manage === true);
+        const manage = user.groups.some(g => g.group.web_permissions.appeals.manage);
         dotty.deepKeys(manifest, {leavesOnly: true}).forEach((key) => {
             if (typeof dotty.deepKeys(manifest, key) === "boolean") {
                 if (manage || user.groups.some(g => dotty.exists(g.group.web_permissions.appeals, key) &&
