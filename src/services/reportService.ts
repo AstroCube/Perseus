@@ -1,10 +1,8 @@
 import {IPaginateResult} from "mongoose";
 import {Inject, Service} from "typedi";
 import {Logger} from "winston";
-import {IAppeal, IAppealActionType} from "../interfaces/IAppeal";
 import {IUser} from "../interfaces/IUser";
 import PunishmentService from "./punishmentService";
-import {IPunishment} from "../interfaces/IPunishment";
 import {IReport, IReportAction, IReportCreation, ReportActionType} from "../interfaces/IReport";
 import {IReportsPermissions} from "../interfaces/permissions/IReportsPermissions";
 

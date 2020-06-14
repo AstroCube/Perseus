@@ -62,7 +62,7 @@ const Report = new mongoose.Schema(
         },
         closed: {
             type: Boolean,
-            default: false
+            default: true
         }
     },
     { timestamps: true }
