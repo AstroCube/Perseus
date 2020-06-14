@@ -17,8 +17,11 @@ export default class ReportService {
 
     public async createReport(body: IReportCreation, requester: IUser): Promise<IReport> {
         try {
+            // @ts-ignore
             const report: IReport = await this.reportModel.create({
-                ...body
+                ...body,
+                issuer: requester._id,
+                involved:  body.involved._id
             } as IReport);
 
             // @ts-ignore
