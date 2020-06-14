@@ -21,6 +21,9 @@ export default class ReportService {
                 ...body
             } as IReport);
 
+            console.log(report);
+            console.log(requester);
+
             // @ts-ignore
             return await this.generateAction(
                 report._id,
