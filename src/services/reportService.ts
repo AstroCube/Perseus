@@ -21,9 +21,6 @@ export default class ReportService {
                 ...body
             } as IReport);
 
-            console.log(report);
-            console.log(requester);
-
             // @ts-ignore
             return await this.generateAction(
                 report._id,
@@ -130,7 +127,7 @@ export default class ReportService {
         if ((report.assigned && report.assigned._id.toString() !== user._id.toString())) throw new Error("UnauthorizedError");
         if (
             report.involved._id.toString() !== user._id.toString() &&
-            report.assigned._id.toString() !== user._id.toString()
+            report.issuer._id.toString() !== user._id.toString()
         ) throw new Error("UnauthorizedError");
     }
 
