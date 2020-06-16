@@ -64,7 +64,7 @@ export default class ReportService {
                 query.assigned = undefined;
                 query.involved = undefined;
                 encapsulation = {assigned: {$exists: false}};
-                if (!manifest.assign) encapsulation = {involved: true};
+                if (!manifest.assign) encapsulation = {involved: user._id};
             }
             return await this.reportModel.paginate({...query, ...encapsulation}, {page, perPage});
         } catch (e) {
