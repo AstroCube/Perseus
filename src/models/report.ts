@@ -36,7 +36,7 @@ const Report = new mongoose.Schema(
         registeredAddress: String,
         actions: [
             {
-                type: { type: String, enum: ['Open', 'Close', 'Comment', 'Supervised'] },
+                type: { type: String, enum: ['Open', 'Close', 'Comment', 'Punish'] },
                 user: {
                     type: Schema.Types.ObjectId,
                     ref: 'User',
