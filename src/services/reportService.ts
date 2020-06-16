@@ -103,7 +103,7 @@ export default class ReportService {
                 if (!manifest.manage && !manifest.assign) throw new Error("UnauthorizedError");
                 if (!manifest.manage) ReportService.involvedCheck(report, user);
                 // @ts-ignore
-                report.punishment = reportId;
+                report.punishment = punishmentId;
                 break;
             }
             default: {
