@@ -89,9 +89,8 @@ export default class GroupService {
     try {
       let clearManifest = {};
       await user.groups.map(async (group) => {
-        dotty.deepKeys(group, {leavesOnly: true}).forEach((key) => {
-          console.log(key);
-          if (dotty.get(group, key)) dotty.put(clearManifest, key, true);
+        dotty.deepKeys(group.group.web_permissions, {leavesOnly: true}).forEach((key) => {
+          if (dotty.get(group.group.web_permissions, key)) dotty.put(clearManifest, key, true);
         });
       });
       return clearManifest as IPermissions;
