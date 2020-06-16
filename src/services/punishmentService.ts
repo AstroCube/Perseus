@@ -63,7 +63,8 @@ export default class PunishmentService {
             user: issuer,
             createdAt: new Date().toISOString()
           } as IReportAction,
-          issuer
+          issuer,
+          model._id
       );
 
       return model;

@@ -75,7 +75,7 @@ export default class ReportService {
         }
     }
 
-    public async generateAction(id: string, action: IReportAction, user: IUser, reportId?: string): Promise<IReport> {
+    public async generateAction(id: string, action: IReportAction, user: IUser, punishmentId?: string): Promise<IReport> {
         let report = await this.reportModel.findById(id);
         const manifest = await this.getReportPermissions(user);
         switch (action.type) {
