@@ -63,10 +63,9 @@ export default class ReportService {
             if (!manifest.manage) {
                 Reflect.deleteProperty(query, 'assigned');
                 Reflect.deleteProperty(query, 'involved');
-                encapsulation = {assigned: {$exists: false}};
+                encapsulation = {$or: [{assigned: {$exists: false}}, {assigned: user._id}]};
                 if (!manifest.assign) encapsulation = {involved: user._id};
             }
-            console.log({...query.query, ...encapsulation});
             return await this.reportModel.paginate({...query.query, ...encapsulation}, {page, perPage});
         } catch (e) {
             this.logger.error(e);
