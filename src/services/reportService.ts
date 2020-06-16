@@ -17,7 +17,6 @@ export default class ReportService {
 
     public async createReport(body: IReportCreation, requester: IUser): Promise<IReport> {
         try {
-
             if (body.involved.groups.some(g => g.group.staff)) throw new Error("Can not report staff members");
 
             // @ts-ignore
@@ -69,6 +68,8 @@ export default class ReportService {
                 encapsulation = {$or: [{assigned: {$exists: false}}, {assigned: user._id}]};
                 if (!manifest.assign) encapsulation = {involved: user._id};
             }
+
+            console.log({...query.query, ...encapsulation});
             return await this.reportModel.paginate({...query.query, ...encapsulation}, {page, perPage});
         } catch (e) {
             this.logger.error(e);
