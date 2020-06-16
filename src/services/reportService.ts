@@ -61,8 +61,8 @@ export default class ReportService {
             const manifest = await this.getReportPermissions(user);
             let encapsulation = null;
             if (!manifest.manage) {
-                query.assigned = undefined;
-                query.involved = undefined;
+                Reflect.deleteProperty(query, 'assigned');
+                Reflect.deleteProperty(query, 'involved');
                 encapsulation = {assigned: {$exists: false}};
                 if (!manifest.assign) encapsulation = {involved: user._id};
             }
