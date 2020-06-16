@@ -90,6 +90,7 @@ export default class GroupService {
       let clearManifest = {};
       await user.groups.map(async (group) => {
         dotty.deepKeys(group, {leavesOnly: true}).forEach((key) => {
+          console.log(key);
           if (dotty.get(group, key)) dotty.put(clearManifest, key, true);
         });
       });
