@@ -5,6 +5,8 @@ import {IPaginateResult} from "mongoose";
 import GroupService from "./groupService";
 import {IUser} from "../interfaces/IUser";
 import {IPermissions} from "../interfaces/IGroup";
+import {IReport, IReportAction, ReportActionType} from "../interfaces/IReport";
+import ReportService from "./reportService";
 
 @Service()
 export default class PunishmentService {
@@ -12,11 +14,18 @@ export default class PunishmentService {
   constructor(
     @Inject('punishmentModel') private punishmentModel: Models.PunishmentModel,
     @Inject('logger') private logger: Logger,
+    private reportService: ReportService,
     private groupService: GroupService
   ) {}
 
-  public async createPunishment(punishment: IPunishment, issuer?: IUser): Promise<IPunishment> {
+  public async createPunishment(punishment: IPunishment, issuer?: IUser, report?: string): Promise<IPunishment> {
     try {
+
+      let reportRecord: IReport;
+      if (report) {
+        reportRecord = await this.reportService.getReport(report, issuer);
+        if (!reportRecord) throw new Error("Report to link was not found");
+      }
 
       let match = undefined;
       if (punishment.match) match = punishment.match._id;
@@ -45,7 +54,18 @@ export default class PunishmentService {
         punished: punishment.punished._id,
         match: match
       });
+
       if (!model) throw new Error("There was an error creating a punishments.");
+      if (reportRecord) await this.reportService.generateAction(
+          reportRecord._id,
+          {
+            type: ReportActionType.Punish,
+            user: issuer,
+            createdAt: new Date().toISOString()
+          } as IReportAction,
+          issuer
+      );
+
       return model;
     } catch (e) {
       this.logger.error(e);
@@ -88,9 +108,7 @@ export default class PunishmentService {
 
   public async updatePunishment(punishment: IPunishment): Promise<IPunishment> {
     try {
-      console.log(punishment);
       const updatedPunishment: IPunishment = await this.punishmentModel.findByIdAndUpdate(punishment._id, punishment, {new: true});
-      console.log(updatedPunishment);
       if (!updatedPunishment) throw new Error("Queried punishment does not exist");
       return punishment;
     } catch (e) {

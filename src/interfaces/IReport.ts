@@ -23,7 +23,7 @@ export interface IReportAction {
 }
 
 export enum ReportActionType {
-    Open =  'Open', Close = 'Close', Punish = 'Punish', UnPunish = 'UnPunish', Comment = 'Comment'
+    Open =  'Open', Close = 'Close', Punish = 'Punish', Comment = 'Comment'
 }
 
 export interface IReportCreation {
