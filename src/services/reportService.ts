@@ -17,6 +17,9 @@ export default class ReportService {
 
     public async createReport(body: IReportCreation, requester: IUser): Promise<IReport> {
         try {
+
+            if (body.involved.groups.some(g => g.group.staff)) throw new Error("Can not report staff members");
+
             // @ts-ignore
             const report: IReport = await this.reportModel.create({
                 ...body,
