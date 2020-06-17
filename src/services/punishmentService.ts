@@ -7,6 +7,7 @@ import {IUser} from "../interfaces/IUser";
 import {IPermissions} from "../interfaces/IGroup";
 import {IReport, IReportAction, ReportActionType} from "../interfaces/IReport";
 import ReportService from "./reportService";
+import {ResponseError} from "../interfaces/error/ResponseError";
 
 @Service()
 export default class PunishmentService {
@@ -24,7 +25,7 @@ export default class PunishmentService {
       let reportRecord: IReport;
       if (report) {
         reportRecord = await this.reportService.getReport(report, issuer);
-        if (!reportRecord) throw new Error("Report to link was not found");
+        if (!reportRecord) throw new ResponseError("Report to link was not found", 404);
       }
 
       let match = undefined;
@@ -33,16 +34,18 @@ export default class PunishmentService {
       if (issuer) {
         const permissions: IPermissions = await this.groupService.permissionsManifest(issuer);
         if (!permissions.punishments.manage) {
-          if (punishment.type === PunishmentType.Warn && !permissions.punishments.create.warn) throw new Error("UnauthorizedError");
-          if (punishment.type === PunishmentType.Kick && !permissions.punishments.create.kick) throw new Error("UnauthorizedError");
+          if (punishment.type === PunishmentType.Warn && !permissions.punishments.create.warn)
+            throw new ResponseError("You can not create this type of punishments", 403);
+          if (punishment.type === PunishmentType.Kick && !permissions.punishments.create.kick)
+            throw new ResponseError("You can not create this type of punishments", 403);
           if (
               (punishment.type === PunishmentType.Ban && punishment.expires === -1) &&
               !permissions.punishments.create.ban
-          ) throw new Error("UnauthorizedError");
+          ) throw new ResponseError("You can not create this type of punishments", 403);
           if (
               (punishment.type === PunishmentType.Ban && punishment.expires !== -1) &&
               !permissions.punishments.create.temp_ban
-          ) throw new Error("UnauthorizedError");
+          ) throw new ResponseError("You can not create this type of punishments", 403);
         }
       }
 
@@ -55,7 +58,7 @@ export default class PunishmentService {
         match: match
       });
 
-      if (!model) throw new Error("There was an error creating a punishments.");
+      if (!model) throw new ResponseError("There was an error creating a punishment.", 500);
       if (reportRecord) await this.reportService.generateAction(
           reportRecord._id,
           {
@@ -77,7 +80,7 @@ export default class PunishmentService {
   public async getPunishment(id: string): Promise<IPunishment> {
     try {
       const punishment: IPunishment = await this.punishmentModel.findById(id);
-      if (!punishment) throw new Error("Queried punishment does not exist.");
+      if (!punishment) throw new ResponseError("Queried punishment does not exist.", 404);
       return punishment;
     } catch (e) {
       this.logger.error(e);
@@ -110,7 +113,7 @@ export default class PunishmentService {
   public async updatePunishment(punishment: IPunishment): Promise<IPunishment> {
     try {
       const updatedPunishment: IPunishment = await this.punishmentModel.findByIdAndUpdate(punishment._id, punishment, {new: true});
-      if (!updatedPunishment) throw new Error("Queried punishment does not exist");
+      if (!updatedPunishment) throw new ResponseError("Queried punishment does not exist", 404);
       return punishment;
     } catch (e) {
       this.logger.error(e);

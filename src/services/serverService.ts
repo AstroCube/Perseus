@@ -5,6 +5,7 @@ import { ICluster } from "../interfaces/ICluster";
 import ClusterService from "./clusterService";
 import jwt from "jsonwebtoken";
 import config from "../config";
+import {ResponseError} from "../interfaces/error/ResponseError";
 @Service()
 export default class ServerService {
 
@@ -25,7 +26,7 @@ export default class ServerService {
         matches: []
       });
       this.logger.info("Successfully loaded server %o to the database with name " + serverRecord.slug, serverRecord._id);
-      if (!serverRecord) throw new Error("Server could not be created");
+      if (!serverRecord) throw new ResponseError("Server could not be created", 500);
       return {server: serverRecord, token: ServerService.generateToken(serverRecord._id)};
     } catch (e) {
       this.logger.error(e);
@@ -36,7 +37,7 @@ export default class ServerService {
   public async getServer(id: string): Promise<IServer> {
     try {
       const server: IServer = await this.serverModel.findById(id);
-      if (!server) throw new Error("NotFound");
+      if (!server) throw new ResponseError("Server could not be found", 404);
       return server;
     } catch (e) {
       this.logger.error(e);
@@ -60,7 +61,7 @@ export default class ServerService {
       Reflect.deleteProperty(updatable, 'slug');
       Reflect.deleteProperty(updatable, 'type');
       const serverRecord: IServer = await this.serverModel.findByIdAndUpdate(id, updatable, {new: true});
-      if (!serverRecord) throw new Error("Server was not updated correctly.");
+      if (!serverRecord) throw new ResponseError("Server was not updated correctly.", 500);
       return serverRecord;
     } catch (e) {
       this.logger.error(e);

@@ -1,6 +1,7 @@
 import { Container } from 'typedi';
 import { Logger } from "winston";
 import { IGroup } from "../../interfaces/IGroup";
+import {ResponseError} from "../../interfaces/error/ResponseError";
 
 const permissions = (permission : string) => {
   return async (req, res, next) => {
@@ -16,7 +17,7 @@ const permissions = (permission : string) => {
           {admin: true}
         ]
       });
-      if (!accessible || accessible.length <= 0) throw new Error("UnauthorizedError");
+      if (!accessible || accessible.length <= 0) throw new ResponseError("You are not allowed to do this", 404);
       return next();
     } catch (e) {
       logger.error(e);

@@ -8,6 +8,7 @@ import events from "../subscribers/events";
 import { EventDispatcher, EventDispatcherInterface } from "../decorators/eventDispatcher";
 import { randomBytes } from "crypto";
 import StatsService from "./statsService";
+import {ResponseError} from "../interfaces/error/ResponseError";
 
 @Service()
 export default class AuthService {
@@ -23,7 +24,7 @@ export default class AuthService {
     try {
       const userRecord = await this.userModel.findOne({ email });
       if (!userRecord) {
-        throw new Error('User not registered');
+        throw new ResponseError('User not registered', 404);
       }
 
       const validPassword = await argon2.verify(userRecord.password, password);
@@ -34,7 +35,7 @@ export default class AuthService {
         Reflect.deleteProperty(user, 'salt');
         return { user, token };
       } else {
-        throw new Error('Invalid Password');
+        throw new ResponseError('The information provided is incorrect', 403);
       }
     } catch (e) {
       this.logger.error('There was an error logging user to the website: %o', e);
@@ -45,7 +46,7 @@ export default class AuthService {
   public async serverLogin(login: IServerAuthentication): Promise<Boolean> {
     try {
       const userRecord = await this.userModel.findById(login.user);
-      if (!userRecord) throw new Error('User not registered');
+      if (!userRecord) throw new ResponseError('The requested user does not exists', 404);
       const validPassword = await argon2.verify(userRecord.password, login.password);
       if (validPassword) {
         const address: IUserIP = {
@@ -56,7 +57,7 @@ export default class AuthService {
         this.dispatcher.dispatch(events.user.serverLogin, {user: userRecord, address});
         return true;
       } else {
-        throw new Error('UnauthorizedError');
+        throw new ResponseError('The provided password was not valid', 403);
       }
     } catch (e) {
       this.logger.error('There was an error logging user to the server: %o', e);

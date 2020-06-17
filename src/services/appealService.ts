@@ -7,6 +7,7 @@ import {IAppealPermissible, IAppealsPermissions} from "../interfaces/permissions
 import PunishmentService from "./punishmentService";
 import {IPunishment} from "../interfaces/IPunishment";
 import dotty = require('dotty');
+import {ResponseError} from "../interfaces/error/ResponseError";
 
 @Service()
 export default class AppealService {
@@ -22,7 +23,7 @@ export default class AppealService {
 
             //@ts-ignore
             const existingAppeal: IAppeal = await this.appealModel.findOne({punishment: body.punishment});
-            if (existingAppeal) throw new Error("Already Appealed");
+            if (existingAppeal) throw new ResponseError("The punishment was already appealed", 400);
 
             const appeal: IAppeal = await this.appealModel.create({
                 //@ts-ignore
@@ -53,13 +54,14 @@ export default class AppealService {
             const appeal: IAppeal = await this.appealModel.findById(id);
 
             if (!manifest.manage && manifest.view !== IAppealPermissible.All) {
-                if ((appeal.supervisor && appeal.supervisor._id.toString() !== user._id.toString())) throw new Error("UnauthorizedError");
+                if ((appeal.supervisor && appeal.supervisor._id.toString() !== user._id.toString()))
+                    throw new ResponseError("You do not have permission to watch this appeal", 403);
                 if (
                     (
                         (appeal.punishment.punished._id.toString() !== user._id.toString() &&
                             appeal.punishment.issuer._id.toString() !== user._id.toString())
                     )
-                ) throw new Error("UnauthorizedError");
+                ) throw new ResponseError("You do not have permission to watch this appeal", 403);
             }
 
             return appeal;
@@ -96,65 +98,65 @@ export default class AppealService {
         const manifest = await this.getAppealPermissions(user);
         switch (action.type) {
             case IAppealActionType.Open: {
-                if (!appeal.closed) throw new Error("Already opened");
+                if (!appeal.closed) throw new ResponseError("Already opened appeal", 400);
                 AppealService.moderationPermissionChecking(appeal, manifest, user, 'transactional.close', true);
                 appeal.closed = false;
                 break;
             }
             case IAppealActionType.Close: {
-                if (appeal.closed) throw new Error("Already closed");
+                if (appeal.closed) throw new ResponseError("Already closed appeal", 400);
                 AppealService.moderationPermissionChecking(appeal, manifest, user, 'transactional.close', true);
                 appeal.closed = true;
                 break;
             }
             case IAppealActionType.Lock: {
-                if (appeal.locked) throw new Error("Already locked");
-                if (!manifest.manage && !manifest.transactional.lock) throw new Error("UnauthorizedError");
+                if (appeal.locked) throw new ResponseError("Already locked appeal", 400);
+                if (!manifest.manage && !manifest.transactional.lock) throw new ResponseError("You are not allowed to lock an appeal", 403);
                 appeal.locked = true;
                 break;
             }
             case IAppealActionType.Unlock: {
-                if (!appeal.locked) throw new Error("Already unlocked");
-                if (!manifest.manage && !manifest.transactional.lock) throw new Error("UnauthorizedError");
+                if (!appeal.locked) throw new ResponseError("Already unlocked appeal", 400);
+                if (!manifest.manage && !manifest.transactional.lock) throw new ResponseError("You are not allowed to lock an appeal", 403);
                 appeal.locked = false;
                 break;
             }
             case IAppealActionType.Escalate: {
-                if (appeal.escalated) throw new Error("Already escalated");
+                if (appeal.escalated) throw new ResponseError("Already escalated appeal", 400);
                 AppealService.moderationPermissionChecking(appeal, manifest, user, 'transactional.escalate', false);
                 appeal.escalated = true;
                 break;
             }
             case IAppealActionType.Appeal: {
-                if (appeal.appealed) throw new Error("Already appealed");
+                if (appeal.appealed) throw new ResponseError("Already appealed this reference", 400);
                 AppealService.moderationPermissionChecking(appeal, manifest, user, 'transactional.appeal', true);
                 appeal.appealed = true;
                 await this.punishmentService.updatePunishment({_id: appeal.punishment._id, active: false} as IPunishment);
                 break;
             }
             case IAppealActionType.UnAppeal: {
-                if (!appeal.appealed) throw new Error("Already UnAppealed");
+                if (!appeal.appealed) throw new ResponseError("Already UnAppealed", 400);
                 AppealService.moderationPermissionChecking(appeal, manifest, user, 'transactional.appeal', true);
                 appeal.appealed = false;
                 await this.punishmentService.updatePunishment({_id: appeal.punishment._id, active: true} as IPunishment);
                 break;
             }
             case IAppealActionType.Supervised: {
-                if (!appeal.escalated) throw new Error("Not escalated");
-                if (appeal.supervisor) throw new Error("Already supervised");
-                if (!manifest.assign_escalated) throw new Error("UnauthorizedError");
+                if (!appeal.escalated) throw new ResponseError("This appeal was not escalated", 400);
+                if (appeal.supervisor) throw new ResponseError("Already supervised this appeal", 400);
+                if (!manifest.assign_escalated) throw new ResponseError("You are not allowed to supervise", 403);
                 // @ts-ignore
                 appeal.supervisor = action.user._id;
                 break;
             }
             case IAppealActionType.Create: {
-                if (appeal.punishment.appealed) throw new Error("Already created");
-                if (appeal.punishment.punished._id === user._id) throw new Error("UnauthorizedError");
+                if (appeal.punishment.appealed) throw new ResponseError("Already created", 400);
+                if (appeal.punishment.punished._id === user._id) throw new ResponseError("You are not allowed to appeal this punishment", 403);
                 await this.punishmentService.updatePunishment({_id: appeal.punishment._id, appealed: true} as IPunishment);
                 break;
             }
             default: {
-                if  (appeal.closed) throw new Error("Can not comment while closed");
+                if  (appeal.closed) throw new ResponseError("Can not comment while closed", 400);
                 break;
             }
         }
@@ -233,7 +235,7 @@ export default class AppealService {
                 )
             )
         )
-        ) throw new Error("UnauthorizedError");
+        ) throw new ResponseError("You can not execute the action over this appeal", 403);
     }
 
 }

@@ -3,6 +3,7 @@ import { IAuthenticationResponse, IAuthenticationSession, IServerSwitch } from "
 import {IGameSession, IUser, IUserIP} from "../interfaces/IUser";
 import config from '../config';
 import { Logger } from "winston";
+import {ResponseError} from "../interfaces/error/ResponseError";
 
 @Service()
 export default class SessionService {
@@ -52,7 +53,7 @@ export default class SessionService {
         } as IGameSession,
         groups: userGroups
       } as IUser);
-      if (!created) throw Error('The user was not created successfully');
+      if (!created) throw new ResponseError('The user was not created successfully', 500);
       return {
         user: created,
         registered: false,

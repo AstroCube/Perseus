@@ -4,6 +4,7 @@ import {IGroup, IPermissions} from "../interfaces/IGroup";
 import { IPaginateResult } from "mongoose";
 import { Logger } from "winston";
 import dotty = require('dotty');
+import {ResponseError} from "../interfaces/error/ResponseError";
 
 @Service()
 export default class GroupService {
@@ -20,7 +21,7 @@ export default class GroupService {
         ...group,
         createdBy: user._id
       } as IGroup);
-      if (!groupRecord) throw new Error("There was an error creating a group.");
+      if (!groupRecord) throw new ResponseError("There was an error creating a group.", 500);
       return groupRecord;
     } catch (e) {
       this.logger.error(e);
@@ -31,7 +32,7 @@ export default class GroupService {
   public async viewGroup(id : string): Promise<IGroup> {
     try {
       const groupRecord = await this.groupModel.findById(id);
-      if (!groupRecord) throw new Error("Queried group does not exist.");
+      if (!groupRecord) throw new ResponseError("Queried group does not exist.", 404);
       return groupRecord;
     } catch (e) {
       this.logger.error(e);
@@ -51,7 +52,7 @@ export default class GroupService {
   public async updateGroup(id : string, updatable : IGroup): Promise<IGroup> {
     try {
       const groupRecord = await this.groupModel.findByIdAndUpdate(id, updatable, {new: true});
-      if (!groupRecord) throw new Error("Queried group does not exist.");
+      if (!groupRecord) throw new ResponseError("Queried group does not exist.", 404);
       return groupRecord;
     } catch (e) {
       this.logger.error(e);
@@ -62,7 +63,7 @@ export default class GroupService {
   public async addUser(id : string, group : string): Promise<IUser> {
     try {
       const userRecord = await this.userModel.findByIdAndUpdate(id, {$push: {group: {id: group, joined: new Date()}}}, {new: true});
-      if (!userRecord) throw new Error("Queried user does not exist.");
+      if (!userRecord) throw new ResponseError("Queried user does not exist.", 500);
       Reflect.deleteProperty(userRecord, 'password');
       Reflect.deleteProperty(userRecord, 'salt');
       return userRecord;
@@ -75,7 +76,7 @@ export default class GroupService {
   public async removeUser(id : string, group : string): Promise<IUser> {
     try {
       const userRecord = await this.userModel.findByIdAndUpdate(id, {$pull: {group: {id: group}}}, {new: true});
-      if (!userRecord) throw new Error("Queried user does not exist.");
+      if (!userRecord) throw new ResponseError("Queried user does not exist.", 404);
       Reflect.deleteProperty(userRecord, 'password');
       Reflect.deleteProperty(userRecord, 'salt');
       return userRecord;

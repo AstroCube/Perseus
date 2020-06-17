@@ -7,6 +7,7 @@ import { randomBytes } from "crypto";
 import { EventDispatcher, EventDispatcherInterface } from "../decorators/eventDispatcher";
 import events from "../subscribers/events";
 import RedisService from "./redisService";
+import {ResponseError} from "../interfaces/error/ResponseError";
 
 @Service()
 export default class UserService {
@@ -20,7 +21,7 @@ export default class UserService {
   public async viewUser(id : string): Promise<IUser> {
     try {
       const userRecord = await this.userModel.findById(id);
-      if (!userRecord) throw new Error("NotFound");
+      if (!userRecord) throw new ResponseError("The requested user could not be found", 404);
       Reflect.deleteProperty(userRecord, 'password');
       Reflect.deleteProperty(userRecord, 'salt');
       return userRecord.toObject();
@@ -44,7 +45,7 @@ export default class UserService {
   public async getUserByName(username : string): Promise<IUser> {
     try {
       const userRecord = await this.userModel.findOne({username: username});
-      if (!userRecord) throw new Error("NotFound");
+      if (!userRecord) throw new ResponseError("The requested user could not be found", 404);
       Reflect.deleteProperty(userRecord, 'password');
       Reflect.deleteProperty(userRecord, 'salt');
       return userRecord.toObject();
@@ -68,7 +69,7 @@ export default class UserService {
       Reflect.deleteProperty(updatable, 'password');
       Reflect.deleteProperty(updatable, 'salt');
       const userRecord = await this.userModel.findByIdAndUpdate(id, updatable, {new: true});
-      if (!userRecord) throw new Error("NotFound");
+      if (!userRecord) throw new ResponseError("The requested user could not be updated", 500);
       Reflect.deleteProperty(userRecord, 'password');
       Reflect.deleteProperty(userRecord, 'salt');
       this.logger.info('Username %o updated successfully', updatable.username);
@@ -97,7 +98,7 @@ export default class UserService {
         const updated = await this.userModel.findByIdAndUpdate(user._id, {password: hashedPassword, salt: salt.toString()});
         if (updated) return true;
       } else {
-        throw new Error('Invalid password');
+        throw new ResponseError('Invalid password', 403);
       }
     } catch (e) {
       this.logger.error("There was an error password update: %o", e);
@@ -108,7 +109,7 @@ export default class UserService {
   public async mailUpdateValidation(user: IUser): Promise<Boolean> {
     try {
       const random = Math.floor(Math.pow(10, 6-1) + Math.random() * (Math.pow(6, 6) - Math.pow(6, 6-1) - 1));
-      if (await this.redis.existsKey("verification_" + user._id)) throw new Error("Username already verifying");
+      if (await this.redis.existsKey("verification_" + user._id)) throw new ResponseError("Username already verifying", 500);
       this.dispatcher.dispatch(events.user.mailUpdate, {user: user, code: random});
       return true;
     } catch (e) {
@@ -120,9 +121,9 @@ export default class UserService {
   public async mailUpdate(verification: IMailUpdateVerification): Promise<IUser> {
     try {
       const passphrase = "verification_" + verification.user._id;
-      if (!await this.redis.existsKey(passphrase)) { throw new Error("Mail update was not authorized before"); }
+      if (!await this.redis.existsKey(passphrase)) { throw new ResponseError("Mail update was not authorized before", 403); }
       const verifiy = await this.redis.getKey(passphrase);
-      if (verifiy !== verification.code + "") { throw new Error("Verification code is invalid"); }
+      if (verifiy !== verification.code + "") { throw new ResponseError("Verification code is invalid", 400); }
       const updated = await this.userModel.findByIdAndUpdate(verification.user._id, {email: verification.update}, {new: true});
       await this.redis.deleteKey(passphrase);
       Reflect.deleteProperty(updated, 'password');
@@ -137,10 +138,10 @@ export default class UserService {
   public async verifyUser(verification: IMailRegister, host: string): Promise<Boolean> {
     try {
       const userRecord: IUser = await this.viewUser(verification.user);
-      if (userRecord.verified) throw new Error("The user has already verified an email");
+      if (userRecord.verified) throw new ResponseError("The user has already verified an email", 400);
       const usedEmail: IUser[] = await this.userModel.find({email: verification.email});
-      if (usedEmail.length > 0) throw new Error("This email is already in use");
-      if (await this.redis.existsKey("mailverify_" + verification.user)) throw new Error("Validation already queried");
+      if (usedEmail.length > 0) throw new ResponseError("This email is already in use", 400);
+      if (await this.redis.existsKey("mailverify_" + verification.user)) throw new ResponseError("Validation already queried", 400);
 
       const random = Math.floor((Math.random() * 100) + 54);
       const encodedMail = new Buffer(verification.email).toString('base64');
@@ -159,8 +160,8 @@ export default class UserService {
   public async verifyCode(verification: IMailRegister): Promise<Boolean> {
     try {
       const key = "mailverify_" + verification.user;
-      if (!await this.redis.existsKey(key)) throw new Error("NotFound");
-      if (await this.redis.getKey(key) !== verification.code) throw new Error("Invalid verification code");
+      if (!await this.redis.existsKey(key)) throw new ResponseError("The current key could not be found", 404);
+      if (await this.redis.getKey(key) !== verification.code) throw new ResponseError("Invalid verification code", 400);
       let userRecord: IUser = await this.viewUser(verification.user);
       userRecord.verified = true;
       userRecord.email = verification.email;

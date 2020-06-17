@@ -24,26 +24,6 @@ export default ({ app }: { app: express.Application }) => {
     });
 
     app.use((err, req, res, next) => {
-        if (err.message.toString() === 'UnauthorizedError' || err.name === 'UnauthorizedError') {
-            return res
-                .status(403)
-                .send({ message: err.message })
-                .end();
-        } else if (err.message.toString() === 'NotFound' || err.name === 'NotFound') {
-            return res
-              .status(404)
-              .send({message: err.message})
-              .end();
-        } else if (err.message.toString() === 'BadRequestError' || err.name === 'BadRequestError') {
-            res
-              .status(400)
-              .send({message: err.message})
-              .end();
-        }
-        return next(err);
-    });
-
-    app.use((err, req, res, next) => {
         res.status(err.status || 500);
         res.json({
             errors: {

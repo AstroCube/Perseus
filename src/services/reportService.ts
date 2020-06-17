@@ -5,19 +5,19 @@ import {IUser} from "../interfaces/IUser";
 import PunishmentService from "./punishmentService";
 import {IReport, IReportAction, IReportCreation, ReportActionType} from "../interfaces/IReport";
 import {IReportsPermissions} from "../interfaces/permissions/IReportsPermissions";
+import {ResponseError} from "../interfaces/error/ResponseError";
 
 @Service()
 export default class ReportService {
 
     constructor(
         @Inject('reportModel') private reportModel : Models.ReportModel,
-        @Inject('logger') private logger: Logger,
-        private punishmentService: PunishmentService
+        @Inject('logger') private logger: Logger
     ) {}
 
     public async createReport(body: IReportCreation, requester: IUser): Promise<IReport> {
         try {
-            if (body.involved.groups.some(g => g.group.staff)) throw new Error("Can not report staff members");
+            if (body.involved.groups.some(g => g.group.staff)) throw new ResponseError("Can not report staff members", 400);
 
             // @ts-ignore
             const report: IReport = await this.reportModel.create({
@@ -80,27 +80,30 @@ export default class ReportService {
         const manifest = await this.getReportPermissions(user);
         switch (action.type) {
             case ReportActionType.Open: {
-                if (!report.closed) throw new Error("Already opened");
-                if (!manifest.manage && !manifest.assign) throw new Error("UnauthorizedError");
-                if (!manifest.manage) ReportService.involvedCheck(report, user);
+                if (!report.closed) throw new ResponseError("Already opened this report", 400);
+                if (!manifest.manage && !manifest.assign) {
+                    ReportService.involvedCheck(report, user);
+                    if (report.actions.some(a => a.type === ReportActionType.Open) && report.issuer._id.toString() === user._id.toString())
+                        throw new ResponseError("Can not re-open your own report", 400);
+                }
                 report.closed = false;
                 break;
             }
             case ReportActionType.Close: {
-                if (report.closed) throw new Error("Already closed");
-                if (!manifest.manage && !manifest.assign) throw new Error("UnauthorizedError");
+                if (report.closed) throw new ResponseError("Already closed this report", 400);
+                if (!manifest.manage && !manifest.assign) throw new ResponseError("You can not close this report", 400);
                 if (!manifest.manage) ReportService.involvedCheck(report, user);
                 report.closed = true;
                 break;
             }
             case ReportActionType.Comment: {
-                if (report.closed) throw new Error("Can not comment while closed");
+                if (report.closed) throw new ResponseError("Can not comment while closed", 400);
                 if (!manifest.manage) ReportService.involvedCheck(report, user);
                 break;
             }
             case ReportActionType.Punish: {
-                if (report.punishment) throw new Error("Report already punished");
-                if (!manifest.manage && !manifest.assign) throw new Error("UnauthorizedError");
+                if (report.punishment) throw new ResponseError("Report already punished", 400);
+                if (!manifest.manage && !manifest.assign) throw new ResponseError("You can not punish this player", 403);
                 if (!manifest.manage) ReportService.involvedCheck(report, user);
                 // @ts-ignore
                 report.punishment = punishmentId;
@@ -129,11 +132,11 @@ export default class ReportService {
     }
 
     private static involvedCheck(report: IReport, user: IUser): void {
-        if ((report.assigned && report.assigned._id.toString() !== user._id.toString())) throw new Error("UnauthorizedError");
+        if ((report.assigned && report.assigned._id.toString() !== user._id.toString()))
+            throw new ResponseError("You can not take actions over this report", 403);
         if (
-            report.involved._id.toString() !== user._id.toString() &&
             report.issuer._id.toString() !== user._id.toString()
-        ) throw new Error("UnauthorizedError");
+        ) throw new ResponseError("You can not take actions over this report", 403);
     }
 
 }
