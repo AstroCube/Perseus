@@ -3,6 +3,7 @@ import bodyParser from 'body-parser';
 import cors from 'cors';
 import routes from '../api';
 import config from '../config';
+import {ResponseError} from "../interfaces/error/ResponseError";
 export default ({ app }: { app: express.Application }) => {
 
     app.get('/status', (req, res) => {
@@ -18,13 +19,10 @@ export default ({ app }: { app: express.Application }) => {
     app.use(bodyParser.json());
     app.use(config.api.prefix, routes());
     app.use((req, res, next) => {
-        const err = new Error('Not Found');
-        err['status'] = 404;
-        next(err);
+        next(new ResponseError('Route not found', 404));
     });
 
     app.use((err, req, res, next) => {
-        console.log(err);
         res.status(err.status || 500);
         res.json(err.message);
     });
