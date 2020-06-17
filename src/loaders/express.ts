@@ -23,6 +23,8 @@ export default ({ app }: { app: express.Application }) => {
     });
 
     app.use((err, req, res, next) => {
+        const error = err as ResponseError;
+        console.log(error.status);
         res.status(err.status || 500);
         res.json(err.message);
     });
