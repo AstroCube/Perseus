@@ -56,15 +56,15 @@ const User = new mongoose.Schema(
     language: {type: String, default: 'es'},
     publicInfo: {
       gender: {type: Number, default: 0},
-      occupation: String,
-      interests: String,
-      email: String,
-      location: String,
-      twitter: String,
-      reddit: String,
-      steam: String,
-      twitch: String,
-      about: String
+      occupation: {type: String, default: ''},
+      interests: {type: String, default: ''},
+      email: {type: String, default: ''},
+      location: {type: String, default: ''},
+      twitter: {type: String, default: ''},
+      reddit: {type: String, default: ''},
+      steam: {type: String, default: ''},
+      twitch: {type: String, default: ''},
+      about: {type: String, default: ''}
     },
     settings: {
       adminChat: {
