@@ -5,10 +5,24 @@ import { IMap } from "../interfaces/IMap";
 const Map = new mongoose.Schema(
   {
     name: String,
-    nameLowercase: String,
-    file: String,
-    configuration: String,
-    image: String,
+    identifierName: {
+        type: String,
+        index: true,
+        unique: true,
+        lowercase: true
+    },
+    file: {
+        type: String,
+        unique: true
+    },
+    configuration: {
+        type: String,
+        unique: true
+    },
+    image: {
+        type: String,
+        unique: true
+    },
     author: {
       type: Schema.Types.ObjectId,
       ref: 'User'

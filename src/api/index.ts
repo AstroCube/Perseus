@@ -8,6 +8,7 @@ import gamemode from "./routes/gamemode";
 import server from "./routes/server";
 import session from "./routes/session";
 import report from "./routes/report";
+import map from "./routes/map";
 
 export default () => {
     const app = Router();
@@ -15,6 +16,7 @@ export default () => {
     appeal(app);
     auth(app);
     group(app);
+    map(app);
     gamemode(app);
     punishment(app);
     report(app);

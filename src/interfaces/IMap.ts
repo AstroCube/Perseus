@@ -2,6 +2,7 @@ import {IModel} from "./IModel";
 
 export interface IMap extends IModel {
   name: string;
+  identifierName: string;
   file: string;
   configuration: string;
   image: string;
