@@ -51,7 +51,7 @@ export default class MapService {
     try {
       const map: IMap = populate ? await this.mapModel.findById(id)
           .populate('author', '-password -salt')
-          .populate('-contributors.contributor', '-password -salt') :
+          .populate('contributors.contributor', '-password -salt') :
           await this.mapModel.findById(id);
       if (!map) throw new ResponseError('The requested map does not exist', 404);
       return map;
@@ -65,7 +65,7 @@ export default class MapService {
     try {
       console.log(query);
       const paginated = await this.mapModel.paginate(query, {...options,
-        populate: {author: '-password -salt', contributors: {contributor: '-password -salt'}}
+        populate: [{path: 'author', select: '-password -salt'}, {path: 'contributors.contributor', select: '-password -salt'}]
       });
       console.log(paginated);
       return paginated;
