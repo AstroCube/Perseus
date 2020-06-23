@@ -1,5 +1,6 @@
 import mongoose, { Schema } from "mongoose";
 import { IMap } from "../interfaces/IMap";
+import {mongoosePagination} from "ts-mongoose-pagination";
 
 
 const Map = new mongoose.Schema(
@@ -58,4 +59,5 @@ const Map = new mongoose.Schema(
   { timestamps: true }
 );
 
+Map.plugin(mongoosePagination);
 export default mongoose.model<IMap & mongoose.Document>('Map', Map);
