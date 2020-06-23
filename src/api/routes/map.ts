@@ -46,7 +46,8 @@ export default (app: Router) => {
         async (req: Request, res: Response, next: NextFunction) => {
             try {
                 const mapService: MapService = Container.get(MapService);
-                const map: IMap = await mapService.getMap(req.params.id);
+                const populate = Boolean(req.query.populate) || false;
+                const map: IMap = await mapService.getMap(req.params.id, populate);
                 return res.json(map).status(200);
             } catch (e) {
                 return next(e);

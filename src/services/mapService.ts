@@ -47,9 +47,12 @@ export default class MapService {
     }
   }
 
-  public async getMap(id: string): Promise<IMap> {
+  public async getMap(id: string, populate?: boolean): Promise<IMap> {
     try {
-      const map: IMap = await this.mapModel.findById(id);
+      const map: IMap = populate ? await this.mapModel.findById(id)
+          .populate('author', '-password -salt')
+          .populate('-contributors.contributor', '-password -salt') :
+          await this.mapModel.findById(id);
       if (!map) throw new ResponseError('The requested map does not exist', 404);
       return map;
     } catch (e) {
@@ -60,7 +63,9 @@ export default class MapService {
 
   public async listMaps(query?: any, options?: any): Promise<IPaginateResult<IMap>> {
     try {
-      return await this.mapModel.paginate(query, options);
+      return await this.mapModel.paginate(query, {...options,
+        populate: {author: '-password -salt', contributors: {contributor: '-password -salt'}}
+      });
     } catch (e) {
       this.logger.error('There was an error listing map: %o', e);
       throw e;
