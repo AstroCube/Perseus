@@ -21,7 +21,7 @@ export default (app: Router) => {
       }
     });
 
-  route.get(
+  route.post(
     '/list',
     async (req: Request, res: Response, next: NextFunction) => {
       try {
