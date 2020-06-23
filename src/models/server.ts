@@ -1,5 +1,6 @@
 import mongoose, { Schema } from "mongoose";
 import { IServer } from "../interfaces/IServer";
+import {mongoosePagination} from "ts-mongoose-pagination";
 
 
 const Server = new mongoose.Schema(
@@ -34,4 +35,5 @@ const Server = new mongoose.Schema(
   { timestamps: true }
 );
 
+Server.plugin(mongoosePagination);
 export default mongoose.model<IServer & mongoose.Document>('Server', Server);

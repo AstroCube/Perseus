@@ -1,5 +1,6 @@
 import mongoose, {Schema} from "mongoose";
 import { IMatch } from "../interfaces/IMatch";
+import {mongoosePagination} from "ts-mongoose-pagination";
 
 
 const Match = new mongoose.Schema(
@@ -36,4 +37,5 @@ const Match = new mongoose.Schema(
   { timestamps: true }
 );
 
+Match.plugin(mongoosePagination);
 export default mongoose.model<IMatch & mongoose.Document>('Match', Match);

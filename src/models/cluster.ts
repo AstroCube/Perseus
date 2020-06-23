@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import { ICluster } from "../interfaces/ICluster";
+import {mongoosePagination} from "ts-mongoose-pagination";
 
 
 const Cluster = new mongoose.Schema(
@@ -13,4 +14,5 @@ const Cluster = new mongoose.Schema(
   { timestamps: true }
 );
 
+Cluster.plugin(mongoosePagination);
 export default mongoose.model<ICluster & mongoose.Document>('Cluster', Cluster);

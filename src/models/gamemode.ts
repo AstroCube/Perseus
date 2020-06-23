@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import { IGamemode } from "../interfaces/IGamemode";
+import {mongoosePagination} from "ts-mongoose-pagination";
 
 
 const Gamemode = new mongoose.Schema(
@@ -20,4 +21,6 @@ const Gamemode = new mongoose.Schema(
   { timestamps: true }
 );
 
+
+Gamemode.plugin(mongoosePagination);
 export default mongoose.model<IGamemode & mongoose.Document>('Gamemode', Gamemode);
