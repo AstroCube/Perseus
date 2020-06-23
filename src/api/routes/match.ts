@@ -17,7 +17,7 @@ export default (app: Router) => {
   app.use('/match', route);
 
     route.post(
-        '',
+        '/',
         celebrate({
             body: Joi.object({
                 map: Joi.string().required(),
@@ -39,7 +39,7 @@ export default (app: Router) => {
         });
 
     route.get(
-        ':id',
+        '/:id',
         middlewares.cluster,
         async (req: Request, res: Response, next: NextFunction) => {
             try {
@@ -52,7 +52,7 @@ export default (app: Router) => {
         });
 
     route.post(
-        'list',
+        '/list',
         middlewares.cluster,
         async (req: Request, res: Response, next: NextFunction) => {
             try {
@@ -67,7 +67,7 @@ export default (app: Router) => {
         });
 
     route.put(
-        '',
+        '/',
         middlewares.cluster,
         async (req: Request, res: Response, next: NextFunction) => {
             try {
@@ -80,7 +80,7 @@ export default (app: Router) => {
         });
 
     route.get(
-        'cleanup',
+        '/cleanup',
         middlewares.cluster,
         middlewares.serverAttachment,
         async (req: Request, res: Response, next: NextFunction) => {

@@ -58,9 +58,9 @@ export default class MapService {
     }
   }
 
-  public async listMaps(query: any, page: number, perPage: number): Promise<IPaginateResult<IMap>> {
+  public async listMaps(query?: any, options?: any): Promise<IPaginateResult<IMap>> {
     try {
-      return await this.mapModel.paginate(query, {page, perPage});
+      return await this.mapModel.paginate(query, options);
     } catch (e) {
       this.logger.error('There was an error listing map: %o', e);
       throw e;

@@ -2,6 +2,7 @@ import { Router, Request, Response, NextFunction } from "express";
 import { Container } from "typedi";
 import GamemodeService from "../../services/gamemodeService";
 import { IGamemode } from "../../interfaces/IGamemode";
+import {IPaginateResult} from "mongoose";
 const route = Router();
 
 export default (app: Router) => {
@@ -9,7 +10,7 @@ export default (app: Router) => {
   app.use('/gamemode', route);
 
   route.get(
-    '/get/:id',
+    '/:id',
     async (req: Request, res: Response, next: NextFunction) => {
       try {
         const service: GamemodeService = Container.get(GamemodeService);
@@ -24,8 +25,10 @@ export default (app: Router) => {
     '/list',
     async (req: Request, res: Response, next: NextFunction) => {
       try {
+        const page: number = req.query.page && req.query.page !== '-1' ? parseInt(<string>req.query.page) : undefined;
+        const perPage: number = req.query.perPage ? parseInt(<string>req.query.perPage) : 10;
         const service: GamemodeService = Container.get(GamemodeService);
-        const gamemodes: IGamemode[] = await service.listGamemodes();
+        const gamemodes: IPaginateResult<IGamemode> = await service.listGamemodes(req.body, {...req.query, page, perPage});
         return res.json(gamemodes).status(200);
       } catch (e) {
         return next(e);
