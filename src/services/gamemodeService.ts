@@ -16,7 +16,7 @@ export default class GamemodeService {
       if (!gamemode) throw new ResponseError("The requested gamemode was not found", 404);
       return gamemode.toObject();
     } catch (e) {
-      this.logger.error(e);
+      this.logger.error('There was an error obtaining a gamemode %o', e);
       throw e;
     }
   }
@@ -25,7 +25,7 @@ export default class GamemodeService {
     try {
       return this.gamemodeModel.find();
     } catch (e) {
-      this.logger.error(e);
+      this.logger.error('There was an error obtaining a gamemode list %o', e);
       throw e;
     }
   }

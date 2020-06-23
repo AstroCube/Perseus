@@ -43,7 +43,7 @@ export default class AppealService {
                 requester
                 );
         } catch (e) {
-            this.logger.error(e);
+            this.logger.error('There was an error creating an appeal: %o', e);
             throw e;
         }
     }
@@ -66,7 +66,7 @@ export default class AppealService {
 
             return appeal;
         } catch (e) {
-            this.logger.error(e);
+            this.logger.error('There was an error obtaining an appeal: %o',e);
             throw e;
         }
     }
@@ -88,7 +88,7 @@ export default class AppealService {
 
             return await this.appealModel.paginate(query, {page, perPage});
         } catch (e) {
-            this.logger.error(e);
+            this.logger.error('There was an error listing an appeal %o',e);
             throw e;
         }
     }
@@ -184,7 +184,7 @@ export default class AppealService {
             manifest = await this.transactionalPermissions(manifest, user, IAppealPermissible.All);
             return manifest;
         } catch (e) {
-            this.logger.error(e);
+            this.logger.error('There was an error obtaining the permissible manifest: %o', e);
             throw e;
         }
     }

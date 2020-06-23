@@ -72,7 +72,7 @@ export default class PunishmentService {
 
       return model;
     } catch (e) {
-      this.logger.error(e);
+      this.logger.error('There was an creating a punishment: %o', e);
       throw e;
     }
   }
@@ -83,7 +83,7 @@ export default class PunishmentService {
       if (!punishment) throw new ResponseError("Queried punishment does not exist.", 404);
       return punishment;
     } catch (e) {
-      this.logger.error(e);
+      this.logger.error('There was an error obtaining a punishment: %o', e);
       throw e;
     }
   }
@@ -96,7 +96,7 @@ export default class PunishmentService {
             page: page, perPage: size
           });
     } catch (e) {
-      this.logger.error(e);
+      this.logger.error('There was an error obtaining punishment lists: %o', e);
       throw e;
     }
   }
@@ -105,7 +105,7 @@ export default class PunishmentService {
     try {
       return await this.punishmentModel.findOne(query).sort("createdAt");
     } catch (e) {
-      this.logger.error(e);
+      this.logger.error('There was an error obtaining last punishment: %o', e);
       throw e;
     }
   }
@@ -116,7 +116,7 @@ export default class PunishmentService {
       if (!updatedPunishment) throw new ResponseError("Queried punishment does not exist", 404);
       return punishment;
     } catch (e) {
-      this.logger.error(e);
+      this.logger.error('There was an error updating punishment: %o', e);
       throw e;
     }
   }

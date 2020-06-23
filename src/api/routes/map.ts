@@ -57,8 +57,8 @@ export default (app: Router) => {
         '/list',
         async (req: Request, res: Response, next: NextFunction) => {
             try {
-                let page: number = req.query.page && req.query.page !== '-1' ? parseInt(<string>req.query.page)  :  undefined;
-                let perPage: number = req.query.perPage ? parseInt(<string>req.query.perPage) : 10;
+                const page: number = req.query.page && req.query.page !== '-1' ? parseInt(<string>req.query.page)  :  undefined;
+                const perPage: number = req.query.perPage ? parseInt(<string>req.query.perPage) : 10;
                 const mapService: MapService = Container.get(MapService);
                 return res.json(mapService.listMaps(req.params.body, page, perPage)).status(200);
             } catch (e) {

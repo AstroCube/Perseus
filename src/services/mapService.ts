@@ -42,7 +42,7 @@ export default class MapService {
       ) await this.updateMap(map);
       return existentMap;
     } catch (e) {
-      this.logger.error(e);
+      this.logger.error('There was an error loading a map: %o', e);
       throw e;
     }
   }
@@ -53,7 +53,7 @@ export default class MapService {
       if (!map) throw new ResponseError('The requested map does not exist', 404);
       return map;
     } catch (e) {
-      this.logger.error(e);
+      this.logger.error('There was an error obtaining a map: %o', e);
       throw e;
     }
   }
@@ -62,7 +62,7 @@ export default class MapService {
     try {
       return await this.mapModel.paginate(query, {page, perPage});
     } catch (e) {
-      this.logger.error(e);
+      this.logger.error('There was an error listing map: %o', e);
       throw e;
     }
   }
@@ -89,7 +89,7 @@ export default class MapService {
       return await path.resolve(filePath);
 
     } catch (e) {
-      this.logger.error(e);
+      this.logger.error('There was an error obtaining a file from a map %o', e);
       throw e;
     }
   }

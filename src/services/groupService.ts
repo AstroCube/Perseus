@@ -24,7 +24,7 @@ export default class GroupService {
       if (!groupRecord) throw new ResponseError("There was an error creating a group.", 500);
       return groupRecord;
     } catch (e) {
-      this.logger.error(e);
+      this.logger.error('There was an error creating a group: %o', e);
       throw e;
     }
   }
@@ -35,7 +35,7 @@ export default class GroupService {
       if (!groupRecord) throw new ResponseError("Queried group does not exist.", 404);
       return groupRecord;
     } catch (e) {
-      this.logger.error(e);
+      this.logger.error('There was an error obtaining a group: %o', e);
       throw e;
     }
   }
@@ -44,7 +44,7 @@ export default class GroupService {
     try {
       return await this.groupModel.paginate({}, { page: page, perPage: 10 });
     } catch (e) {
-      this.logger.error(e);
+      this.logger.error('There was an error listing groups %o', e);
       throw e;
     }
   }
@@ -55,7 +55,7 @@ export default class GroupService {
       if (!groupRecord) throw new ResponseError("Queried group does not exist.", 404);
       return groupRecord;
     } catch (e) {
-      this.logger.error(e);
+      this.logger.error('There was an error updating a group: %o', e);
       throw e;
     }
   }
@@ -68,7 +68,7 @@ export default class GroupService {
       Reflect.deleteProperty(userRecord, 'salt');
       return userRecord;
     } catch (e) {
-      this.logger.error(e);
+      this.logger.error('There was an error adding a user to a group: %o', e);
       throw e;
     }
   }
@@ -81,7 +81,7 @@ export default class GroupService {
       Reflect.deleteProperty(userRecord, 'salt');
       return userRecord;
     } catch (e) {
-      this.logger.error(e);
+      this.logger.error('There was an error removing a user from a group: %o', e);
       throw e;
     }
   }
@@ -96,7 +96,7 @@ export default class GroupService {
       });
       return clearManifest as IPermissions;
     } catch (e) {
-      this.logger.error(e);
+      this.logger.error('There was an error obtaining permissions manifest: %o', e);
       throw e;
     }
   }

@@ -8,7 +8,9 @@ import gamemode from "./routes/gamemode";
 import server from "./routes/server";
 import session from "./routes/session";
 import report from "./routes/report";
+import match from "./routes/match";
 import map from "./routes/map";
+import stats from "./routes/stats";
 
 export default () => {
     const app = Router();
@@ -17,11 +19,13 @@ export default () => {
     auth(app);
     group(app);
     map(app);
+    match(app);
     gamemode(app);
     punishment(app);
     report(app);
     server(app);
     session(app);
+    stats(app);
     user(app);
 
     return app
