@@ -63,12 +63,9 @@ export default class MapService {
 
   public async listMaps(query?: any, options?: any): Promise<IPaginateResult<IMap>> {
     try {
-      console.log(query);
-      const paginated = await this.mapModel.paginate(query, {...options,
+      return await this.mapModel.paginate(query, {...options,
         populate: [{path: 'author', select: '-password -salt'}, {path: 'contributors.contributor', select: '-password -salt'}]
       });
-      console.log(paginated);
-      return paginated;
     } catch (e) {
       this.logger.error('There was an error listing map: %o', e);
       throw e;
