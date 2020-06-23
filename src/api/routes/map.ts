@@ -15,7 +15,7 @@ export default (app: Router) => {
   app.use('/map', route);
 
   route.post(
-    '/load',
+    '/',
     celebrate({
       body: Joi.object({
         name: Joi.string().required(),
@@ -42,7 +42,7 @@ export default (app: Router) => {
     });
 
     route.get(
-        '/get/:id',
+        '/:id',
         async (req: Request, res: Response, next: NextFunction) => {
             try {
                 const mapService: MapService = Container.get(MapService);
