@@ -61,7 +61,7 @@ export default (app: Router) => {
                 const page: number = req.query.page && req.query.page !== '-1' ? parseInt(<string>req.query.page)  :  undefined;
                 const perPage: number = req.query.perPage ? parseInt(<string>req.query.perPage) : 10;
                 const mapService: MapService = Container.get(MapService);
-                return res.json(await mapService.listMaps(req.params.body, {...req.query, page, perPage})).status(200);
+                return res.json(await mapService.listMaps(req.body, {...req.query, page, perPage})).status(200);
             } catch (e) {
                 return next(e);
             }
