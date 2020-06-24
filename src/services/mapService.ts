@@ -82,14 +82,13 @@ export default class MapService {
        */
 
       const map: IMap = await this.mapModel.findById(id);
-      const manifest: IPermissions = await this.groupService.permissionsManifest(user);
-      if (
-          (folder !== 'images') &&
-          (!user ||
-              !manifest.maps &&
-              map.author.toString() !== user._id.toString() &&
-              !map.contributors.some(c => c.contributor.toString() === user._id))
-      ) throw new ResponseError('You can not access to the map files.', 404);
+      if (user && folder !== 'images') {
+        const manifest: IPermissions = await this.groupService.permissionsManifest(user);
+        if (!manifest.maps &&
+            map.author.toString() !== user._id.toString() &&
+            !map.contributors.some(c => c.contributor.toString() === user._id)
+        ) throw new ResponseError('You can not access to the map files.', 404);
+      }
 
       const filePath = './uploads/map/' + folder + '/' + map._id + '.' + ext;
       if (!fs.existsSync(filePath)) throw new ResponseError('The requested file was not found', 404);
