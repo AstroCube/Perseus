@@ -1,4 +1,5 @@
 import { IModel } from "./IModel";
+import {IForumPermissions} from "./permissions/IForumPermissions";
 import { IPunishmentPermissions } from "./permissions/IPunishmentPermissions";
 import { IAppealsPermissions } from "./permissions/IAppealsPermissions";
 import { IReportsPermissions } from "./permissions/IReportsPermissions";
@@ -39,5 +40,9 @@ export interface IPermissions {
     manage: boolean;
   };
   reports: IReportsPermissions;
-  forum: any;
+  forum: {
+    manage: boolean;
+    official: boolean;
+    allowance: IForumPermissions[];
+  };
 }
