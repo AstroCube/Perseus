@@ -87,5 +87,16 @@ export default (app: Router) => {
             }
         });
 
+    route.get(
+        '/get-image/:id',
+        async (req: Request, res: Response, next: NextFunction) => {
+            try {
+                const mapService: MapService = Container.get(MapService);
+                return res.sendFile(await mapService.getMapFile(req.params.id, 'images', 'png', req.currentUser));
+            } catch (e) {
+                return next(e);
+            }
+        });
+
 
 };
