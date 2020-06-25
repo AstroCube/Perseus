@@ -10,4 +10,5 @@ export interface ITopic extends IModel {
     pinned: boolean;
     official: boolean;
     locked: boolean;
+    guest: boolean;
 }

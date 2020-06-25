@@ -11,7 +11,7 @@ const Gamemode = new mongoose.Schema(
     subTypes: [{
       _id: false,
       name: String,
-      selectableMap: String,
+      selectableMap: Boolean,
       minPlayers: Number,
       maxPlayers: Number,
       permission: String,

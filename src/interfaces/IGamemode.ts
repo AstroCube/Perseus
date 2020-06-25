@@ -1,4 +1,6 @@
-export interface IGamemode {
+import {IModel} from "./IModel";
+
+export interface IGamemode extends IModel{
   name: string;
   lobby: string;
   navigator: string;
@@ -6,9 +8,9 @@ export interface IGamemode {
   subTypes: ISubGamemode[];
 }
 
-export interface ISubGamemode {
+export interface ISubGamemode extends IModel {
   name: string;
-  selectableMap: string;
+  selectableMap: boolean;
   minPlayers: number;
   maxPlayers: number;
   permission: string;

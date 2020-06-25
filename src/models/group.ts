@@ -1,7 +1,6 @@
 import { IGroup } from "../interfaces/IGroup";
 import * as mongoose from "mongoose";
 import { mongoosePagination } from "ts-mongoose-pagination";
-import { Schema } from "mongoose";
 
 const Group = new mongoose.Schema(
   {
@@ -45,38 +44,40 @@ const Group = new mongoose.Schema(
       appeals: {
         manage: Boolean,
         transactional: {
-          comment: { type: String, enum: ['all', 'involved'] },
-          close: { type: String, enum: ['all', 'involved'] },
+          comment: { type: String, enum: ['All', 'Involved'] },
+          close: { type: String, enum: ['All', 'Involved'] },
           lock: Boolean,
-          escalate: { type: String, enum: ['all', 'involved'] },
-          appeal: { type: String, enum: ['all', 'involved'] }
+          escalate: { type: String, enum: ['All', 'Involved'] },
+          appeal: { type: String, enum: ['All', 'Involved'] }
         },
         assign_escalated: Boolean,
-        view: { type: String, enum: ['all', 'involved'] }
+        view: { type: String, enum: ['All', 'Involved'] }
       },
       maps: {
         manage: Boolean
       },
-      forum: Schema.Types.Mixed,
+      forum: {
+          manage: Boolean,
+          official: Boolean,
+          allowance: [
+              {
+                  id: String,
+                  manage: Boolean,
+                  create: Boolean,
+                  view: { type: String, enum: ['All', 'Own', 'None'] },
+                  edit: { type: String, enum: ['All', 'Own', 'None'] },
+                  comment: { type: String, enum: ['All', 'Own', 'None'] },
+                  delete: Boolean,
+                  pin: Boolean,
+                  lock: Boolean
+              }
+          ]
+      },
       reports: {
         manage: Boolean,
         assign: Boolean,
-        view: { type: String, enum: ['all', 'involved'] }
+        view: { type: String, enum: ['All', 'Involved'] }
       }
-      /*
-        manage: Boolean,
-        official: Boolean,
-        "forum_id": {
-          manage: Boolean,
-          create: Boolean,
-          view: String ("own", "none", "all"),
-          edit: String ("own", "none", "all"),
-          comment: String ("own", "none", "all"),
-          delete: Boolean,
-          pin: Boolean,
-          lock: Boolean
-        }
-      */
     }
   },
   { timestamps: true }

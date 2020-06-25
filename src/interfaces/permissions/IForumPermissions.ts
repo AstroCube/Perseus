@@ -1,4 +1,5 @@
 export interface IForumPermissions {
+    id: string;
     manage: boolean;
     create: boolean;
     view: ForumPermissible;

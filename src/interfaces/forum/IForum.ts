@@ -1,5 +1,4 @@
 import {IModel} from "../IModel";
-import {IForumPermissions} from "../permissions/IForumPermissions";
 import {IForumCategory} from "./IForumCategory";
 
 export interface IForum extends IModel {
@@ -8,5 +7,5 @@ export interface IForum extends IModel {
     description: string;
     category: IForumCategory;
     parent?: IForum;
-    permissions: IForumPermissions;
+    guest: boolean;
 }

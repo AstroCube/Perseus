@@ -39,6 +39,14 @@ export default async ({ expressApp }) => {
         name: 'clusterModel',
         model: require('../models/cluster').default
     };
+    const forumModel = {
+        name: 'forumModel',
+        model: require('../models/forum/forum').default
+    };
+    const forumCategoryModel = {
+        name: 'forumCategoryModel',
+        model: require('../models/forum/category').default
+    };
     const gamemodeModel = {
         name: 'gamemodeModel',
         model: require('../models/gamemode').default
@@ -54,6 +62,10 @@ export default async ({ expressApp }) => {
     const matchModel = {
         name: 'matchModel',
         model: require('../models/match').default
+    };
+    const postModel = {
+        name: 'postModel',
+        model: require('../models/forum/post').default
     };
     const punishmentModel = {
         name: 'punishmentModel',
@@ -71,6 +83,10 @@ export default async ({ expressApp }) => {
         name: 'statsModel',
         model: require('../models/stats').default
     };
+    const topicModel = {
+        name: 'topicModel',
+        model: require('../models/forum/topic').default
+    };
     const userModel = {
         name: 'userModel',
         model: require('../models/user').default
@@ -83,14 +99,18 @@ export default async ({ expressApp }) => {
         models: [
             appealModel,
             clusterModel,
+            forumModel,
+            forumCategoryModel,
             gamemodeModel,
             groupModel,
             mapModel,
             matchModel,
+            postModel,
             punishmentModel,
             reportModel,
             serverModel,
             statsModel,
+            topicModel,
             userModel
         ],
     });
