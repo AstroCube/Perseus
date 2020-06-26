@@ -1,5 +1,5 @@
 {
-  "name": "epsilonbackend",
+  "name": "perseus",
   "version": "2.0.0",
   "description": "NodeJS based backend for Seocraft Network",
   "main": "src/app.ts",
@@ -23,9 +23,9 @@
   "author": "Ian Castaño",
   "license": "UNLICENSED",
   "bugs": {
-    "url": "https://github.com/SeocraftNetwork/EpsilonBackend/issues"
+    "url": "https://github.com/SeocraftNetwork/Perseus/issues"
   },
-  "homepage": "https://github.com/SeocraftNetwork/EpsilonBackend#readme",
+  "homepage": "https://github.com/SeocraftNetwork/Perseus#readme",
   "dependencies": {
     "agenda": "^3.1.0",
     "argon2": "^0.26.2",
