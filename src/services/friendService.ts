@@ -24,7 +24,7 @@ export default class FriendService {
             if (!friend) throw new ResponseError('There was an error creating friend request', 404);
             return friend;
         } catch (e) {
-            this.logger.error('There was an error creating an appeal: %o', e);
+            this.logger.error('There was an error creating a friend request: %o', e);
             throw e;
         }
     }
@@ -35,7 +35,7 @@ export default class FriendService {
             if (!friend) throw new ResponseError('The requested friendship was not found', 404);
             return friend;
         } catch (e) {
-            this.logger.error('There was an error creating an appeal: %o', e);
+            this.logger.error('There was an error obtaining a friend request: %o', e);
             throw e;
         }
     }
@@ -44,7 +44,7 @@ export default class FriendService {
         try {
             return await this.friendModel.paginate(query, options);
         } catch (e) {
-            this.logger.error('There was an error creating an appeal: %o', e);
+            this.logger.error('There was an error obtaining friend list: %o', e);
             throw e;
         }
     }

@@ -12,12 +12,14 @@ import match from "./routes/match";
 import map from "./routes/map";
 import stats from "./routes/stats";
 import friend from "./routes/friend";
+import forumCategory from "./routes/forum/forumCategory";
 
 export default () => {
     const app = Router();
 
     appeal(app);
     auth(app);
+    forumCategory(app);
     friend(app);
     group(app);
     map(app);
