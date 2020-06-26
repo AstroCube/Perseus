@@ -14,6 +14,7 @@ import { IForumCategory } from "../../interfaces/forum/IForumCategory";
 import { IForum } from "../../interfaces/forum/IForum";
 import {ITopic} from "../../interfaces/forum/ITopic";
 import {IPost} from "../../interfaces/forum/IPost";
+import {IFriend} from "../../interfaces/IFriend";
 
 declare global {
   namespace Express {
@@ -26,6 +27,7 @@ declare global {
   namespace Models {
     export type AppealModel = PaginateModel<IAppeal & Document>;
     export type ClusterModel = PaginateModel<ICluster & Document>;
+    export type FriendModel = PaginateModel<IFriend & Document>;
     export type ForumModel = PaginateModel<IForum & Document>;
     export type ForumCategoryModel = PaginateModel<IForumCategory & Document>;
     export type GamemodeModel = PaginateModel<IGamemode & Document>;

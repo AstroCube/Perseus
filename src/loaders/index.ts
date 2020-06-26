@@ -39,6 +39,10 @@ export default async ({ expressApp }) => {
         name: 'clusterModel',
         model: require('../models/cluster').default
     };
+    const friendModel = {
+        name: 'friendModel',
+        model: require('../models/friend').default
+    };
     const forumModel = {
         name: 'forumModel',
         model: require('../models/forum/forum').default
@@ -99,6 +103,7 @@ export default async ({ expressApp }) => {
         models: [
             appealModel,
             clusterModel,
+            friendModel,
             forumModel,
             forumCategoryModel,
             gamemodeModel,
