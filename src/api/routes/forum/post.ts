@@ -5,28 +5,35 @@ import middlewares from "../../middlewares";
 import ForumCategoryService from "../../../services/forum/forumCategoryService";
 import {IForumCategory} from "../../../interfaces/forum/IForumCategory";
 import {IPaginateResult} from "mongoose";
+import ForumService from "../../../services/forum/forumService";
+import {IForum} from "../../../interfaces/forum/IForum";
+import TopicService from "../../../services/forum/topicService";
+import {ITopic} from "../../../interfaces/forum/ITopic";
+import PostService from "../../../services/forum/postService";
+import {IPost} from "../../../interfaces/forum/IPost";
 const route = Router();
 
 export default (app: Router) => {
 
-    app.use('/forum/category', route);
+    app.use('/forum/post', route);
 
     route.post(
         '/',
         celebrate({
             body: Joi.object({
-                name: Joi.string().required(),
-                order: Joi.number().required()
+                content: Joi.string().required(),
+                author: Joi.string().required(),
+                quote: Joi.string(),
+                topic: Joi.string().required()
             })
         }),
         middlewares.authentication,
         middlewares.userAttachment,
-        middlewares.permissions('category.manage'),
         async (req: Request, res: Response, next: NextFunction) => {
             try {
-                const categoryService : ForumCategoryService = Container.get(ForumCategoryService);
-                const category = await categoryService.create(req.body as IForumCategory);
-                return res.json(category).status(200);
+                const postService: PostService = Container.get(PostService);
+                const post = await postService.create(req.body as IPost);
+                return res.json(post).status(200);
             } catch (e) {
                 return next(e);
             }
@@ -36,9 +43,9 @@ export default (app: Router) => {
         '/:id',
         async (req: Request, res: Response, next: NextFunction) => {
             try {
-                const categoryService: ForumCategoryService = Container.get(ForumCategoryService);
-                const category: IForumCategory = await categoryService.get(req.params.id);
-                return res.json(category).status(200);
+                const postService: PostService = Container.get(PostService);
+                const post: IPost = await postService.get(req.params.id);
+                return res.json(post).status(200);
             } catch (e) {
                 return next(e);
             }
@@ -50,9 +57,9 @@ export default (app: Router) => {
             try {
                 const page: number = req.query.page && req.query.page !== '-1' ? parseInt(<string>req.query.page)  :  undefined;
                 const perPage: number = req.query.perPage ? parseInt(<string>req.query.perPage) : 10;
-                const categoryService: ForumCategoryService = Container.get(ForumCategoryService);
-                const category: IPaginateResult<IForumCategory> = await categoryService.list(req.body, {...req.query, page, perPage});
-                return res.json(category).status(200);
+                const postService: PostService = Container.get(PostService);
+                const post: IPaginateResult<IPost> = await postService.list(req.body, {...req.query, page, perPage});
+                return res.json(post).status(200);
             } catch (e) {
                 return next(e);
             }
@@ -62,12 +69,11 @@ export default (app: Router) => {
         '/',
         middlewares.authentication,
         middlewares.userAttachment,
-        middlewares.permissions('category.manage'),
         async (req: Request, res: Response, next: NextFunction) => {
             try {
-                const categoryService: ForumCategoryService = Container.get(ForumCategoryService);
-                const category: IForumCategory = await categoryService.update(req.body as IForumCategory);
-                return res.json(category).status(200);
+                const postService: PostService = Container.get(PostService);
+                const post: IPost = await postService.update(req.body as IPost);
+                return res.json(post).status(200);
             } catch (e) {
                 return next(e);
             }
@@ -77,11 +83,10 @@ export default (app: Router) => {
         '/:id',
         middlewares.authentication,
         middlewares.userAttachment,
-        middlewares.permissions('category.manage'),
         async (req: Request, res: Response, next: NextFunction) => {
             try {
-                const categoryService: ForumCategoryService = Container.get(ForumCategoryService);
-                await categoryService.delete(req.params.id);
+                const postService: PostService = Container.get(PostService);
+                await postService.delete(req.params.id);
                 return res.json({deleted: true}).status(200);
             } catch (e) {
                 return next(e);

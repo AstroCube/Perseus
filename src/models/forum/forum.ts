@@ -21,11 +21,13 @@ const Forum = new mongoose.Schema(
         category: {
             type: Schema.Types.ObjectId,
             ref: 'Category',
-            required: true
+            required: true,
+            autopopulate: true
         },
         parent: {
             type: Schema.Types.ObjectId,
-            ref: 'Forum'
+            ref: 'Forum',
+            autopopulate: true
         },
         guest: {
             type: Boolean,

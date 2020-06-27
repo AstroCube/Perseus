@@ -13,19 +13,25 @@ import map from "./routes/map";
 import stats from "./routes/stats";
 import friend from "./routes/friend";
 import forumCategory from "./routes/forum/forumCategory";
+import forum from "./routes/forum/forum";
+import topic from "./routes/forum/topic";
+import post from "./routes/forum/post";
 
 export default () => {
     const app = Router();
 
     appeal(app);
     auth(app);
+    forum(app);
     forumCategory(app);
     friend(app);
     group(app);
     map(app);
     match(app);
     gamemode(app);
+    post(app);
     punishment(app);
+    topic(app);
     report(app);
     server(app);
     session(app);

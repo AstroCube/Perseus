@@ -5,6 +5,8 @@ import middlewares from "../../middlewares";
 import ForumCategoryService from "../../../services/forum/forumCategoryService";
 import {IForumCategory} from "../../../interfaces/forum/IForumCategory";
 import {IPaginateResult} from "mongoose";
+import ForumService from "../../../services/forum/forumService";
+import {IForum} from "../../../interfaces/forum/IForum";
 const route = Router();
 
 export default (app: Router) => {
@@ -16,16 +18,20 @@ export default (app: Router) => {
         celebrate({
             body: Joi.object({
                 name: Joi.string().required(),
-                order: Joi.number().required()
+                order: Joi.number().required(),
+                description: Joi.string(),
+                category: Joi.string().required(),
+                parent: Joi.string().required(),
+                guest: Joi.boolean()
             })
         }),
         middlewares.authentication,
         middlewares.userAttachment,
-        middlewares.permissions('category.manage'),
+        middlewares.permissions('forum.manage'),
         async (req: Request, res: Response, next: NextFunction) => {
             try {
-                const categoryService : ForumCategoryService = Container.get(ForumCategoryService);
-                const category = await categoryService.create(req.body as IForumCategory);
+                const forumService : ForumService = Container.get(ForumService);
+                const category = await forumService.create(req.body as IForum);
                 return res.json(category).status(200);
             } catch (e) {
                 return next(e);
@@ -36,9 +42,9 @@ export default (app: Router) => {
         '/:id',
         async (req: Request, res: Response, next: NextFunction) => {
             try {
-                const categoryService: ForumCategoryService = Container.get(ForumCategoryService);
-                const category: IForumCategory = await categoryService.get(req.params.id);
-                return res.json(category).status(200);
+                const forumService: ForumService = Container.get(ForumService);
+                const forum: IForum = await forumService.get(req.params.id);
+                return res.json(forum).status(200);
             } catch (e) {
                 return next(e);
             }
@@ -50,9 +56,9 @@ export default (app: Router) => {
             try {
                 const page: number = req.query.page && req.query.page !== '-1' ? parseInt(<string>req.query.page)  :  undefined;
                 const perPage: number = req.query.perPage ? parseInt(<string>req.query.perPage) : 10;
-                const categoryService: ForumCategoryService = Container.get(ForumCategoryService);
-                const category: IPaginateResult<IForumCategory> = await categoryService.list(req.body, {...req.query, page, perPage});
-                return res.json(category).status(200);
+                const forumService: ForumService = Container.get(ForumService);
+                const forum: IPaginateResult<IForum> = await forumService.list(req.body, {...req.query, page, perPage});
+                return res.json(forum).status(200);
             } catch (e) {
                 return next(e);
             }
@@ -62,12 +68,12 @@ export default (app: Router) => {
         '/',
         middlewares.authentication,
         middlewares.userAttachment,
-        middlewares.permissions('category.manage'),
+        middlewares.permissions('forum.manage'),
         async (req: Request, res: Response, next: NextFunction) => {
             try {
-                const categoryService: ForumCategoryService = Container.get(ForumCategoryService);
-                const category: IForumCategory = await categoryService.update(req.body as IForumCategory);
-                return res.json(category).status(200);
+                const forumService: ForumService = Container.get(ForumService);
+                const forum: IForumCategory = await forumService.update(req.body as IForum);
+                return res.json(forum).status(200);
             } catch (e) {
                 return next(e);
             }
@@ -77,11 +83,11 @@ export default (app: Router) => {
         '/:id',
         middlewares.authentication,
         middlewares.userAttachment,
-        middlewares.permissions('category.manage'),
+        middlewares.permissions('forum.manage'),
         async (req: Request, res: Response, next: NextFunction) => {
             try {
-                const categoryService: ForumCategoryService = Container.get(ForumCategoryService);
-                await categoryService.delete(req.params.id);
+                const forumService: ForumService = Container.get(ForumService);
+                await forumService.delete(req.params.id);
                 return res.json({deleted: true}).status(200);
             } catch (e) {
                 return next(e);

@@ -15,12 +15,14 @@ const Topic = new mongoose.Schema(
         author: {
             type: Schema.Types.ObjectId,
             ref: 'User',
-            required: true
+            required: true,
+            autopopulate: true
         },
         forum: {
             type: Schema.Types.ObjectId,
             ref: 'Forum',
-            required: true
+            required: true,
+            autopopulate: true
         },
         subscribers: [
             {

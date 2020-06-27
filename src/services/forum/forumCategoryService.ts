@@ -29,7 +29,7 @@ export default class ForumCategoryService {
             if (!categoryRecord) throw new ResponseError('The requested category was not found', 404);
             return categoryRecord;
         } catch (e) {
-            this.logger.error('There was an error creating an appeal: %o', e);
+            this.logger.error('There was an error creating a forum category: %o', e);
             throw e;
         }
     }
@@ -38,7 +38,7 @@ export default class ForumCategoryService {
         try {
             return await this.forumCategoryModel.paginate(query, options);
         } catch (e) {
-            this.logger.error('There was an error creating an appeal: %o', e);
+            this.logger.error('There was an error creating a forum category: %o', e);
             throw e;
         }
     }
@@ -49,7 +49,7 @@ export default class ForumCategoryService {
             if (!categoryRecord) throw new ResponseError('The requested category was not found', 404);
             return categoryRecord;
         } catch (e) {
-            this.logger.error('There was an error creating an appeal: %o', e);
+            this.logger.error('There was an error creating a forum category: %o', e);
             throw e;
         }
     }
@@ -59,7 +59,7 @@ export default class ForumCategoryService {
             // TODO: Create forum, topic and post deletion
             await this.forumCategoryModel.findByIdAndDelete(id);
         } catch (e) {
-            this.logger.error('There was an error creating an appeal: %o', e);
+            this.logger.error('There was an error creating a forum category: %o', e);
             throw e;
         }
     }
