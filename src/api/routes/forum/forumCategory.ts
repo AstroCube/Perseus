@@ -20,7 +20,7 @@ export default (app: Router) => {
             })
         }),
         middlewares.authentication,
-        middlewares.userAttachment,
+        middlewares.userAttachment(true),
         middlewares.permissions('category.manage'),
         async (req: Request, res: Response, next: NextFunction) => {
             try {
@@ -37,7 +37,7 @@ export default (app: Router) => {
         async (req: Request, res: Response, next: NextFunction) => {
             try {
                 const categoryService: ForumCategoryService = Container.get(ForumCategoryService);
-                const category: IForumCategory = await categoryService.get(req.params.id);
+                const category: IForumCategory = await categoryService.get(req.params.id, req.currentUser);
                 return res.json(category).status(200);
             } catch (e) {
                 return next(e);
@@ -61,7 +61,7 @@ export default (app: Router) => {
     route.put(
         '/',
         middlewares.authentication,
-        middlewares.userAttachment,
+        middlewares.userAttachment(true),
         middlewares.permissions('category.manage'),
         async (req: Request, res: Response, next: NextFunction) => {
             try {
@@ -76,7 +76,7 @@ export default (app: Router) => {
     route.delete(
         '/:id',
         middlewares.authentication,
-        middlewares.userAttachment,
+        middlewares.userAttachment(true),
         middlewares.permissions('category.manage'),
         async (req: Request, res: Response, next: NextFunction) => {
             try {

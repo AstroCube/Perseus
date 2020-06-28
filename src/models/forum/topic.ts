@@ -41,10 +41,6 @@ const Topic = new mongoose.Schema(
         locked: {
             type: Boolean,
             default: false
-        },
-        guest: {
-            type: Boolean,
-            default: false
         }
     },
     { timestamps: true }

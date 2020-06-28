@@ -77,7 +77,7 @@ export default (app: Router) => {
             })
         }),
         middlewares.authentication,
-        middlewares.userAttachment,
+        middlewares.userAttachment(true),
         async (req: Request, res: Response, next: NextFunction) => {
             try {
                 const mapService: MapService = Container.get(MapService);

@@ -13,7 +13,7 @@ export default (app: Router) => {
   route.post(
       '/create-website',
       middlewares.authentication,
-      middlewares.userAttachment,
+      middlewares.userAttachment(true),
       async (req: Request, res: Response, next: NextFunction) => {
           try {
               const service: PunishmentService = Container.get(PunishmentService);
@@ -80,7 +80,7 @@ export default (app: Router) => {
     route.put(
         '/update',
         middlewares.authentication,
-        middlewares.userAttachment,
+        middlewares.userAttachment(true),
         middlewares.permissions("punishments.manage"),
         async (req: Request, res: Response, next: NextFunction) => {
             try {

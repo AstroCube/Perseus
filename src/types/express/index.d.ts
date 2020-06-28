@@ -19,6 +19,7 @@ import {IFriend} from "../../interfaces/IFriend";
 declare global {
   namespace Express {
     export interface Request {
+      authenticated: boolean;
       currentUser: IUser & Document;
       currentServer: IServer & Document;
     }

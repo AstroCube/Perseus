@@ -1,9 +1,11 @@
 import {IPaginateResult} from "mongoose";
 import {Inject, Service} from "typedi";
 import {Logger} from "winston";
-import {IForumCategory} from "../../interfaces/forum/IForumCategory";
 import {ResponseError} from "../../interfaces/error/ResponseError";
 import {IForum} from "../../interfaces/forum/IForum";
+import {IUser} from "../../interfaces/IUser";
+import {ForumPermissible, IForumPermissions} from "../../interfaces/permissions/IForumPermissions";
+import dotty = require('dotty');
 
 @Service()
 export default class ForumService {
@@ -24,10 +26,15 @@ export default class ForumService {
         }
     }
 
-    public async get(id: string): Promise<IForum> {
+    public async get(id: string, user?: IUser): Promise<IForum> {
         try {
             const forumRecord: IForum = await this.forumModel.findById(id);
             if (!forumRecord) throw new ResponseError('The requested forum was not found', 404);
+            if (!user && !forumRecord.guest) throw new ResponseError('You can not have access to the requested forum', 403);
+            if (user) {
+                const permissions: IForumPermissions = await this.getPermissions(user, forumRecord._id);
+                if (permissions.view === ForumPermissible.None) throw new ResponseError('You can not have access to the requested forum', 403);
+            }
             return forumRecord;
         } catch (e) {
             this.logger.error('There was an error creating a forum: %o', e);
@@ -35,9 +42,13 @@ export default class ForumService {
         }
     }
 
-    public async list(query?: any, options?: any): Promise<IPaginateResult<IForum>> {
+    public async list(user: IUser, query?: any, options?: any): Promise<IPaginateResult<IForum>> {
         try {
-            return await this.forumModel.paginate(query, options);
+            if (!user)
+                return await this.forumModel.paginate({...query, guest: true}, options);
+            if (user.groups.some(g => g.group.web_permissions.forum.manage))
+                return await this.forumModel.paginate(query, options);
+            return this.forumModel.paginate({...query, _id: {$in: this.getAvailableForums(user)}}, query);
         } catch (e) {
             this.logger.error('There was an error creating a forum: %o', e);
             throw e;
@@ -63,6 +74,72 @@ export default class ForumService {
             this.logger.error('There was an error deleting a forum: %o', e);
             throw e;
         }
+    }
+
+    public async getPermissions(user: IUser, id: string): Promise<IForumPermissions> {
+        try {
+            let manifest = {
+                id,
+                manage: false,
+                create: false,
+                view: ForumPermissible.None,
+                edit: ForumPermissible.None,
+                comment: ForumPermissible.None,
+                delete: false,
+                pin: false,
+                lock: false
+            };
+
+            manifest = await this.transactionalPermissions(manifest, user, id, ForumPermissible.Own);
+            manifest = await this.transactionalPermissions(manifest, user, id, ForumPermissible.All);
+            return manifest;
+        } catch (e) {
+            this.logger.error('There was an error obtaining the permissible manifest: %o', e);
+            throw e;
+        }
+    }
+
+    private transactionalPermissions(manifest: IForumPermissions, user: IUser, id: string, type: ForumPermissible): IForumPermissions {
+        const manage =
+            user.groups.some(g => g.group.web_permissions.forum.manage) ||
+            user.groups.some(g => g.group.web_permissions.forum.allowance.some(a => a.id.toString() === id && a.manage));
+
+        dotty.deepKeys(manifest, {leavesOnly: true}).forEach((key) => {
+            if (key !== "id") {
+                if (typeof dotty.deepKeys(manifest, key) === "boolean") {
+                    if (
+                        manage ||
+                        user.groups.some(g => g.group.web_permissions.forum.allowance.some(
+                            a => dotty.exists(a, key) && dotty.get(a, key)
+                        ))
+                    ) {
+                        dotty.put(manifest, key, true);
+                    }
+                } else {
+                    if (
+                        manage ||
+                        user.groups.some(g => g.group.web_permissions.forum.allowance.some(
+                            a => dotty.exists(a, key) && dotty.get(a, key) === type
+                        ))
+                    ) {
+                        dotty.put(manifest, key, type);
+                    }
+                }
+            }
+        });
+
+        return manifest;
+    }
+
+    public getAvailableForums(user: IUser): string[] {
+        let availableGroups: string[] = [];
+        user.groups.forEach(group => {
+            group.group.web_permissions.forum.allowance.forEach(allowance => {
+                if (allowance.view !== ForumPermissible.None && !availableGroups.includes(allowance.id.toString()))
+                    availableGroups.push(allowance.id);
+            });
+        });
+        return availableGroups;
     }
 
 }

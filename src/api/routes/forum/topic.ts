@@ -25,11 +25,11 @@ export default (app: Router) => {
             })
         }),
         middlewares.authentication,
-        middlewares.userAttachment,
+        middlewares.userAttachment(true),
         async (req: Request, res: Response, next: NextFunction) => {
             try {
                 const topicService: TopicService = Container.get(TopicService);
-                const topic = await topicService.create(req.body as ITopic);
+                const topic = await topicService.create(req.body as ITopic, req.currentUser);
                 return res.json(topic).status(200);
             } catch (e) {
                 return next(e);
@@ -38,6 +38,8 @@ export default (app: Router) => {
 
     route.get(
         '/:id',
+        middlewares.authentication,
+        middlewares.userAttachment(false),
         async (req: Request, res: Response, next: NextFunction) => {
             try {
                 const topicService: TopicService = Container.get(TopicService);
@@ -50,12 +52,14 @@ export default (app: Router) => {
 
     route.post(
         '/list',
+        middlewares.authentication,
+        middlewares.userAttachment(false),
         async (req: Request, res: Response, next: NextFunction) => {
             try {
                 const page: number = req.query.page && req.query.page !== '-1' ? parseInt(<string>req.query.page)  :  undefined;
                 const perPage: number = req.query.perPage ? parseInt(<string>req.query.perPage) : 10;
                 const topicService: TopicService = Container.get(TopicService);
-                const topic: IPaginateResult<ITopic> = await topicService.list(req.body, {...req.query, page, perPage});
+                const topic: IPaginateResult<ITopic> = await topicService.list(req.body, {...req.query, page, perPage}, req.currentUser);
                 return res.json(topic).status(200);
             } catch (e) {
                 return next(e);
@@ -69,7 +73,7 @@ export default (app: Router) => {
         async (req: Request, res: Response, next: NextFunction) => {
             try {
                 const topicService: TopicService = Container.get(TopicService);
-                const topic: ITopic = await topicService.update(req.body as ITopic);
+                const topic: ITopic = await topicService.update(req.body as ITopic, req.currentUser);
                 return res.json(topic).status(200);
             } catch (e) {
                 return next(e);

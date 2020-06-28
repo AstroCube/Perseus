@@ -11,7 +11,7 @@ const route = Router();
 
 export default (app: Router) => {
 
-    app.use('/forum/category', route);
+    app.use('/forum', route);
 
     route.post(
         '/',
@@ -26,7 +26,7 @@ export default (app: Router) => {
             })
         }),
         middlewares.authentication,
-        middlewares.userAttachment,
+        middlewares.userAttachment(true),
         middlewares.permissions('forum.manage'),
         async (req: Request, res: Response, next: NextFunction) => {
             try {
@@ -40,10 +40,12 @@ export default (app: Router) => {
 
     route.get(
         '/:id',
+        middlewares.authentication,
+        middlewares.userAttachment(false),
         async (req: Request, res: Response, next: NextFunction) => {
             try {
                 const forumService: ForumService = Container.get(ForumService);
-                const forum: IForum = await forumService.get(req.params.id);
+                const forum: IForum = await forumService.get(req.params.id, req.currentUser);
                 return res.json(forum).status(200);
             } catch (e) {
                 return next(e);
@@ -52,12 +54,14 @@ export default (app: Router) => {
 
     route.post(
         '/list',
+        middlewares.authentication,
+        middlewares.userAttachment(false),
         async (req: Request, res: Response, next: NextFunction) => {
             try {
                 const page: number = req.query.page && req.query.page !== '-1' ? parseInt(<string>req.query.page)  :  undefined;
                 const perPage: number = req.query.perPage ? parseInt(<string>req.query.perPage) : 10;
                 const forumService: ForumService = Container.get(ForumService);
-                const forum: IPaginateResult<IForum> = await forumService.list(req.body, {...req.query, page, perPage});
+                const forum: IPaginateResult<IForum> = await forumService.list(req.currentUser, req.body, {...req.query, page, perPage});
                 return res.json(forum).status(200);
             } catch (e) {
                 return next(e);
@@ -67,7 +71,7 @@ export default (app: Router) => {
     route.put(
         '/',
         middlewares.authentication,
-        middlewares.userAttachment,
+        middlewares.userAttachment(true),
         middlewares.permissions('forum.manage'),
         async (req: Request, res: Response, next: NextFunction) => {
             try {
@@ -82,7 +86,7 @@ export default (app: Router) => {
     route.delete(
         '/:id',
         middlewares.authentication,
-        middlewares.userAttachment,
+        middlewares.userAttachment(true),
         middlewares.permissions('forum.manage'),
         async (req: Request, res: Response, next: NextFunction) => {
             try {

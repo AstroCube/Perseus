@@ -59,7 +59,7 @@ export default (app: Router) => {
   route.get(
     '/list/:page?',
     middlewares.authentication,
-    middlewares.userAttachment,
+    middlewares.userAttachment(true),
     middlewares.permissions("user.read"),
     async (req: Request, res: Response, next: NextFunction) => {
       try {
@@ -76,7 +76,7 @@ export default (app: Router) => {
     route.get(
         '/list-all/:own?',
         middlewares.authentication,
-        middlewares.userAttachment,
+        middlewares.userAttachment(true),
         async (req: Request, res: Response, next: NextFunction) => {
             try {
                 const service : UserService = Container.get(UserService);
@@ -90,7 +90,7 @@ export default (app: Router) => {
   route.get(
     '/me',
     middlewares.authentication,
-    middlewares.userAttachment,
+    middlewares.userAttachment(true),
     async (req: Request, res: Response) => {
       return res.status(200).json(req.currentUser);
     });
@@ -98,7 +98,7 @@ export default (app: Router) => {
   route.put(
     '/update/:id',
     middlewares.authentication,
-    middlewares.userAttachment,
+    middlewares.userAttachment(true),
     middlewares.permissions("user.update"),
     async (req: Request, res: Response, next: NextFunction) => {
       try {
@@ -126,7 +126,7 @@ export default (app: Router) => {
   route.put(
     '/update-profile',
     middlewares.authentication,
-    middlewares.userAttachment,
+    middlewares.userAttachment(true),
     async (req: Request, res: Response, next: NextFunction) => {
       try {
         const service : UserService = Container.get(UserService);
@@ -140,7 +140,7 @@ export default (app: Router) => {
   route.put(
     '/update-password',
     middlewares.authentication,
-    middlewares.userAttachment,
+    middlewares.userAttachment(true),
     celebrate({
       body: Joi.object({
         actual: Joi.string().required(),
@@ -160,7 +160,7 @@ export default (app: Router) => {
   route.get(
     '/update-mail-verification',
     middlewares.authentication,
-    middlewares.userAttachment,
+    middlewares.userAttachment(true),
     celebrate({
       body: Joi.object({
         email: Joi.string().required()
@@ -179,7 +179,7 @@ export default (app: Router) => {
   route.post(
     '/update-mail',
     middlewares.authentication,
-    middlewares.userAttachment,
+    middlewares.userAttachment(true),
     celebrate({
       body: Joi.object({
         update: Joi.string().required(),
