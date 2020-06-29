@@ -141,7 +141,7 @@ export default class TopicService {
              */
             if (topic.subscribers.length > 0) {
                 if (topic.subscribers.length !== 1) throw new ResponseError('You can only pass one user to subscribe', 400);
-                if (user._id.toString() !== topic.subscribers[0]._id.toString())
+                if (user._id.toString() !== topic.subscribers[0].toString())
                     throw new ResponseError('You can only subscribe yourself to a topic', 400);
             }
 

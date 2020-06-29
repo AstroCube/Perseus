@@ -3,17 +3,48 @@ import {Inject, Service} from "typedi";
 import {Logger} from "winston";
 import {ResponseError} from "../../interfaces/error/ResponseError";
 import {IPost} from "../../interfaces/forum/IPost";
+import {ITopic} from "../../interfaces/forum/ITopic";
+import TopicService from "./topicService";
+import {ForumPermissible, IForumPermissions} from "../../interfaces/permissions/IForumPermissions";
+import ForumService from "./forumService";
+import {IUser} from "../../interfaces/IUser";
 
 @Service()
 export default class PostService {
 
     constructor(
         @Inject('postModel') private postModel : Models.PostModel,
-        @Inject('logger') private logger: Logger
+        @Inject('logger') private logger: Logger,
+        private topicService: TopicService,
+        private forumService: ForumService
     ) {}
 
-    public async create(request: IPost): Promise<IPost> {
+    public async create(request: IPost, user: IUser): Promise<IPost> {
         try {
+            const topic: ITopic = await this.topicService.get(request.topic as string);
+            if (!topic) throw new ResponseError('The requested topic was not found', 404);
+
+            const related: IPost[] = await this.postModel.find({topic: topic._id});
+            const permissions: IForumPermissions = await this.forumService.getPermissions(user,  topic.forum._id);
+
+            /**
+             * Check if user is superAdmin. Otherwise will check if post is the first of the topic to get
+             * create permission or comment in case of not being the first post.
+             */
+            if (!permissions.manage && !user.groups.some(g => g.group.web_permissions.forum.manage)) {
+                if (related.length < 1) {
+                    if (!permissions.create) throw new ResponseError('You do not have permission to comment in this topic', 403);
+                } else {
+                    if (
+                        !(permissions.comment === ForumPermissible.All ||
+                            (
+                                permissions.comment !== ForumPermissible.None &&
+                                topic.author._id.toString() === user._id.toString()
+                            ))
+                    ) throw new ResponseError('You do not have permissions to comment in this topic', 404);
+                }
+            }
+
             const post: IPost = await this.postModel.create(request);
             if (!post) throw new ResponseError('There was an error creating a post', 500);
             return post;
@@ -23,10 +54,23 @@ export default class PostService {
         }
     }
 
-    public async get(id: string): Promise<IPost> {
+    public async get(id: string, user?: IUser): Promise<IPost> {
         try {
             const postRecord: IPost = await this.postModel.findById(id);
             if (!postRecord) throw new ResponseError('The requested post was not found', 404);
+            const permissions: IForumPermissions = await this.forumService.getPermissions(user,  (postRecord.topic as ITopic)._id);
+
+            /**
+             * Check if user is superAdmin. Otherwise will check if post is the first of the topic to get
+             * create permission or comment in case of not being the first post.
+             */
+            if (!permissions.manage && !user.groups.some(g => g.group.web_permissions.forum.manage)) {
+                if (
+                    !(permissions.comment === ForumPermissible.All ||
+                        (permissions.comment !== ForumPermissible.None && (postRecord.topic as ITopic).author._id.toString() === user._id.toString()))
+                ) throw new ResponseError('You do not have access to this post', 403);
+            }
+
             return postRecord;
         } catch (e) {
             this.logger.error('There was an error creating a topic: %o', e);
@@ -34,20 +78,67 @@ export default class PostService {
         }
     }
 
-    public async list(query?: any, options?: any): Promise<IPaginateResult<IPost>> {
+    public async list(query?: any, options?: any, user?: IUser): Promise<IPaginateResult<IPost>> {
         try {
-            return await this.postModel.paginate(query, options);
+            /**
+             * Prevents user from obtaining a request for multiple topics
+             */
+            if (!query.topic || typeof query.topic !== 'string')
+                throw new ResponseError('You must search through one topic', 400);
+
+            const topic: ITopic = await this.topicService.get(query.topic, user);
+            if (!topic) throw new ResponseError('The requested topic was not found', 404);
+
+            /**
+             * Will check which forums has user available.
+             */
+            if (!user) {
+                if (!topic.forum.guest) throw new ResponseError('You can not get posts from this forum', 403);
+                return await this.postModel.paginate({...query, forum: topic._id}, options);
+            }
+
+            return await this.postModel.paginate({...query, topic: topic._id}, options);
         } catch (e) {
             this.logger.error('There was an error creating a post: %o', e);
             throw e;
         }
     }
 
-    public async update(category: IPost): Promise<IPost> {
+    public async update(post: IPost, user: IUser): Promise<IPost> {
         try {
-            const postRecord: IPost = await this.postModel.findByIdAndUpdate(category._id, category);
+            delete post.quote;
+            delete post.author;
+            delete post.topic;
+
+            const postRecord: IPost = await this.postModel.findById(post._id);
             if (!postRecord) throw new ResponseError('The requested post was not found', 404);
-            return postRecord;
+            const permissions: IForumPermissions = await this.forumService.getPermissions(user,  (postRecord.topic as ITopic)._id);
+
+            /**
+             * Check if user hast All permissions, otherwise if is the same and hasn't elapsed 15 minutes after
+             * post creation to generate edition access.
+             */
+            if (permissions.edit !== ForumPermissible.All && (postRecord.topic as ITopic).author._id.toString() !== user._id.toString()) {
+                throw new ResponseError('You do not have permission to update the topic.', 403);
+            } else {
+                const date: Date = new Date(new Date(postRecord.createdAt).getTime() + (15 * 60000));
+                if (date.getTime() < new Date().getTime() || permissions.edit === ForumPermissible.None)
+                    throw new ResponseError('You do not have permission to update the topic.', 403);
+            }
+
+            if (post.liked.length > 0) {
+                if (post.liked.length !== 1) throw new ResponseError('You can only pass one user to like', 400);
+                if (user._id.toString() !== post.liked[0].toString())
+                    throw new ResponseError('You can only like a post yourself', 400);
+            }
+
+            if (post.viewed.length > 0) {
+                if (post.viewed.length !== 1) throw new ResponseError('You can only pass one user to view', 400);
+                if (user._id.toString() !== post.viewed[0].toString())
+                    throw new ResponseError('You can only view a post yourself', 400);
+            }
+
+            return this.postModel.findByIdAndUpdate(post._id, {...post, lastAction: user._id});
         } catch (e) {
             this.logger.error('There was an error creating a post: %o', e);
             throw e;
