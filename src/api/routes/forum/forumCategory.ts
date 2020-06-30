@@ -37,7 +37,7 @@ export default (app: Router) => {
         async (req: Request, res: Response, next: NextFunction) => {
             try {
                 const categoryService: ForumCategoryService = Container.get(ForumCategoryService);
-                const category: IForumCategory = await categoryService.get(req.params.id, req.currentUser);
+                const category: IForumCategory = await categoryService.get(req.params.id);
                 return res.json(category).status(200);
             } catch (e) {
                 return next(e);

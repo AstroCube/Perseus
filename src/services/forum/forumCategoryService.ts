@@ -3,10 +3,6 @@ import {Inject, Service} from "typedi";
 import {Logger} from "winston";
 import {IForumCategory} from "../../interfaces/forum/IForumCategory";
 import {ResponseError} from "../../interfaces/error/ResponseError";
-import {IUser} from "../../interfaces/IUser";
-import {ForumPermissible, IForumPermissions} from "../../interfaces/permissions/IForumPermissions";
-import ForumService from "./forumService";
-import {IForum} from "../../interfaces/forum/IForum";
 
 @Service()
 export default class ForumCategoryService {
@@ -14,7 +10,6 @@ export default class ForumCategoryService {
     constructor(
         @Inject('forumCategoryModel') private forumCategoryModel : Models.ForumCategoryModel,
         @Inject('logger') private logger: Logger
-
     ) {}
 
     public async create(request: IForumCategory): Promise<IForumCategory> {
@@ -28,7 +23,7 @@ export default class ForumCategoryService {
         }
     }
 
-    public async get(id: string, user?: IUser): Promise<IForumCategory> {
+    public async get(id: string): Promise<IForumCategory> {
         try {
             const categoryRecord: IForumCategory = await this.forumCategoryModel.findById(id);
             if (!categoryRecord) throw new ResponseError('The requested category was not found', 404);
