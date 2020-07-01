@@ -24,7 +24,6 @@ function authentication(optional?: boolean) {
   });
 
   if (!optional) return middle;
-  return null;
 }
 
 export default authentication;
