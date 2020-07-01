@@ -14,7 +14,7 @@ export default (app: Router) => {
   route.post(
     '/create',
       middlewares.authentication,
-      middlewares.userAttachment(true),
+      middlewares.userAttachment,
       async (req: Request, res: Response, next: NextFunction) => {
         try {
         const service: ReportService = Container.get(ReportService);
@@ -28,7 +28,7 @@ export default (app: Router) => {
     route.get(
         '/get/:id',
         middlewares.authentication,
-        middlewares.userAttachment(true),
+        middlewares.userAttachment,
         async (req: Request, res: Response, next: NextFunction) => {
             try {
                 const service: ReportService = Container.get(ReportService);
@@ -42,7 +42,7 @@ export default (app: Router) => {
     route.post(
         '/list',
         middlewares.authentication,
-        middlewares.userAttachment(true),
+        middlewares.userAttachment,
         async (req: Request, res: Response, next: NextFunction) => {
             try {
                 let page: number = undefined; if (req.query.page && req.query.page !== '-1') page = parseInt(<string>req.query.page);
@@ -59,7 +59,7 @@ export default (app: Router) => {
     route.put(
         '/action/:id',
         middlewares.authentication,
-        middlewares.userAttachment(true),
+        middlewares.userAttachment,
         async (req: Request, res: Response, next: NextFunction) => {
             try {
                 const service: ReportService = Container.get(ReportService);
@@ -73,7 +73,7 @@ export default (app: Router) => {
     route.get(
         '/permissions',
         middlewares.authentication,
-        middlewares.userAttachment(true),
+        middlewares.userAttachment,
         async (req: Request, res: Response, next: NextFunction) => {
             try {
                 const service: ReportService = Container.get(ReportService);

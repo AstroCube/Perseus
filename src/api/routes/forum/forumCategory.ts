@@ -20,7 +20,7 @@ export default (app: Router) => {
             })
         }),
         middlewares.authentication,
-        middlewares.userAttachment(true),
+        middlewares.userAttachment,
         middlewares.permissions('category.manage'),
         async (req: Request, res: Response, next: NextFunction) => {
             try {
@@ -61,7 +61,7 @@ export default (app: Router) => {
     route.put(
         '/',
         middlewares.authentication,
-        middlewares.userAttachment(true),
+        middlewares.userAttachment,
         middlewares.permissions('category.manage'),
         async (req: Request, res: Response, next: NextFunction) => {
             try {
@@ -76,7 +76,7 @@ export default (app: Router) => {
     route.delete(
         '/:id',
         middlewares.authentication,
-        middlewares.userAttachment(true),
+        middlewares.userAttachment,
         middlewares.permissions('category.manage'),
         async (req: Request, res: Response, next: NextFunction) => {
             try {

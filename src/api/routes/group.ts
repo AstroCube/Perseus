@@ -15,7 +15,7 @@ export default (app: Router) => {
   route.post(
     '/create',
     middlewares.authentication,
-    middlewares.userAttachment(true),
+    middlewares.userAttachment,
     middlewares.permissions("group.create"),
     async (req: Request, res: Response, next: NextFunction) => {
       try {
@@ -30,7 +30,7 @@ export default (app: Router) => {
   route.get(
     '/view/:id',
     middlewares.authentication,
-    middlewares.userAttachment(true),
+    middlewares.userAttachment,
     middlewares.permissions("group.read"),
     async (req: Request, res: Response, next: NextFunction) => {
       try {
@@ -45,7 +45,7 @@ export default (app: Router) => {
     route.get(
         '/manifest',
         middlewares.authentication,
-        middlewares.userAttachment(true),
+        middlewares.userAttachment,
         async (req: Request, res: Response, next: NextFunction) => {
             try {
                 const groupService: GroupService = Container.get(GroupService);
@@ -59,7 +59,7 @@ export default (app: Router) => {
   route.get(
     '/list/:page?',
     middlewares.authentication,
-    middlewares.userAttachment(true),
+    middlewares.userAttachment,
     middlewares.permissions("group.read"),
     async (req: Request, res: Response, next: NextFunction) => {
       try {
@@ -76,7 +76,7 @@ export default (app: Router) => {
   route.put(
     '/update/:id',
     middlewares.authentication,
-    middlewares.userAttachment(true),
+    middlewares.userAttachment,
     middlewares.permissions("group.update"),
     async (req: Request, res: Response, next: NextFunction) => {
       try {
@@ -97,7 +97,7 @@ export default (app: Router) => {
       })
     }),
     middlewares.authentication,
-    middlewares.userAttachment(true),
+    middlewares.userAttachment,
     middlewares.permissions("group.assign"),
     async (req: Request, res: Response, next: NextFunction) => {
       try {
@@ -118,7 +118,7 @@ export default (app: Router) => {
       })
     }),
     middlewares.authentication,
-    middlewares.userAttachment(true),
+    middlewares.userAttachment,
     middlewares.permissions("group.assign"),
     async (req: Request, res: Response, next: NextFunction) => {
       try {

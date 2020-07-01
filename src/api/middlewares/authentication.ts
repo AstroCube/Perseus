@@ -8,13 +8,20 @@ const getTokenFromHeader = req => {
   ) {
     return req.headers.authorization.split(' ')[1];
   }
+
   return null;
 };
 
-const authentication = jwt({
-  secret: config.jwtSecret,
-  userProperty: 'token',
-  getToken: getTokenFromHeader,
-});
+function authentication(optional?: boolean) {
+  try {
+    return jwt({
+      secret: config.jwtSecret,
+      userProperty: 'token',
+      getToken: getTokenFromHeader,
+    });
+  } catch (e) {
+    if (e.message !== 'UnauthorizedError' || optional) throw e;
+  }
+}
 
 export default authentication;

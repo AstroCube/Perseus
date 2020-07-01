@@ -25,8 +25,8 @@ export default (app: Router) => {
                 guest: Joi.boolean()
             })
         }),
-        middlewares.authentication,
-        middlewares.userAttachment(true),
+        middlewares.authentication(true),
+        middlewares.userAttachment,
         middlewares.permissions('forum.manage'),
         async (req: Request, res: Response, next: NextFunction) => {
             try {
@@ -40,8 +40,8 @@ export default (app: Router) => {
 
     route.get(
         '/:id',
-        middlewares.authentication,
-        middlewares.userAttachment(false),
+        middlewares.authentication(true),
+        middlewares.userAttachment,
         async (req: Request, res: Response, next: NextFunction) => {
             try {
                 const forumService: ForumService = Container.get(ForumService);
@@ -54,8 +54,8 @@ export default (app: Router) => {
 
     route.post(
         '/list',
-        middlewares.authentication,
-        middlewares.userAttachment(false),
+        middlewares.authentication(true),
+        middlewares.userAttachment,
         async (req: Request, res: Response, next: NextFunction) => {
             try {
                 const page: number = req.query.page && req.query.page !== '-1' ? parseInt(<string>req.query.page)  :  undefined;
@@ -71,7 +71,7 @@ export default (app: Router) => {
     route.put(
         '/',
         middlewares.authentication,
-        middlewares.userAttachment(true),
+        middlewares.userAttachment,
         middlewares.permissions('forum.manage'),
         async (req: Request, res: Response, next: NextFunction) => {
             try {
@@ -86,7 +86,7 @@ export default (app: Router) => {
     route.delete(
         '/:id',
         middlewares.authentication,
-        middlewares.userAttachment(true),
+        middlewares.userAttachment,
         middlewares.permissions('forum.manage'),
         async (req: Request, res: Response, next: NextFunction) => {
             try {
