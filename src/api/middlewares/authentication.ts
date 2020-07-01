@@ -20,7 +20,8 @@ function authentication(optional?: boolean) {
       getToken: getTokenFromHeader,
     });
   } catch (e) {
-    if (e.message !== 'UnauthorizedError' || optional) throw e;
+    console.log(e);
+    if (e.message !== 'UnauthorizedError' || !optional) throw e;
   }
 }
 
