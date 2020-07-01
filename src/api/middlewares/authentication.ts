@@ -1,29 +1,28 @@
 import jwt from 'express-jwt';
 import config from '../../config';
 
-const getTokenFromHeader = req => {
-  if (
-    (req.headers.authorization && req.headers.authorization.split(' ')[0] === 'Token') ||
-    (req.headers.authorization && req.headers.authorization.split(' ')[0] === 'Bearer')
-  ) {
-    return req.headers.authorization.split(' ')[1];
-  }
-
-  return null;
-};
+const getTokenFromHeader = (optional?: boolean) => {
+  return req => {
+    try {
+      if (
+          (req.headers.authorization && req.headers.authorization.split(' ')[0] === 'Token') ||
+          (req.headers.authorization && req.headers.authorization.split(' ')[0] === 'Bearer')
+      ) {
+        return req.headers.authorization.split(' ')[1];
+      }
+    } catch (e) {
+      console.log(e);
+    }
+    return null;
+  };
+}
 
 function authentication(optional?: boolean) {
-  try {
-    console.log("Performing authorizations");
-    return jwt({
-      secret: config.jwtSecret,
-      userProperty: 'token',
-      getToken: getTokenFromHeader,
-    });
-  } catch (e) {
-    console.log(e);
-    if (e.message !== 'UnauthorizedError' || !optional) throw e;
-  }
+  return jwt({
+    secret: config.jwtSecret,
+    userProperty: 'token',
+    getToken: getTokenFromHeader(optional),
+  });
 }
 
 export default authentication;
