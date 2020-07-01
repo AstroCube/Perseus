@@ -14,6 +14,7 @@ const getTokenFromHeader = req => {
 
 function authentication(optional?: boolean) {
   try {
+    console.log("Performing authorizations");
     return jwt({
       secret: config.jwtSecret,
       userProperty: 'token',
