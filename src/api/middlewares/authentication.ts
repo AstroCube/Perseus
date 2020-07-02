@@ -17,13 +17,11 @@ const getTokenFromHeader = req => {
 
 function authentication(optional?: boolean) {
   return async (req, res, next) => {
-    const middle = jwt({
+    return jwt({
       secret: config.jwtSecret,
       userProperty: 'token',
       getToken: getTokenFromHeader(optional),
     });
-    if (!optional) return middle;
-    next();
   };
 }
 
