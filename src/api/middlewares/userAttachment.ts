@@ -3,6 +3,7 @@ import { Logger } from "winston";
 import {ResponseError} from "../../interfaces/error/ResponseError";
 
 const userAttachment = (optional?: boolean) => {
+  console.log("Bebecita ahora");
   return async (req, res, next) => {
     const logger : Logger = Container.get('logger');
     try {
