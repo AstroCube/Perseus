@@ -12,7 +12,7 @@ const route = Router();
 
 export default (app: Router) => {
 
-    app.use('/forum/base', route);
+    app.use('/forum', route);
 
     route.post(
         '/',
