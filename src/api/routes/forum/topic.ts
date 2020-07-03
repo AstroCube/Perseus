@@ -9,6 +9,7 @@ import ForumService from "../../../services/forum/forumService";
 import {IForum} from "../../../interfaces/forum/IForum";
 import TopicService from "../../../services/forum/topicService";
 import {ITopic} from "../../../interfaces/forum/ITopic";
+import userOptional from "../../middlewares/userOptional";
 const route = Router();
 
 export default (app: Router) => {
@@ -39,7 +40,7 @@ export default (app: Router) => {
     route.get(
         '/:id',
         middlewares.authentication,
-        middlewares.userAttachment(true),
+        middlewares.userOptional,
         async (req: Request, res: Response, next: NextFunction) => {
             try {
                 const topicService: TopicService = Container.get(TopicService);
@@ -53,7 +54,7 @@ export default (app: Router) => {
     route.post(
         '/list',
         middlewares.authentication,
-        middlewares.userAttachment(true),
+        middlewares.userOptional,
         async (req: Request, res: Response, next: NextFunction) => {
             try {
                 const page: number = req.query.page && req.query.page !== '-1' ? parseInt(<string>req.query.page)  :  undefined;

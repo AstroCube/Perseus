@@ -1,12 +1,15 @@
 import { Container } from 'typedi';
 import { Logger } from "winston";
 
-const userAttachment = async (req, res, next) => {
+const userOptional = async (req, res, next) => {
   const logger : Logger = Container.get('logger');
   try {
     const userModel = Container.get('userModel') as Models.UserModel;
     const userRecord = await userModel.findById(req.token._id);
-    if (!userRecord) return res.sendStatus(401);
+    if (!userRecord) {
+      req.authenticated = false;
+      return next();
+    }
     const currentUser = userRecord.toObject();
     Reflect.deleteProperty(currentUser, 'password');
     Reflect.deleteProperty(currentUser, 'salt');
@@ -19,4 +22,4 @@ const userAttachment = async (req, res, next) => {
   }
 };
 
-export default userAttachment;
+export default userOptional;
