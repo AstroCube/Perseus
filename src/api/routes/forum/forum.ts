@@ -59,6 +59,7 @@ export default (app: Router) => {
         middlewares.userOptional,
         async (req: Request, res: Response, next: NextFunction) => {
             try {
+                console.log("Flex hijueputa");
                 const page: number = req.query.page && req.query.page !== '-1' ? parseInt(<string>req.query.page)  :  undefined;
                 const perPage: number = req.query.perPage ? parseInt(<string>req.query.perPage) : 10;
                 const forumService: ForumService = Container.get(ForumService);
