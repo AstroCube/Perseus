@@ -31,7 +31,6 @@ export default (app: Router) => {
         middlewares.permissions('forum.manage'),
         async (req: Request, res: Response, next: NextFunction) => {
             try {
-                console.log("Perica con popper");
                 const forumService : ForumService = Container.get(ForumService);
                 const category = await forumService.create(req.body as IForum);
                 return res.json(category).status(200);

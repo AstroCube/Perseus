@@ -17,8 +17,6 @@ export default class ForumService {
 
     public async create(request: IForum): Promise<IForum> {
         try {
-            this.logger.debug(request);
-            this.logger.debug('Is creating');
             const forum: IForum = await this.forumModel.create({...request});
             if (!forum) throw new ResponseError('There was an error creating a forum', 500);
             return forum;
