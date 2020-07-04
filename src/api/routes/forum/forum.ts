@@ -22,7 +22,7 @@ export default (app: Router) => {
                 order: Joi.number().required(),
                 description: Joi.string(),
                 category: Joi.string().required(),
-                parent: Joi.string().required(),
+                parent: Joi.string(),
                 guest: Joi.boolean()
             })
         }),
