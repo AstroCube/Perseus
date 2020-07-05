@@ -12,11 +12,11 @@ const getTokenFromHeader = req => {
   return null;
 };
 
-const authentication = jwt({
+const optionalAuth = jwt({
   secret: config.jwtSecret,
   userProperty: 'token',
   getToken: getTokenFromHeader,
-  credentialsRequired: true
+  credentialsRequired: false
 });
 
-export default authentication;
+export default optionalAuth;
