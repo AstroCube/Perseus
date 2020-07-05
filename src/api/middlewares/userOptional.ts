@@ -5,7 +5,6 @@ const userOptional = async (req, res, next) => {
   const logger : Logger = Container.get('logger');
   try {
     const userModel = Container.get('userModel') as Models.UserModel;
-    console.log(req.token._id);
     if (!req.token) {
       req.authenticated = false;
       return next();
