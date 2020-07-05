@@ -6,7 +6,6 @@ const getTokenFromHeader = req => {
       (req.headers.authorization && req.headers.authorization.split(' ')[0] === 'Token') ||
       (req.headers.authorization && req.headers.authorization.split(' ')[0] === 'Bearer')
   ) {
-    console.log(req.headers.authorization);
     return req.headers.authorization.split(' ')[1];
   }
 
