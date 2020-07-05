@@ -10,6 +10,7 @@ const userOptional = async (req, res, next) => {
       return next();
     }
     const userRecord = await userModel.findById(req.token._id);
+    if (!userRecord) return res.sendStatus(401);
     const currentUser = userRecord.toObject();
     Reflect.deleteProperty(currentUser, 'password');
     Reflect.deleteProperty(currentUser, 'salt');
