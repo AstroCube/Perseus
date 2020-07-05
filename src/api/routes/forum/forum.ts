@@ -12,7 +12,7 @@ const route = Router();
 
 export default (app: Router) => {
 
-    app.use('/forum/base', route);
+    app.use('/forum', route);
 
     route.post(
         '/',
@@ -41,7 +41,7 @@ export default (app: Router) => {
 
     route.get(
         '/:id',
-        middlewares.optionalAuth,
+        middlewares.authentication,
         middlewares.userAttachment,
         async (req: Request, res: Response, next: NextFunction) => {
             try {
