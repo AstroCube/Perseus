@@ -5,6 +5,10 @@ const userOptional = async (req, res, next) => {
   const logger : Logger = Container.get('logger');
   try {
     const userModel = Container.get('userModel') as Models.UserModel;
+    if (!req.token) {
+      req.authenticated = false;
+      return next();
+    }
     const userRecord = await userModel.findById(req.token._id);
     const currentUser = userRecord.toObject();
     Reflect.deleteProperty(currentUser, 'password');
