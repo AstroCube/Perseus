@@ -44,10 +44,14 @@ export default class ForumService {
 
     public async list(user: IUser, query?: any, options?: any): Promise<IPaginateResult<IForum>> {
         try {
+            console.log(user);
+            console.log(query);
             if (!user)
                 return await this.forumModel.paginate({...query, guest: true}, options);
+            console.log("Has user");
             if (user.groups.some(g => g.group.web_permissions.forum.manage))
                 return await this.forumModel.paginate(query, options);
+            console.log("Hasn't full perms");
             return this.forumModel.paginate({...query, _id: {$in: this.getAvailableForums(user)}}, query);
         } catch (e) {
             this.logger.error('There was an error creating a forum: %o', e);
