@@ -28,6 +28,7 @@ export default class ForumService {
 
     public async get(id: string, user?: IUser): Promise<IForum> {
         try {
+            console.log(id);
             const forumRecord: IForum = await this.forumModel.findById(id);
             if (!forumRecord) throw new ResponseError('The requested forum was not found', 404);
             if (!user && !forumRecord.guest) throw new ResponseError('You can not have access to the requested forum', 403);
@@ -35,7 +36,6 @@ export default class ForumService {
                 const permissions: IForumPermissions = await this.getPermissions(user, forumRecord._id);
                 if (permissions.view === ForumPermissible.None) throw new ResponseError('You can not have access to the requested forum', 403);
             }
-            console.log(forumRecord);
             return forumRecord;
         } catch (e) {
             this.logger.error('There was an error creating a forum: %o', e);
