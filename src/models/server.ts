@@ -19,18 +19,10 @@ const Server = new mongoose.Schema(
     subGamemode: String,
     maxRunning: {type: Number, default: 1},
     maxTotal: {type: Number, default: 1},
-    players: [{
-      type: Schema.Types.ObjectId,
-      ref: 'User',
-    }],
     cluster: {
       type: Schema.Types.ObjectId,
       ref: 'Cluster'
-    },
-    matches: [{
-      type: Schema.Types.ObjectId,
-      ref: 'Match'
-    }]
+    }
   },
   { timestamps: true }
 );

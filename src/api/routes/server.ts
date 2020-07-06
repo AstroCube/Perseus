@@ -5,6 +5,7 @@ import ServerService from "../../services/serverService";
 import { IServer, IServerAuthResponse } from "../../interfaces/IServer";
 import serverAttachment from "../middlewares/serverAttachment";
 import cluster from "../middlewares/cluster";
+import {celebrate, Joi} from "celebrate";
 const route = Router();
 
 export default (app: Router) => {
@@ -13,6 +14,17 @@ export default (app: Router) => {
 
   route.post(
     '/connect',
+      celebrate({
+          body: Joi.object({
+              slug: Joi.string().required(),
+              type: Joi.string().required(),
+              gamemode: Joi.string(),
+              subGamemode: Joi.array(),
+              maxRunning: Joi.number(),
+              maxTotal: Joi.number(),
+              cluster: Joi.string().required()
+          })
+      }),
     async (req: Request, res: Response, next: NextFunction) => {
       const logger : Logger = Container.get('logger');
       try {

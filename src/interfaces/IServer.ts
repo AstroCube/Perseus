@@ -7,9 +7,7 @@ export interface IServer extends IModel {
   subGamemode: string;
   maxRunning: number;
   maxTotal: number;
-  players: string[];
   cluster: string;
-  matches: string[];
 }
 
 export enum ServerType {
