@@ -3,7 +3,7 @@ import {IServer} from "./IServer";
 
 export interface IMatch extends IModel {
   map: string;
-  server?: IServer;
+  server?: IServer | string;
   teams: IMatchTeam[];
   winner: string[];
   status: any;
