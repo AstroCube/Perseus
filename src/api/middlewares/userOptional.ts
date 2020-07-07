@@ -5,12 +5,10 @@ const userOptional = async (req, res, next) => {
   const logger : Logger = Container.get('logger');
   try {
     const userModel = Container.get('userModel') as Models.UserModel;
-    if (!req.token) {
-      req.authenticated = false;
-      return next();
-    }
+    req.authenticated = false;
+    if (!req.token) return next();
     const userRecord = await userModel.findById(req.token._id);
-    if (!userRecord) return res.sendStatus(401);
+    if (!userRecord) return next();
     const currentUser = userRecord.toObject();
     Reflect.deleteProperty(currentUser, 'password');
     Reflect.deleteProperty(currentUser, 'salt');
