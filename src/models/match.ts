@@ -23,6 +23,10 @@ const Match = new mongoose.Schema(
       }],
       color: String
     }],
+    server: {
+      type: Schema.Types.ObjectId,
+      ref: 'Server'
+    },
     winner: [{
       type: Schema.Types.ObjectId,
       ref: 'User'

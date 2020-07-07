@@ -1,7 +1,9 @@
 import { IModel } from "./IModel";
+import {IServer} from "./IServer";
 
 export interface IMatch extends IModel {
   map: string;
+  server?: IServer;
   teams: IMatchTeam[];
   winner: string[];
   status: any;

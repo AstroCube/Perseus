@@ -21,9 +21,7 @@ export default class ServerService {
       const cluster: ICluster = await this.clusterService.viewCluster(authorization.cluster);
       const serverRecord: IServer = await this.serverModel.create({
         ...authorization,
-        cluster: cluster._id,
-        players: [],
-        matches: []
+        cluster: cluster._id
       });
       this.logger.info("Successfully loaded server %o to the database with name " + serverRecord.slug, serverRecord._id);
       if (!serverRecord) throw new ResponseError("Server could not be created", 500);

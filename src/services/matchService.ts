@@ -1,16 +1,8 @@
 import { Service, Inject } from 'typedi';
 import { Logger } from "winston";
-import {IMap} from "../interfaces/IMap";
-import * as fs from "fs";
 import {ResponseError} from "../interfaces/error/ResponseError";
 import {IPaginateResult} from "mongoose";
-import path from "path";
-import {IUser} from "../interfaces/IUser";
-import GroupService from "./groupService";
-import {IPermissions} from "../interfaces/IGroup";
 import {IMatch} from "../interfaces/IMatch";
-import {IPunishment} from "../interfaces/IPunishment";
-import ServerService from "./serverService";
 import {IServer} from "../interfaces/IServer";
 
 @Service()
@@ -18,7 +10,7 @@ export default class MatchService {
 
   constructor(
     @Inject('matchModel') private matchModel : Models.MatchModel,
-    @Inject('logger') private logger : Logger
+    @Inject('logger') private logger : Logger,
   ) {}
 
   public async createMatch(match: IMatch): Promise<IMatch> {
@@ -72,13 +64,13 @@ export default class MatchService {
 
   public async cleanupUnassigned(server: IServer): Promise<void> {
     try {
-      for (const match of server.matches) {
-        let matchRecord: IMatch = await this.get(match);
-        if (matchRecord.status == 'Waiting') {
-          await this.matchModel.findByIdAndDelete(matchRecord._id);
+      const matches: IMatch[] = await this.matchModel.find({server: server._id});
+      for (const match of matches) {
+        if (match.status == 'Waiting') {
+          await this.matchModel.findByIdAndDelete(matches);
         } else {
-          matchRecord.status = 'Invalidated';
-          await this.update(matchRecord);
+          match.status = 'Invalidated';
+          await this.update(match);
         }
       }
     } catch (e) {
