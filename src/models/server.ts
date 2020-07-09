@@ -1,6 +1,7 @@
 import mongoose, { Schema } from "mongoose";
 import { IServer } from "../interfaces/IServer";
 import {mongoosePagination} from "ts-mongoose-pagination";
+import autoPopulate = require('mongoose-autopopulate');
 
 
 const Server = new mongoose.Schema(
@@ -28,4 +29,5 @@ const Server = new mongoose.Schema(
 );
 
 Server.plugin(mongoosePagination);
+Server.plugin(autoPopulate);
 export default mongoose.model<IServer & mongoose.Document>('Server', Server);

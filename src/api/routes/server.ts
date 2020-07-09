@@ -10,10 +10,10 @@ const route = Router();
 
 export default (app: Router) => {
 
-  app.use('/servers', route);
+  app.use('/server', route);
 
   route.post(
-    '/connect',
+    '/',
       celebrate({
           body: Joi.object({
               slug: Joi.string().required(),
@@ -38,7 +38,7 @@ export default (app: Router) => {
     });
 
   route.get(
-    '/get/:id',
+    '/:id',
     cluster,
     async (req: Request, res: Response, next: NextFunction) => {
       const logger : Logger = Container.get('logger');
@@ -53,7 +53,7 @@ export default (app: Router) => {
     });
 
   route.post(
-    '/find',
+    '/list',
     cluster,
     async (req: Request, res: Response, next: NextFunction) => {
       const logger : Logger = Container.get('logger');
@@ -68,7 +68,7 @@ export default (app: Router) => {
     });
 
   route.put(
-    '/update/:id',
+    '/:id',
     cluster,
     async (req: Request, res: Response, next: NextFunction) => {
       const logger : Logger = Container.get('logger');
@@ -77,13 +77,13 @@ export default (app: Router) => {
         const server: IServer = await service.updateServer(req.params.id, req.body);
         return res.json(server).status(200);
       } catch (e) {
-        logger.error( e );
+        logger.error(e);
         return next(e);
       }
     });
 
-  route.get(
-    '/disconnect',
+  route.delete(
+    '/:id',
     cluster,
     serverAttachment,
     async (req: Request, res: Response, next: NextFunction) => {
