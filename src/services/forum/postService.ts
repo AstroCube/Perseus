@@ -80,24 +80,10 @@ export default class PostService {
 
     public async list(query?: any, options?: any, user?: IUser): Promise<IPaginateResult<IPost>> {
         try {
-            /**
-             * Prevents user from obtaining a request for multiple topics
-             */
-            if (!query.topic || typeof query.topic !== 'string')
-                throw new ResponseError('You must search through one topic', 400);
 
-            const topic: ITopic = await this.topicService.get(query.topic, user);
-            if (!topic) throw new ResponseError('The requested topic was not found', 404);
+            //TODO: Validate permission
 
-            /**
-             * Will check which forums has user available.
-             */
-            if (!user) {
-                if (!topic.forum.guest) throw new ResponseError('You can not get posts from this forum', 403);
-                return await this.postModel.paginate({...query, forum: topic._id}, options);
-            }
-
-            return await this.postModel.paginate({...query, topic: topic._id}, options);
+            return await this.postModel.paginate({...query}, options);
         } catch (e) {
             this.logger.error('There was an error creating a post: %o', e);
             throw e;
