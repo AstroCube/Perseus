@@ -62,43 +62,11 @@ export default class TopicService {
 
     public async list(query?: any, options?: any, user?: IUser): Promise<IPaginateResult<ITopic>> {
         try {
-            /**
-             * Prevents user from obtaining a request for multiple forums
-             */
-            if (typeof query.forum !== 'string')
-                throw new ResponseError('You can not search through many forums', 400);
+            //@ts-ignore
+            const test = await this.topicModel.find({forum: {guest: true}});
+            console.log(test);
 
-            /**
-             * Will check which forums has user available.
-             */
-            if (!user) {
-
-                let guestId: string[] = [];
-                const guestForums: IPaginateResult<IForum> =
-                    await this.forumService.list(user, {guest: true}, {page: -1, perPage: 10});
-                guestForums.data.forEach(f => guestId.push(f._id));
-
-                if (query.forum) {
-                    if (!guestId.includes(query.forum))
-                        throw new ResponseError('You can not access to this forum posts', 403);
-                    return await this.topicModel.paginate(query, options);
-                }
-
-                return await this.topicModel.paginate({...query, forum: {$in: guestForums}}, options);
-            }
-
-            /**
-             * Check if user has permission to obtain this forum
-             */
-            if (!user.groups.some(g => g.group.web_permissions.forum.manage)) {
-                const available = this.forumService.getAvailableForums(user);
-                if (query.forum) {
-                    if (!available.includes(query.forum))
-                        throw new ResponseError('You can not access to this forum posts', 403);
-                    return this.topicModel.paginate(query, options);
-                }
-                return this.topicModel.paginate({...query, forum: {$in: available}}, options);
-            }
+            //TODO: Encapsulate permissions
 
             return await this.topicModel.paginate(query, options);
         } catch (e) {
