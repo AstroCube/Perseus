@@ -62,10 +62,6 @@ export default class TopicService {
 
     public async list(query?: any, options?: any, user?: IUser): Promise<IPaginateResult<ITopic>> {
         try {
-            //@ts-ignore
-            const test = await this.topicModel.find({forum: {guest: true}});
-            console.log(test);
-
             //TODO: Encapsulate permissions
 
             return await this.topicModel.paginate(query, options);
