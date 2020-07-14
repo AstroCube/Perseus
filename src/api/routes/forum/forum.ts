@@ -8,6 +8,7 @@ import {IPaginateResult} from "mongoose";
 import ForumService from "../../../services/forum/forumService";
 import {IForum} from "../../../interfaces/forum/IForum";
 import userOptional from "../../middlewares/userOptional";
+import {IForumPermissions} from "../../../interfaces/permissions/IForumPermissions";
 const route = Router();
 
 export default (app: Router) => {
@@ -48,6 +49,20 @@ export default (app: Router) => {
                 const forumService: ForumService = Container.get(ForumService);
                 const forum: IForum = await forumService.get(req.params.id, req.currentUser);
                 return res.json(forum).status(200);
+            } catch (e) {
+                return next(e);
+            }
+        });
+
+    route.get(
+        '/permissions/:id',
+        middlewares.authentication,
+        middlewares.userAttachment,
+        async (req: Request, res: Response, next: NextFunction) => {
+            try {
+                const forumService: ForumService = Container.get(ForumService);
+                const forumPermissions: IForumPermissions = await forumService.getPermissions(req.currentUser, req.params.id);
+                return res.json(forumPermissions).status(200);
             } catch (e) {
                 return next(e);
             }

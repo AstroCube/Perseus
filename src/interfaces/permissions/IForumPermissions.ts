@@ -1,4 +1,4 @@
-export interface IForumPermissions {
+export interface IForumPermissions extends IForumGlobal {
     id: string;
     manage: boolean;
     create: boolean;
@@ -8,6 +8,11 @@ export interface IForumPermissions {
     delete: boolean;
     pin: boolean;
     lock: boolean;
+}
+
+export interface IForumGlobal {
+    globalAdmin: boolean;
+    official: boolean;
 }
 
 export enum ForumPermissible {

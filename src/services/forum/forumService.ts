@@ -87,7 +87,9 @@ export default class ForumService {
                 comment: ForumPermissible.None,
                 delete: false,
                 pin: false,
-                lock: false
+                lock: false,
+                globalAdmin: false,
+                official: false
             };
 
             manifest = await this.transactionalPermissions(manifest, user, id, ForumPermissible.Own);
@@ -127,6 +129,8 @@ export default class ForumService {
                 }
             }
         });
+
+        if (user.groups.some(g => g.group.web_permissions.forum.official)) manifest.official = true;
 
         return manifest;
     }
