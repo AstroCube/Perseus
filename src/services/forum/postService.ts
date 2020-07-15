@@ -21,7 +21,7 @@ export default class PostService {
 
     public async create(request: IPost, user: IUser): Promise<IPost> {
         try {
-            const topic: ITopic = await this.topicService.get(request.topic as string);
+            const topic: ITopic = await this.topicService.get(request.topic as string, user);
             if (!topic) throw new ResponseError('The requested topic was not found', 404);
 
             const related: IPost[] = await this.postModel.find({topic: topic._id});
