@@ -48,7 +48,7 @@ export default class TopicService {
             if (!user && !topicRecord.forum.guest) throw new ResponseError('You can not access to this topic', 403);
             const permissions: IForumPermissions = await this.forumService.getPermissions(user, topicRecord.forum._id);
             if (
-                (!permissions.manage || !user.groups.some(g => g.group.web_permissions.forum.manage)) &&
+                (!permissions.manage && !user.groups.some(g => g.group.web_permissions.forum.manage)) &&
                 ((permissions.view === ForumPermissible.None) ||
                     (permissions.view === ForumPermissible.Own && topicRecord.author._id.toString() !== user._id.toString()))
             ) throw new ResponseError('You can not access to this topic', 403);
