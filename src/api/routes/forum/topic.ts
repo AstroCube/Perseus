@@ -8,7 +8,7 @@ import {IPaginateResult} from "mongoose";
 import ForumService from "../../../services/forum/forumService";
 import {IForum} from "../../../interfaces/forum/IForum";
 import TopicService from "../../../services/forum/topicService";
-import {ITopic} from "../../../interfaces/forum/ITopic";
+import {ITopic, ITopicUpdate} from "../../../interfaces/forum/ITopic";
 import userOptional from "../../middlewares/userOptional";
 const route = Router();
 
@@ -74,7 +74,7 @@ export default (app: Router) => {
         async (req: Request, res: Response, next: NextFunction) => {
             try {
                 const topicService: TopicService = Container.get(TopicService);
-                const topic: ITopic = await topicService.update(req.body as ITopic, req.currentUser);
+                const topic: ITopic = await topicService.update(req.body as ITopicUpdate, req.currentUser);
                 return res.json(topic).status(200);
             } catch (e) {
                 return next(e);

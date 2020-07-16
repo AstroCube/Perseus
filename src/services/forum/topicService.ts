@@ -99,7 +99,6 @@ export default class TopicService {
                     throw new ResponseError('You do not have permission to officialize this topic.', 403);
             }
 
-            Reflect.deleteProperty(topic, 'subscribers');
             return await this.topicModel.findByIdAndUpdate(topic._id, {...topic});
         } catch (e) {
             this.logger.error('There was an error creating a forum: %o', e);
