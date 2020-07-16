@@ -57,7 +57,7 @@ export default class ForumService {
 
     public async update(category: IForum): Promise<IForum> {
         try {
-            const forumRecord: IForum = await this.forumModel.findByIdAndUpdate(category._id, category);
+            const forumRecord: IForum = await this.forumModel.findByIdAndUpdate(category._id, category, {new: true});
             if (!forumRecord) throw new ResponseError('The requested forum was not found', 404);
             return forumRecord;
         } catch (e) {

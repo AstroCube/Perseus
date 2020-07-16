@@ -101,7 +101,7 @@ export default class TopicService {
 
             Reflect.deleteProperty(topic, 'forum');
             Reflect.deleteProperty(topic, 'subscribers');
-            return await this.topicModel.findByIdAndUpdate(topic._id, {...topic});
+            return await this.topicModel.findByIdAndUpdate(topic._id, {...topic}, {new: true});
         } catch (e) {
             this.logger.error('There was an error creating a forum: %o', e);
             throw e;

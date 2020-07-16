@@ -122,7 +122,7 @@ export default class PostService {
                     throw new ResponseError('You can only view a post yourself', 400);
             }
 
-            return this.postModel.findByIdAndUpdate(post._id, {...post, lastAction: user._id});
+            return this.postModel.findByIdAndUpdate(post._id, {...post, lastAction: user._id}, {new: true});
         } catch (e) {
             this.logger.error('There was an error creating a post: %o', e);
             throw e;
