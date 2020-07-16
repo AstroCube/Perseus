@@ -13,6 +13,7 @@ export interface ITopic extends IModel {
 }
 
 export interface ITopicUpdate {
+    _id: string;
     subject: string;
     pinned: boolean;
     official: boolean;
