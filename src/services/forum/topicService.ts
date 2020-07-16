@@ -99,16 +99,6 @@ export default class TopicService {
                     throw new ResponseError('You do not have permission to officialize this topic.', 403);
             }
 
-            /**
-             * To subscribe a user you shall pass only one array with the user ID. The requester user MUST
-             * be the same at the ID inside the array. Users must not be forced to subscribe manually.
-             */
-            if (topic.subscribers.length > 0) {
-                if (topic.subscribers.length !== 1) throw new ResponseError('You can only pass one user to subscribe', 400);
-                if (user._id.toString() !== topic.subscribers[0].toString())
-                    throw new ResponseError('You can only subscribe yourself to a topic', 400);
-            }
-
             Reflect.deleteProperty(topic, 'subscribers');
             return await this.topicModel.findByIdAndUpdate(topic._id, {...topic});
         } catch (e) {
