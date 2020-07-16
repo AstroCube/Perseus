@@ -81,6 +81,20 @@ export default (app: Router) => {
             }
         });
 
+    route.get(
+        '/subscription',
+        middlewares.authentication,
+        middlewares.userAttachment,
+        async (req: Request, res: Response, next: NextFunction) => {
+            try {
+                const topicService: TopicService = Container.get(TopicService);
+                const topic: ITopic = await topicService.subscriptionStatus(req.params.id, req.currentUser);
+                return res.json(topic).status(200);
+            } catch (e) {
+                return next(e);
+            }
+        });
+
     route.delete(
         '/:id',
         middlewares.authentication,

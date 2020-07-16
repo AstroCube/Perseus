@@ -109,9 +109,24 @@ export default class TopicService {
                     throw new ResponseError('You can only subscribe yourself to a topic', 400);
             }
 
-            return await this.topicModel.findByIdAndUpdate(topic._id, {...topic, $push: {subscribers: topic.subscribers[0]}});
+            Reflect.deleteProperty(topic, 'subscribers');
+            return await this.topicModel.findByIdAndUpdate(topic._id, {...topic});
         } catch (e) {
             this.logger.error('There was an error creating a forum: %o', e);
+            throw e;
+        }
+    }
+
+    public async subscriptionStatus(id: string, user: IUser): Promise<ITopic> {
+        try {
+            const topicRecord: ITopic = await this.get(id, user);
+            if ((topicRecord.subscribers as string[]).includes(user._id))
+                //@ts-ignore
+                return this.topicModel.findByIdAndUpdate(id, {subscribers: {$push: user._id}}, {new: true});
+            //@ts-ignore
+            return this.topicModel.findByIdAndUpdate(id, {subscribers: {$pull: user._id}}, {new: true});
+        } catch (e) {
+            this.logger.error('There was an error subscribing a user to a forum: %o', e);
             throw e;
         }
     }
