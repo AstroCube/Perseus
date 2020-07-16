@@ -2,7 +2,7 @@ import {IPaginateResult} from "mongoose";
 import {Inject, Service} from "typedi";
 import {Logger} from "winston";
 import {ResponseError} from "../../interfaces/error/ResponseError";
-import {ITopic} from "../../interfaces/forum/ITopic";
+import {ITopic, ITopicUpdate} from "../../interfaces/forum/ITopic";
 import ForumService from "./forumService";
 import {ForumPermissible, IForumPermissions} from "../../interfaces/permissions/IForumPermissions";
 import {IUser} from "../../interfaces/IUser";
@@ -71,7 +71,7 @@ export default class TopicService {
         }
     }
 
-    public async update(topic: ITopic, user: IUser): Promise<ITopic> {
+    public async update(topic: ITopicUpdate, user: IUser): Promise<ITopic> {
         try {
             const topicRecord: ITopic = await this.topicModel.findById(topic._id);
             if (!topicRecord) throw new ResponseError('The requested forum was not found', 404);

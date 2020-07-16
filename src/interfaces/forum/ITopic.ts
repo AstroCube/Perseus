@@ -11,3 +11,10 @@ export interface ITopic extends IModel {
     official: boolean;
     locked: boolean;
 }
+
+export interface ITopicUpdate {
+    subject: string;
+    pinned: boolean;
+    official: boolean;
+    locked: boolean;
+}
