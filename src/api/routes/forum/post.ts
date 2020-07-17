@@ -54,6 +54,20 @@ export default (app: Router) => {
             }
         });
 
+    route.get(
+        '/like-status/:id',
+        middlewares.authentication,
+        middlewares.userAttachment,
+        async (req: Request, res: Response, next: NextFunction) => {
+            try {
+                const postService: PostService = Container.get(PostService);
+                const post: IPost = await postService.likeStatus(req.params.id, req.currentUser);
+                return res.json(post).status(200);
+            } catch (e) {
+                return next(e);
+            }
+        });
+
     route.post(
         '/list',
         middlewares.authentication,

@@ -78,6 +78,20 @@ export default class PostService {
         }
     }
 
+    public async likeStatus(id: string, user: IUser): Promise<IPost> {
+        try {
+            const postRecord: IPost = await this.get(id, user);
+            if ((postRecord.liked as string[]).includes(user._id))
+                //@ts-ignore
+                return this.postModel.findByIdAndUpdate(id, {liked: {$push: user._id}}, {new: true});
+            //@ts-ignore
+            return this.postModel.findByIdAndUpdate(id, {liked: {$pull: user._id}}, {new: true});
+        } catch (e) {
+            this.logger.error('There was an error liking post for an user: %o', e);
+            throw e;
+        }
+    }
+
     public async list(query?: any, options?: any, user?: IUser): Promise<IPaginateResult<IPost>> {
         try {
             //TODO: Validate permission
@@ -91,6 +105,8 @@ export default class PostService {
     public async update(post: IPost, user: IUser): Promise<IPost> {
         try {
             delete post.quote;
+            delete post.liked;
+            delete post.viewed;
             delete post.author;
             delete post.topic;
 
@@ -110,17 +126,6 @@ export default class PostService {
                     throw new ResponseError('You do not have permission to update the topic.', 403);
             }
 
-            if (post.liked.length > 0) {
-                if (post.liked.length !== 1) throw new ResponseError('You can only pass one user to like', 400);
-                if (user._id.toString() !== post.liked[0].toString())
-                    throw new ResponseError('You can only like a post yourself', 400);
-            }
-
-            if (post.viewed.length > 0) {
-                if (post.viewed.length !== 1) throw new ResponseError('You can only pass one user to view', 400);
-                if (user._id.toString() !== post.viewed[0].toString())
-                    throw new ResponseError('You can only view a post yourself', 400);
-            }
 
             return this.postModel.findByIdAndUpdate(post._id, {...post, lastAction: user._id}, {new: true});
         } catch (e) {
