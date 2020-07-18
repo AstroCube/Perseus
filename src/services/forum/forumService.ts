@@ -6,6 +6,7 @@ import {IForum} from "../../interfaces/forum/IForum";
 import {IUser} from "../../interfaces/IUser";
 import {ForumPermissible, IForumPermissions} from "../../interfaces/permissions/IForumPermissions";
 import dotty = require('dotty');
+import forumWare from "../../models/forum/middleware/forum";
 
 @Service()
 export default class ForumService {
@@ -44,10 +45,7 @@ export default class ForumService {
 
     public async list(user: IUser, query?: any, options?: any): Promise<IPaginateResult<IForum>> {
         try {
-            if (!user)
-                return await this.forumModel.paginate({...query, guest: true}, options);
-            if (user.groups.some(g => g.group.web_permissions.forum.manage))
-                return await this.forumModel.paginate(query, options);
+            this.forumModel.prependListener('', forumWare.find);
             return this.forumModel.paginate({...query, _id: {$in: this.getAvailableForums(user)}}, query);
         } catch (e) {
             this.logger.error('There was an error creating a forum: %o', e);
