@@ -45,8 +45,9 @@ export default class ForumService {
 
     public async list(user: IUser, query?: any, options?: any): Promise<IPaginateResult<IForum>> {
         try {
-            this.forumModel.prependListener('find', forumWare.find);
-            return this.forumModel.paginate({...query, _id: {$in: this.getAvailableForums(user)}}, query);
+            return this.forumModel
+                .prependListener('find', forumWare.find)
+                .paginate({...query, _id: {$in: this.getAvailableForums(user)}}, query);
         } catch (e) {
             this.logger.error('There was an error creating a forum: %o', e);
             throw e;
