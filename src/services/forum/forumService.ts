@@ -54,7 +54,7 @@ export default class ForumService {
                         {_id: {$in: this.getAvailableForums(user)}}
                     ]
                 };
-                if (user.groups.some(g => g.group.web_permissions.forum.manage)) finalQuery = {query};
+                if (user.groups.some(g => g.group.web_permissions.forum.manage)) finalQuery = query;
             }
 
             console.log(finalQuery);
