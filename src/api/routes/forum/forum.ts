@@ -43,7 +43,7 @@ export default (app: Router) => {
     route.get(
         '/:id',
         middlewares.authentication,
-        middlewares.userAttachment,
+        middlewares.userOptional,
         async (req: Request, res: Response, next: NextFunction) => {
             try {
                 const forumService: ForumService = Container.get(ForumService);
