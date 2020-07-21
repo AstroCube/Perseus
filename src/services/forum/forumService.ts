@@ -117,6 +117,7 @@ export default class ForumService {
 
         dotty.deepKeys(manifest, {leavesOnly: true}).forEach((key) => {
             if (key !== "id") {
+                console.log("Key:" + key + ". Value: " + dotty.deepKeys(manifest, key) + ". Type:" + typeof dotty.deepKeys(manifest, key));
                 if (typeof dotty.deepKeys(manifest, key) === "boolean") {
                     if (
                         manage ||
