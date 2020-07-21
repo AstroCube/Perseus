@@ -6,7 +6,6 @@ import {IForum} from "../../interfaces/forum/IForum";
 import {IUser} from "../../interfaces/IUser";
 import {ForumPermissible, IForumPermissions} from "../../interfaces/permissions/IForumPermissions";
 import dotty = require('dotty');
-import forumWare from "../../models/forum/middleware/forum";
 
 @Service()
 export default class ForumService {

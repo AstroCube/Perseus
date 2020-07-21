@@ -6,7 +6,6 @@ import {ITopic, ITopicUpdate} from "../../interfaces/forum/ITopic";
 import ForumService from "./forumService";
 import {ForumPermissible, IForumPermissions} from "../../interfaces/permissions/IForumPermissions";
 import {IUser} from "../../interfaces/IUser";
-import {IForum} from "../../interfaces/forum/IForum";
 
 @Service()
 export default class TopicService {
@@ -63,8 +62,12 @@ export default class TopicService {
     public async list(query?: any, options?: any, user?: IUser): Promise<IPaginateResult<ITopic>> {
         try {
             //TODO: Encapsulate permissions
+            const demo: IPaginateResult<ITopic> =
+                await this.topicModel.paginate({forum: {guest: true}}, {...options});
 
-            return await this.topicModel.paginate(query, options);
+            console.log(demo);
+
+            return await this.topicModel.paginate(query, {...options});
         } catch (e) {
             this.logger.error('There was an error creating a forum: %o', e);
             throw e;
