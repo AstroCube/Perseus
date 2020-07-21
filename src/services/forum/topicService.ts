@@ -61,23 +61,28 @@ export default class TopicService {
 
     public async list(query?: any, options?: any, user?: IUser): Promise<IPaginateResult<ITopic>> {
         try {
-            //TODO: Encapsulate permissions
-            const demo: IPaginateResult<ITopic> =
-                await this.topicModel.paginate(
-                    {},
-                    {
-                        ...options,
-                        populate: {
-                            path: 'forum',
-                            match: {guest: true}
+
+            const guestForums = await this.forumService.list(user, {guest: true}, {page: -1, perPage: 10});
+            let availableForums: {};
+            if (user) {
+                if (!user.groups.some(g => g.group.web_permissions.forum.manage))
+                availableForums = {
+                    $or: [
+                        {forum: {$in: guestForums.data.map(f => f._id)}},
+                        {forum: {$in: this.forumService.getFullViewForums(user)}},
+                        {
+                            forum: {$in: this.forumService.getOwnViewForums(user)},
+                            author: user._id
                         }
-                    }
-                );
+                    ]
+                };
+            } else {
+                availableForums = {forum: {$in: guestForums.data.map(f => f._id)}};
+            }
 
-            console.log("I dont give a fuck");
-            console.log(demo);
+            console.log({...availableForums, ...query});
 
-            return await this.topicModel.paginate(query, {...options});
+            return await this.topicModel.paginate({...availableForums, ...query}, {...options});
         } catch (e) {
             this.logger.error('There was an error creating a forum: %o', e);
             throw e;

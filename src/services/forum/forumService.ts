@@ -143,15 +143,29 @@ export default class ForumService {
         return manifest;
     }
 
-    public getAvailableForums(user: IUser): string[] {
+    public getFullViewForums(user: IUser): string[] {
         let availableGroups: string[] = [];
         user.groups.forEach(group => {
             group.group.web_permissions.forum.allowance.forEach(allowance => {
-                if (allowance.view !== ForumPermissible.None && !availableGroups.includes(allowance.id.toString()))
-                    availableGroups.push(allowance.id);
+                if (allowance.manage || allowance.view === ForumPermissible.All) availableGroups.push(allowance.id);
             });
         });
-        return availableGroups;
+        return availableGroups.filter((v,i) => availableGroups.indexOf(v) === i);
+    }
+
+    public getOwnViewForums(user: IUser): string[] {
+        let availableGroups: string[] = [];
+        user.groups.forEach(group => {
+            group.group.web_permissions.forum.allowance.forEach(allowance => {
+                if (allowance.view === ForumPermissible.Own) availableGroups.push(allowance.id);
+            });
+        });
+        return availableGroups.filter((v,i) => availableGroups.indexOf(v) === i);
+    }
+
+    public getAvailableForums(user: IUser): string[] {
+        const available = this.getFullViewForums(user).concat(this.getOwnViewForums(user));
+        return available.filter((v,i) => available.indexOf(v) === i);
     }
 
 }
