@@ -101,8 +101,8 @@ export default class ForumService {
                 official: false
             };
 
-            manifest = await this.transactionalPermissions(manifest, user, id, ForumPermissible.Own);
-            manifest = await this.transactionalPermissions(manifest, user, id, ForumPermissible.All);
+            manifest = this.transactionalPermissions(manifest, user, id, ForumPermissible.Own);
+            manifest = this.transactionalPermissions(manifest, user, id, ForumPermissible.All);
             return manifest;
         } catch (e) {
             this.logger.error('There was an error obtaining the permissible manifest: %o', e);
@@ -117,8 +117,8 @@ export default class ForumService {
 
         dotty.deepKeys(manifest, {leavesOnly: true}).forEach((key) => {
             if (key !== "id") {
-                console.log("Key:" + key + ". Value: " + dotty.deepKeys(manifest, key) + ". Type:" + typeof dotty.deepKeys(manifest, key));
-                if (typeof dotty.deepKeys(manifest, key) === "boolean") {
+                console.log("Key:" + key + ". Value: " + dotty.get(manifest, key) + ". Type:" + typeof dotty.get(manifest, key));
+                if (typeof dotty.get(manifest, key) === "boolean") {
                     if (
                         manage ||
                         user.groups.some(g => g.group.web_permissions.forum.allowance.some(
