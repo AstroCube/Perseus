@@ -192,7 +192,7 @@ export default class AppealService {
     private transactionalPermissions(manifest: IAppealsPermissions, user: IUser, type: IAppealPermissible): IAppealsPermissions {
         const manage = user.groups.some(g => g.group.web_permissions.appeals.manage);
         dotty.deepKeys(manifest, {leavesOnly: true}).forEach((key) => {
-            if (typeof dotty.deepKeys(manifest, key) === "boolean") {
+            if (typeof dotty.get(manifest, key) === "boolean") {
                 if (manage || user.groups.some(g => dotty.exists(g.group.web_permissions.appeals, key) &&
                     dotty.get(g.group.web_permissions.appeals, key))) {
                     dotty.put(manifest, key, true);
