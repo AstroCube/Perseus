@@ -62,9 +62,11 @@ export default class TopicService {
 
     public async list(query?: any, options?: any, user?: IUser): Promise<IPaginateResult<ITopic>> {
         try {
-            return await this.topicModel.on('init', (idk) => {
-                return undefined;
+            const idk = await this.topicModel.on('init', (idk) => {
+                idk = undefined;
             }).paginate(query, {...options});
+            console.log(idk.data);
+            return idk;
         } catch (e) {
             this.logger.error('There was an error creating a forum: %o', e);
             throw e;
