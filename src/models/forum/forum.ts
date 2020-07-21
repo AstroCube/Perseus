@@ -2,6 +2,7 @@ import mongoose, {Schema} from "mongoose";
 import {mongoosePagination} from "ts-mongoose-pagination";
 import autoPopulate = require('mongoose-autopopulate');
 import {IForum} from "../../interfaces/forum/IForum";
+import forumWare from "./middleware/forum";
 
 const Forum = new mongoose.Schema(
     {
@@ -38,6 +39,7 @@ const Forum = new mongoose.Schema(
 );
 
 
+Forum.post('init', forumWare.find);
 Forum.plugin(mongoosePagination);
 Forum.plugin(autoPopulate);
 export default mongoose.model<IForum & mongoose.Document>('Forum', Forum);

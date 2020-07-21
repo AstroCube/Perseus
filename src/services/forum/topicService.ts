@@ -62,37 +62,9 @@ export default class TopicService {
 
     public async list(query?: any, options?: any, user?: IUser): Promise<IPaginateResult<ITopic>> {
         try {
+            await this.topicModel.prependListener()
 
-            const guestForums = await this.forumModel.find({guest: true});
-            let availableForums: {};
-            if (user) {
-                if (!user.groups.some(g => g.group.web_permissions.forum.manage))
-                availableForums = {
-                    $or: [
-                        {forum: {$in: guestForums.map(f => f._id)}},
-                        {forum: {$in: this.forumService.getFullViewForums(user)}},
-                        {
-                            forum: {$in: this.forumService.getOwnViewForums(user)},
-                            author: user._id
-                        }
-                    ]
-                };
-            } else {
-                availableForums = {forum: {$in: guestForums.map(f => f._id)}};
-            }
-            availableForums = {
-                $or: [
-                    {forum: {$in: guestForums.map(f => f._id)}},
-                    {forum: {$in: this.forumService.getFullViewForums(user)}},
-                    {
-                        forum: {$in: this.forumService.getOwnViewForums(user)},
-                        author: user._id
-                    }
-                ]
-            };
-            console.log({...availableForums, ...query});
-
-            return await this.topicModel.paginate({...availableForums, ...query}, {...options});
+            return await this.topicModel.paginate(query, {...options});
         } catch (e) {
             this.logger.error('There was an error creating a forum: %o', e);
             throw e;
