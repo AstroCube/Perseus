@@ -65,6 +65,7 @@ export default class TopicService {
             const demo: IPaginateResult<ITopic> =
                 await this.topicModel.paginate({forum: {guest: true}}, {...options});
 
+            console.log("I dont give a fuck");
             console.log(demo);
 
             return await this.topicModel.paginate(query, {...options});
