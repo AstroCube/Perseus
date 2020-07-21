@@ -63,7 +63,16 @@ export default class TopicService {
         try {
             //TODO: Encapsulate permissions
             const demo: IPaginateResult<ITopic> =
-                await this.topicModel.paginate({forum: {guest: true}}, {...options});
+                await this.topicModel.paginate(
+                    {},
+                    {
+                        ...options,
+                        populate: {
+                            path: 'forum',
+                            match: {guest: true}
+                        }
+                    }
+                );
 
             console.log("I dont give a fuck");
             console.log(demo);
