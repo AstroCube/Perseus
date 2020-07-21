@@ -1,4 +1,4 @@
-import {IPaginateResult} from "mongoose";
+import {Document, IPaginateResult} from "mongoose";
 import {Inject, Service} from "typedi";
 import {Logger} from "winston";
 import {ResponseError} from "../../interfaces/error/ResponseError";
@@ -62,7 +62,11 @@ export default class TopicService {
 
     public async list(query?: any, options?: any, user?: IUser): Promise<IPaginateResult<ITopic>> {
         try {
-            return await this.topicModel.paginate(query, {...options});
+            const topicModel = await this.topicModel.init((doc : Document) => {
+                console.log(doc);
+            }) as unknown as Models.TopicModel;
+
+            return await topicModel.paginate(query, {...options});
         } catch (e) {
             this.logger.error('There was an error creating a forum: %o', e);
             throw e;

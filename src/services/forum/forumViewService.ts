@@ -1,3 +1,4 @@
+/*
 import {IPaginateResult} from "mongoose";
 import {Inject, Service} from "typedi";
 import {Logger} from "winston";
@@ -14,8 +15,7 @@ export default class ForumViewService {
         @Inject('logger') private logger: Logger
     ) {}
 
-    /**
-     * public async forumViewData(): Promise<IForumView> {
+    public async forumViewData(): Promise<IForumView> {
         try {
 
         } catch (e) {
@@ -23,6 +23,8 @@ export default class ForumViewService {
             throw e;
         }
     }
-     */
+
 
 }
+
+ */
