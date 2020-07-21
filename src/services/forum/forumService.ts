@@ -56,8 +56,6 @@ export default class ForumService {
                 if (user.groups.some(g => g.group.web_permissions.forum.manage)) finalQuery = query;
             }
 
-            this.foru
-
             return await this.forumModel.paginate(finalQuery, options);
         } catch (e) {
             this.logger.error('There was an error creating a forum: %o', e);
