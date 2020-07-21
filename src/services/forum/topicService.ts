@@ -12,8 +12,9 @@ export default class TopicService {
 
     constructor(
         @Inject('topicModel') private topicModel : Models.TopicModel,
+        @Inject('forumModel') private forumModel : Models.ForumModel,
         @Inject('logger') private logger: Logger,
-        private forumService: ForumService
+        private forumService: ForumService,
     ) {}
 
     public async create(request: ITopic, user: IUser): Promise<ITopic> {
@@ -62,13 +63,13 @@ export default class TopicService {
     public async list(query?: any, options?: any, user?: IUser): Promise<IPaginateResult<ITopic>> {
         try {
 
-            const guestForums = await this.forumService.list(user, {guest: true}, {page: -1, perPage: 10});
+            const guestForums = await this.forumModel.find({guest: true});
             let availableForums: {};
             if (user) {
                 if (!user.groups.some(g => g.group.web_permissions.forum.manage))
                 availableForums = {
                     $or: [
-                        {forum: {$in: guestForums.data.map(f => f._id)}},
+                        {forum: {$in: guestForums.map(f => f._id)}},
                         {forum: {$in: this.forumService.getFullViewForums(user)}},
                         {
                             forum: {$in: this.forumService.getOwnViewForums(user)},
@@ -77,7 +78,7 @@ export default class TopicService {
                     ]
                 };
             } else {
-                availableForums = {forum: {$in: guestForums.data.map(f => f._id)}};
+                availableForums = {forum: {$in: guestForums.map(f => f._id)}};
             }
 
             console.log({...availableForums, ...query});
