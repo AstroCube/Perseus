@@ -49,4 +49,5 @@ const Topic = new mongoose.Schema(
 
 Topic.plugin(mongoosePagination);
 Topic.plugin(autoPopulate);
+
 export default mongoose.model<ITopic & mongoose.Document>('Topic', Topic);

@@ -6,9 +6,10 @@ import ForumCategoryService from "../../../services/forum/forumCategoryService";
 import {IForumCategory} from "../../../interfaces/forum/IForumCategory";
 import {IPaginateResult} from "mongoose";
 import ForumService from "../../../services/forum/forumService";
-import {IForum} from "../../../interfaces/forum/IForum";
+import {IForum, IForumView} from "../../../interfaces/forum/IForum";
 import userOptional from "../../middlewares/userOptional";
 import {IForumPermissions} from "../../../interfaces/permissions/IForumPermissions";
+import ForumViewService from "../../../services/forum/forumViewService";
 const route = Router();
 
 export default (app: Router) => {
@@ -48,6 +49,25 @@ export default (app: Router) => {
             try {
                 const forumService: ForumService = Container.get(ForumService);
                 const forum: IForum = await forumService.get(req.params.id, req.currentUser);
+                return res.json(forum).status(200);
+            } catch (e) {
+                return next(e);
+            }
+        });
+
+    route.get(
+        '/view/:id',
+        middlewares.authentication,
+        middlewares.userOptional,
+        async (req: Request, res: Response, next: NextFunction) => {
+            try {
+                const forumService: ForumViewService = Container.get(ForumViewService);
+                const forum: IForumView = await forumService.forumViewData(
+                    req.params.id,
+                    req.query.page as unknown as number,
+                    req.query.perPage as unknown as number,
+                    req.currentUser
+                );
                 return res.json(forum).status(200);
             } catch (e) {
                 return next(e);

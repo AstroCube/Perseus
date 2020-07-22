@@ -1,13 +1,13 @@
-/*
 import {Service} from "typedi";
 import ForumService from "../services/forum/forumService";
 import {IForum, IForumHolder} from "../interfaces/forum/IForum";
 import {IPaginateResult} from "mongoose";
 import PostService from "../services/forum/postService";
 import TopicService from "../services/forum/topicService";
-import {ITopic} from "../interfaces/forum/ITopic";
+import {ITopic, ITopicHolder} from "../interfaces/forum/ITopic";
 import {IUser} from "../interfaces/IUser";
 import {IPost} from "../interfaces/forum/IPost";
+import {ForumPermissible, IForumPermissions} from "../interfaces/permissions/IForumPermissions";
 
 @Service()
 export class ForumUtilities {
@@ -19,16 +19,29 @@ export class ForumUtilities {
     ) {
     }
 
-    public getChildren(): Promise<IForumHolder[]> {
+    public async getChildren(forum: IForum, user?: IUser): Promise<IForumHolder[]> {
+        const children: IPaginateResult<IForum>
+            = await this.forumService.list(user, {parent: forum._id}, {page: -1, perPage: 10});
+        let holders: IForumHolder[] = [];
 
+        for (const f of children.data) holders.push(await this.getHolder(f, user));
+        return holders;
     }
 
     public async getHolder(forum: IForum, user?: IUser): Promise<IForumHolder> {
 
+        const permissions: IForumPermissions = user ? await this.forumService.getPermissions(user, forum._id) :
+            this.getGuestPermissions(forum._id);
+
+        if ((forum.guest && !user) || (user && permissions.view === ForumPermissible.None)) return null;
+
+        let query: any = {forum: forum._id};
+        if (permissions.view === ForumPermissible.Own) query = {forum: forum._id, author: user._id};
+
         const topic: IPaginateResult<ITopic> =
-            await this.topicService.list({forum: forum._id}, {page: -1, perPage: 10, sort: 'createdAt'});
+            await this.topicService.list(query, {page: -1, perPage: 10, sort: 'createdAt'});
         const messages: IPaginateResult<IPost> =
-            await this.postService.list({topic: forum._id}, {page: -1, perPage: 10, sort: 'createdAt'}, user);
+            await this.postService.list({topic: {$in: topic.data.map(f => f._id)}}, {page: -1, perPage: 10, sort: 'createdAt'}, user);
 
         return {
             forum,
@@ -37,7 +50,6 @@ export class ForumUtilities {
             messages: messages.data.length,
             lastTopic: topic.data[0]
         };
-
     }
 
     public async getUnreadMessages(forum: IForum, topics: ITopic[], user: IUser): Promise<number> {
@@ -49,6 +61,36 @@ export class ForumUtilities {
         return posts.data.length;
     }
 
-}
+    public getGuestPermissions(id: string): IForumPermissions {
+        return {
+            id,
+            manage: false,
+            create: false,
+            view: ForumPermissible.All,
+            edit: ForumPermissible.None,
+            comment: ForumPermissible.None,
+            delete: false,
+            pin: false,
+            lock: false,
+            globalAdmin: false,
+            official: false
+        };
+    }
 
- */
+    public async getTopicHolder(topic: ITopic, user?: IUser): Promise<ITopicHolder> {
+        const posts: IPaginateResult<IPost> =
+            await this.postService.list({topic: topic._id}, {page: -1, perPage: 10, sort: 'createdAt'});
+
+        let unique: string[] = [];
+        posts.data.forEach((p) => unique = unique.concat(p.viewed as string[]));
+
+        return {
+            topic,
+            unread: user ? posts.data.filter(post => (post.viewed as string[]).includes(user ? user._id : '')).length : 0,
+            messages: posts.data.length,
+            views: unique.length,
+            lastPost: posts.data.sort((a, b) => parseInt(b.createdAt) - parseInt(a.createdAt))[0]
+        };
+    }
+
+}
