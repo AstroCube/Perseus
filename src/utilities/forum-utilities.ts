@@ -39,9 +39,9 @@ export class ForumUtilities {
         if (permissions.view === ForumPermissible.Own) query = {forum: forum._id, author: user._id};
 
         const topic: IPaginateResult<ITopic> =
-            await this.topicService.list(query, {page: -1, perPage: 10, sort: 'createdAt'});
+            await this.topicService.list(query, {perPage: 10, sort: 'createdAt'});
         const messages: IPaginateResult<IPost> =
-            await this.postService.list({topic: {$in: topic.data.map(f => f._id)}}, {page: -1, perPage: 10, sort: 'createdAt'}, user);
+            await this.postService.list({topic: {$in: topic.data.map(f => f._id)}}, { perPage: 10, sort: 'createdAt'}, user);
 
         return {
             forum,
@@ -55,7 +55,7 @@ export class ForumUtilities {
     public async getUnreadMessages(forum: IForum, topics: ITopic[], user: IUser): Promise<number> {
         const posts: IPaginateResult<IPost> = await this.postService.list(
             {topic: {$in: topics.map(t => t._id)}, $not: {viewed: user._id}},
-            {page: -1, perPage: 10},
+            {perPage: 10},
             user
         );
         return posts.data.length;
@@ -79,7 +79,7 @@ export class ForumUtilities {
 
     public async getTopicHolder(topic: ITopic, user?: IUser): Promise<ITopicHolder> {
         const posts: IPaginateResult<IPost> =
-            await this.postService.list({topic: topic._id}, {page: -1, perPage: 10, sort: 'createdAt'});
+            await this.postService.list({topic: topic._id}, {perPage: 10, sort: 'createdAt'});
 
         let unique: string[] = [];
         posts.data.forEach((p) => unique = unique.concat(p.viewed as string[]));
