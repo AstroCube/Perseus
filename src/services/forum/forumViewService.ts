@@ -28,7 +28,7 @@ export default class ForumViewService {
             const permissions: IForumPermissions = user ? await this.forumService.getPermissions(user, forum._id) :
                 this.forumUtilities.getGuestPermissions(forum._id);
 
-            if ((forum.guest && !user) || (user && permissions.view === ForumPermissible.None))
+            if ((!forum.guest && !user) || (user && permissions.view === ForumPermissible.None))
                 throw new ResponseError('You have no access to this forum', 403);
 
             let query: any = {forum: forum._id};
