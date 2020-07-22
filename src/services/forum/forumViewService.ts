@@ -4,7 +4,7 @@ import {IForum, IForumView} from "../../interfaces/forum/IForum";
 import {ForumUtilities} from "../../utilities/forum-utilities";
 import {IUser} from "../../interfaces/IUser";
 import ForumService from "./forumService";
-import {IPaginateResult, IPagination} from "mongoose";
+import {IPaginateResult} from "mongoose";
 import {ForumPermissible, IForumPermissions} from "../../interfaces/permissions/IForumPermissions";
 import {ITopic, ITopicHolder} from "../../interfaces/forum/ITopic";
 import {ResponseError} from "../../interfaces/error/ResponseError";
@@ -37,6 +37,7 @@ export default class ForumViewService {
             let pinned: IPaginateResult<ITopic> =
                 await this.topicService.list({...query, pinned: true}, {page: -1, perPage: 10, sort: 'createdAt'});
             let pinPlaceholder: ITopicHolder[] = [];
+            console.log(pinned);
             for (const pin of pinned.data) pinPlaceholder.push(await this.forumUtilities.getTopicHolder(pin, user));
 
             let topics: IPaginateResult<ITopic> =
