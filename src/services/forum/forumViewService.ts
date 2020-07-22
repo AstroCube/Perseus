@@ -48,7 +48,7 @@ export default class ForumViewService {
 
             return {
                 child: await this.forumUtilities.getChildren(forum, user),
-                permissions: await this.forumService.getPermissions(user, forum._id),
+                permissions: permissions,
                 forum,
                 pinned: pinPlaceholder,
                 topic: topicPlaceholder,
