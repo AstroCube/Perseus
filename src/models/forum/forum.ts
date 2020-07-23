@@ -24,7 +24,11 @@ const Forum = new mongoose.Schema(
             required: true,
             autopopulate: true
         },
-        parent: String,
+        parent: {
+            type: Schema.Types.ObjectId,
+            ref: 'Forum',
+            autopopulate: true
+        },
         guest: {
             type: Boolean,
             default: false
@@ -35,4 +39,4 @@ const Forum = new mongoose.Schema(
 
 Forum.plugin(mongoosePagination);
 Forum.plugin(autoPopulate);
-export default mongoose.model<IForum & mongoose.Document>('ForumHolder', Forum);
+export default mongoose.model<IForum & mongoose.Document>('Forum', Forum);
