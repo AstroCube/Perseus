@@ -39,4 +39,4 @@ const Forum = new mongoose.Schema(
 
 Forum.plugin(mongoosePagination);
 Forum.plugin(autoPopulate);
-export default mongoose.model<IForum & mongoose.Document>('Forum', Forum);
+export default mongoose.model<IForum & mongoose.Document>('ForumHolder', Forum);

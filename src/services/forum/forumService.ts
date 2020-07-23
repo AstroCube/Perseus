@@ -35,7 +35,6 @@ export default class ForumService {
                 const permissions: IForumPermissions = await this.getPermissions(user, forumRecord._id);
                 if (permissions.view === ForumPermissible.None) throw new ResponseError('You can not have access to the requested forum', 403);
             }
-            forumRecord._id = id;
             return forumRecord;
         } catch (e) {
             this.logger.error('There was an error creating a forum: %o', e);
