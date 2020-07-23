@@ -58,19 +58,6 @@ export default class PostService {
         try {
             const postRecord: IPost = await this.postModel.findById(id);
             if (!postRecord) throw new ResponseError('The requested post was not found', 404);
-            const permissions: IForumPermissions = await this.forumService.getPermissions(user,  (postRecord.topic as ITopic)._id);
-
-            /**
-             * Check if user is superAdmin. Otherwise will check if post is the first of the topic to get
-             * create permission or comment in case of not being the first post.
-             */
-            if (!permissions.manage && !user.groups.some(g => g.group.web_permissions.forum.manage)) {
-                if (
-                    !(permissions.comment === ForumPermissible.All ||
-                        (permissions.comment !== ForumPermissible.None && (postRecord.topic as ITopic).author._id.toString() === user._id.toString()))
-                ) throw new ResponseError('You do not have access to this post', 403);
-            }
-
             return postRecord;
         } catch (e) {
             this.logger.error('There was an error creating a topic: %o', e);
