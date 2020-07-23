@@ -16,7 +16,7 @@ export default class ForumViewService {
     constructor(
         @Inject('logger') private logger: Logger,
         private forumService: ForumService,
-        private topicService:  TopicService,
+        private topicService: TopicService,
         private forumUtilities:  ForumUtilities
     ) {}
 

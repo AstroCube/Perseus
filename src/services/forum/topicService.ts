@@ -62,6 +62,8 @@ export default class TopicService {
 
     public async list(query?: any, options?: any, user?: IUser): Promise<IPaginateResult<ITopic>> {
         try {
+            console.log(query);
+            console.log(options);
             return await this.topicModel.paginate(query, {...options});
         } catch (e) {
             this.logger.error('There was an error creating a forum: %o', e);
