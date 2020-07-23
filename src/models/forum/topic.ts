@@ -20,7 +20,7 @@ const Topic = new mongoose.Schema(
         },
         forum: {
             type: Schema.Types.ObjectId,
-            ref: 'Forum',
+            ref: 'ForumHolder',
             required: true,
             autopopulate: true
         },

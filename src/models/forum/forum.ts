@@ -26,7 +26,7 @@ const Forum = new mongoose.Schema(
         },
         parent: {
             type: Schema.Types.ObjectId,
-            ref: 'Forum',
+            ref: 'ForumHolder',
             autopopulate: true
         },
         guest: {
