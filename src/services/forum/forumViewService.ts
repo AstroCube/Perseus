@@ -37,8 +37,8 @@ export default class ForumViewService {
             let pinned: IPaginateResult<ITopic> =
                 await this.topicService.list({...query, pinned: true}, {perPage: 10, sort: 'createdAt'});
             let pinPlaceholder: ITopicHolder[] = [];
-            console.log(pinned.data);
-            for (const pin of pinned.data) pinPlaceholder.push(await this.forumUtilities.getTopicHolder(pin, user));
+            if (pinned.data)
+                for (const pin of pinned.data) pinPlaceholder.push(await this.forumUtilities.getTopicHolder(pin, user));
 
             let topics: IPaginateResult<ITopic> =
                 await this.topicService.list({...query, pinned: false}, {page, perPage, sort: 'createdAt'});
