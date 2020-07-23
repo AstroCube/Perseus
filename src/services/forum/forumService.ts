@@ -28,13 +28,14 @@ export default class ForumService {
 
     public async get(id: string, user?: IUser): Promise<IForum> {
         try {
-            let forumRecord: IForum = await this.forumModel.findById(id);
+            let forumRecord: IForum = await this.forumModel.findById(id).lean();
             if (!forumRecord) throw new ResponseError('The requested forum was not found', 404);
             if (!user && !forumRecord.guest) throw new ResponseError('You can not have access to the requested forum', 403);
             if (user) {
                 const permissions: IForumPermissions = await this.getPermissions(user, forumRecord._id);
                 if (permissions.view === ForumPermissible.None) throw new ResponseError('You can not have access to the requested forum', 403);
             }
+            forumRecord._id = id;
             return forumRecord;
         } catch (e) {
             this.logger.error('There was an error creating a forum: %o', e);
