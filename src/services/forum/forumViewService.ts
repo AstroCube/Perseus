@@ -42,6 +42,7 @@ export default class ForumViewService {
 
             let topics: IPaginateResult<ITopic> =
                 await this.topicService.list({...query, pinned: false}, {page, perPage, sort: 'createdAt'});
+            console.log(topics);
             let topicPlaceholder: ITopicHolder[] = [];
             for (const topic of topics.data) topicPlaceholder.push(await this.forumUtilities.getTopicHolder(topic, user));
 
