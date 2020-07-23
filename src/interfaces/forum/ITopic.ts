@@ -2,6 +2,8 @@ import {IModel} from "../IModel";
 import {IUser} from "../IUser";
 import {IForum} from "./IForum";
 import {IPost} from "./IPost";
+import {IPaginateResult} from "mongoose";
+import {IForumPermissions} from "../permissions/IForumPermissions";
 
 export interface ITopic extends IModel {
     subject: string;
@@ -27,4 +29,11 @@ export interface ITopicHolder {
     messages: number;
     views: number;
     lastPost: IPost;
+}
+
+export interface ITopicView {
+    topic: ITopic;
+    user: IUser;
+    posts: IPaginateResult<IPost>;
+    permissions: IForumPermissions;
 }

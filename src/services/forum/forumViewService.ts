@@ -6,9 +6,11 @@ import {IUser} from "../../interfaces/IUser";
 import ForumService from "./forumService";
 import {IPaginateResult} from "mongoose";
 import {ForumPermissible, IForumPermissions} from "../../interfaces/permissions/IForumPermissions";
-import {ITopic, ITopicHolder} from "../../interfaces/forum/ITopic";
+import {ITopic, ITopicHolder, ITopicView} from "../../interfaces/forum/ITopic";
 import {ResponseError} from "../../interfaces/error/ResponseError";
 import TopicService from "./topicService";
+import PostService from "./postService";
+import {IPost} from "../../interfaces/forum/IPost";
 
 @Service()
 export default class ForumViewService {
@@ -17,6 +19,7 @@ export default class ForumViewService {
         @Inject('logger') private logger: Logger,
         private forumService: ForumService,
         private topicService: TopicService,
+        private postService: PostService,
         private forumUtilities:  ForumUtilities
     ) {}
 
@@ -34,7 +37,8 @@ export default class ForumViewService {
             let query: any = {forum: forum._id};
             if (permissions.view === ForumPermissible.Own) query = {forum: forum._id, author: user._id};
 
-            let pinned: IPaginateResult<ITopic> = await this.topicService.list({...query, pinned: true}, {perPage: 10, sort: 'createdAt'});
+            let pinned: IPaginateResult<ITopic> =
+                await this.topicService.list({...query, pinned: true}, {perPage: 10, sort: 'createdAt'});
 
             let pinPlaceholder: ITopicHolder[] = [];
             for (const pin of pinned.data) pinPlaceholder.push(await this.forumUtilities.getTopicHolder(pin, user));
@@ -56,7 +60,34 @@ export default class ForumViewService {
             };
 
         } catch (e) {
-            this.logger.error('There was an error obtaining forum view: %o', e);
+            this.logger.error('There was an error rendering forum view data: %o', e);
+            throw e;
+        }
+    }
+
+    public async topicViewData(id: string, page: number, perPage: number, user?: IUser): Promise<ITopicView> {
+        try {
+            const topic: ITopic = await this.topicService.get(id);
+
+            const permissions: IForumPermissions = user ? await this.forumService.getPermissions(user, topic.forum._id) :
+                this.forumUtilities.getGuestPermissions(topic.forum._id);
+
+            if ((!topic.forum.guest && !user) || (user && permissions.view === ForumPermissible.None))
+                throw new ResponseError('You have no access to this forum', 403);
+
+            let query: any = {topic: topic._id};
+            if (permissions.view === ForumPermissible.Own) query = {topic: topic._id, author: user._id};
+
+            const posts: IPaginateResult<IPost> = await this.postService.list(query, {page, perPage, sort: 'createdAt'});
+
+            return {
+                topic,
+                user,
+                permissions,
+                posts
+            };
+        } catch (e) {
+            this.logger.error('There was an error rendering topic view data: %o', e);
             throw e;
         }
     }

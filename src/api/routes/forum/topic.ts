@@ -8,8 +8,9 @@ import {IPaginateResult} from "mongoose";
 import ForumService from "../../../services/forum/forumService";
 import {IForum} from "../../../interfaces/forum/IForum";
 import TopicService from "../../../services/forum/topicService";
-import {ITopic, ITopicUpdate} from "../../../interfaces/forum/ITopic";
+import {ITopic, ITopicUpdate, ITopicView} from "../../../interfaces/forum/ITopic";
 import userOptional from "../../middlewares/userOptional";
+import ForumViewService from "../../../services/forum/forumViewService";
 const route = Router();
 
 export default (app: Router) => {
@@ -45,6 +46,25 @@ export default (app: Router) => {
             try {
                 const topicService: TopicService = Container.get(TopicService);
                 const topic: ITopic = await topicService.get(req.params.id, req.currentUser);
+                return res.json(topic).status(200);
+            } catch (e) {
+                return next(e);
+            }
+        });
+
+    route.get(
+        '/view/:id',
+        middlewares.authentication,
+        middlewares.userOptional,
+        async (req: Request, res: Response, next: NextFunction) => {
+            try {
+                const topicService: ForumViewService = Container.get(ForumViewService);
+                const topic: ITopicView = await topicService.topicViewData(
+                    req.params.id,
+                    req.query.page as any,
+                    req.query.perPage as any,
+                    req.currentUser
+                );
                 return res.json(topic).status(200);
             } catch (e) {
                 return next(e);
