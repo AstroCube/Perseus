@@ -64,8 +64,8 @@ export default (app: Router) => {
                 const forumService: ForumViewService = Container.get(ForumViewService);
                 const forum: IForumView = await forumService.forumViewData(
                     req.params.id,
-                    req.query.page as unknown as number,
-                    req.query.perPage as unknown as number,
+                    parseInt(req.query.page as any),
+                    parseInt(req.query.perPage as any),
                     req.currentUser
                 );
                 return res.json(forum).status(200);
