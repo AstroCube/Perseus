@@ -102,7 +102,7 @@ export default class ForumViewService {
 
             console.log("Correct permissions checking");
 
-            const forums: IPaginateResult<IForum> = await this.forumService.list(user, query, {page: -1, perPage: 10});
+            const forums: IPaginateResult<IForum> = await this.forumService.list(user, query, {perPage: 10});
             let main: IForumMain[] = [];
 
             console.log("Correct main");
