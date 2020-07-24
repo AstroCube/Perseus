@@ -21,7 +21,7 @@ Along with TypeScript provided functions and architecture described below Perseu
 ## Install Backend App
 
 Install the following services and set them on the ports indicated in the configuration:
-* [NodeJS 8.11.3](https://nodejs.org/es/)
+* [NodeJS](https://nodejs.org/es/)
 * [MongoDB](http://www.mongodb.org/)
 * [Redis](http://redis_service.io/)
 
