@@ -22,6 +22,11 @@ export interface IForumHolder {
     lastTopic: ITopic;
 }
 
+export interface IForumMain {
+    category: IForumCategory;
+    holder: IForumHolder[];
+}
+
 export interface IForumView {
     child: IForumHolder[];
     permissions: IForumPermissions;

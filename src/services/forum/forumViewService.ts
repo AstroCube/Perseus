@@ -1,6 +1,6 @@
 import {Inject, Service} from "typedi";
 import {Logger} from "winston";
-import {IForum, IForumView} from "../../interfaces/forum/IForum";
+import {IForum, IForumMain, IForumView} from "../../interfaces/forum/IForum";
 import {ForumUtilities} from "../../utilities/forum-utilities";
 import {IUser} from "../../interfaces/IUser";
 import ForumService from "./forumService";
@@ -86,6 +86,33 @@ export default class ForumViewService {
                 permissions,
                 posts
             };
+        } catch (e) {
+            this.logger.error('There was an error rendering topic view data: %o', e);
+            throw e;
+        }
+    }
+
+    public async forumMainData(user?: IUser): Promise<IForumMain[]> {
+        try {
+            let query: any = {guest: true, parent: {$exists: false}};
+            if (user) {
+                query = {parent: {$exists: false}, _id: {$in: this.forumService.getAvailableForums(user)}};
+                if (user.groups.some(g => g.group.web_permissions.forum.manage)) query = {parent: {$exists: false}};
+            }
+
+            const forums: IPaginateResult<IForum> = await this.forumService.list(user, query, {page: -1, perPage: 10});
+            let main: IForumMain[] = [];
+
+            for (const forum of forums.data) {
+                if (!main.some(m => m.category._id === forum.category._id))
+                    main.push({category: forum.category, holder: []});
+
+                main.find(f => f.category._id === forum.category._id).holder.push(
+                    await this.forumUtilities.getHolder(forum, user)
+                );
+            }
+
+            return main;
         } catch (e) {
             this.logger.error('There was an error rendering topic view data: %o', e);
             throw e;

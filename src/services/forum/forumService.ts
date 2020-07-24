@@ -45,19 +45,7 @@ export default class ForumService {
 
     public async list(user: IUser, query?: any, options?: any): Promise<IPaginateResult<IForum>> {
         try {
-            let finalQuery = {...query, guest: true};
-            if (user) {
-                finalQuery = {
-                    ...query,
-                    $or: [
-                        {guest: true},
-                        {_id: {$in: this.getAvailableForums(user)}}
-                    ]
-                };
-                if (user.groups.some(g => g.group.web_permissions.forum.manage)) finalQuery = query;
-            }
-
-            return await this.forumModel.paginate(finalQuery, options);
+            return await this.forumModel.paginate(query, options);
         } catch (e) {
             this.logger.error('There was an error creating a forum: %o', e);
             throw e;

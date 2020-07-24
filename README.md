@@ -9,13 +9,50 @@ The code within this repository should not be released to anyone outside of the 
 Once access is granted, the user will accept all legal / administrative responsibilities
 Failure to comply with the foregoing Any attempt to disclose to persons outside the Seocraft Network and / or persons authorized by the same entity, will be legally penalized according to [Decision 486 of the year 2000 - Article 257] (http://www.wipo.int/edocs/lexdocs/laws/en/can/can012en.pdf).
 
-# Architecture
+## Introduction
 
-This repository obeys the following type of architecture
+Let's start with a simple and annoying question. Why TypeScript? Express.js is great frameworks for making a node.js REST APIs however it doesn't give you any clue on how to organizing your node.js project.
 
-* The [Three Layer Architecture](https://en.wikipedia.org/wiki/Multitier_architecture#:~:text=Three%2Dtier%20architecture%20is%20a,most%20often%20on%20separate%20platforms.)
-* TypeScript based API to run essential tasks involving Minecraft-side and Website-side functionality.
-* Endpoint to be used for external applications that will improve network functionality.
+While it may sound silly, this is a real problem. The correct organization of your Node.js project structure will avoid duplication of code, will improve stability, and potentially, will help you scale your services if its done correctly.
+
+Along with TypeScript provided functions and architecture described below Perseus will preserve scalability.
+
+## Folder Structure
+
+```
+src
+  │   app.js          # App entry point
+  └───api             # Express route controllers for all the endpoints of the app
+  └───config          # Environment variables and configuration related stuff
+  └───decorators      # Annotation helpers to be provided if needed
+  └───interfaces      # Interfaces provided to enhace abstraction in the project with TypeScript functionallity
+  └───jobs            # Jobs definitions for agenda.js
+  └───loaders         # Split the startup process into modules
+  └───models          # Database models
+  └───services        # All the business logic is here
+  └───subscribers     # Event handlers for async task
+  └───views           # If needed, some service mixins to ensure correctly presentation will be placed here
+  └───types           # Type declaration files (d.ts) for Typescript
+  └───utilities       # Utilities used across the project to avoid duplication
+```
+
+
+## Three (Sometimes four) Layer Architecture
+
+## Pub/Sub Layer
+
+## Dependency Injection
+
+## Unit Testing
+
+## Cron Jobs and recurring tasks
+
+## Loaders
+
+## Configuration
+
+
+
 
 ## Install Backend App
 

@@ -6,7 +6,7 @@ import ForumCategoryService from "../../../services/forum/forumCategoryService";
 import {IForumCategory} from "../../../interfaces/forum/IForumCategory";
 import {IPaginateResult} from "mongoose";
 import ForumService from "../../../services/forum/forumService";
-import {IForum, IForumView} from "../../../interfaces/forum/IForum";
+import {IForum, IForumMain, IForumView} from "../../../interfaces/forum/IForum";
 import userOptional from "../../middlewares/userOptional";
 import {IForumPermissions} from "../../../interfaces/permissions/IForumPermissions";
 import ForumViewService from "../../../services/forum/forumViewService";
@@ -68,6 +68,20 @@ export default (app: Router) => {
                     parseInt(req.query.perPage as any),
                     req.currentUser
                 );
+                return res.json(forum).status(200);
+            } catch (e) {
+                return next(e);
+            }
+        });
+
+    route.get(
+        '/main',
+        middlewares.authentication,
+        middlewares.userOptional,
+        async (req: Request, res: Response, next: NextFunction) => {
+            try {
+                const forumService: ForumViewService = Container.get(ForumViewService);
+                const forum: IForumMain[] = await forumService.forumMainData(req.currentUser);
                 return res.json(forum).status(200);
             } catch (e) {
                 return next(e);
