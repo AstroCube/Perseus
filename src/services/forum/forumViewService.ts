@@ -50,7 +50,7 @@ export default class ForumViewService {
 
 
             return {
-                child: await this.forumUtilities.getChildren(forum, user),
+                child: await this.forumUtilities.getHolders({parent: forum._id},  user),
                 permissions: permissions,
                 forum,
                 pinned: pinPlaceholder,
@@ -100,15 +100,10 @@ export default class ForumViewService {
                 if (user.groups.some(g => g.group.web_permissions.forum.manage)) query = {parent: {$exists: false}};
             }
 
-            const forums: IPaginateResult<IForum> = await this.forumService.list(user, query, {perPage: 10});
             let main: IForumMain[] = [];
+            let forumHolders: IForumHolder[] = await this.forumUtilities.getHolders(query, user);
 
-            console.log(forums.data);
-
-            let forumHolders: IForumHolder[] = [];
-            for (const forum of forums.data) {
-                forumHolders.push(await this.forumUtilities.getHolder(forum, user));
-            }
+            console.log(forumHolders);
 
             for (const forum of forumHolders) {
                 if (!main.some(m => m.category._id === forum.forum.category._id))
