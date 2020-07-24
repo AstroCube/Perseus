@@ -1,7 +1,7 @@
-![Logo](https://i.imgur.com/6bnpOAV.png)
-
 Perseus: Seocraft Network official Backend
 ===================
+
+![Logo](https://i.imgur.com/2WG09lT.png)
 
 This repository contains the essential code for all the services that are involved in Seocraft Network to work, such as [Centauri](https://github.com/SeocraftNetwork/Centauri) or [Polaris](https://github.com/SeocraftNetwork/Polaris).
 
@@ -13,20 +13,20 @@ Failure to comply with the foregoing Any attempt to disclose to persons outside 
 
 ## Introduction
 
-Let's start with a simple and annoying question. Why TypeScript? Express.js is great frameworks for making a node.js REST APIs however it doesn't give you any clue on how to organizing your node.js project.
+Let's start with a simple and annoying question. Why TypeScript? Express.js is great frameworks for making a NodeJS REST APIs however it doesn't give you any clue on how to organizing your NodeJS project.
 
-While it may sound silly, this is a real problem. The correct organization of your Node.js project structure will avoid duplication of code, will improve stability, and potentially, will help you scale your services if its done correctly.
+While it may sound silly, this is a real problem. The correct organization of your NodeJS project structure will avoid duplication of code, will improve stability, and potentially, will help you scale your services if its done correctly.
 
 Along with TypeScript provided functions and architecture described below Perseus will preserve scalability.
 
 ## Install Backend App
 
 Install the following services and set them on the ports indicated in the configuration:
-* [Node.js 8.11.3](https://nodejs.org/es/)
+* [NodeJS 8.11.3](https://nodejs.org/es/)
 * [MongoDB](http://www.mongodb.org/)
 * [Redis](http://redis_service.io/)
 
-Make sure all the packages are installed correctly: `npm install`
+Make sure you install all the packages correctly: `npm install`
 
 ## Folder Structure
 
@@ -49,11 +49,11 @@ src
 
 ## Three (Sometimes four) Layer Architecture
 
-The idea is to use the **principle of separation of concerns** to move the business logic away from the node.js API Routes.
+The idea is to use the **principle of separation of concerns** to move the business logic away from the NodeJS API Routes.
 
 TODO: 3/4 Graphic
 
-Because someday, you will want to use your business logic on a CLI tool, or not going far, in a recurring task. nd make an API call from the node.js server to itself it's not a good idea...
+Because someday, you will want to use your business logic on a CLI tool, or not going far, in a recurring task. nd make an API call from the NodeJS server to itself it's not a good idea...
 
 ### Controller
 
@@ -63,7 +63,7 @@ It's complicated to distingue when a response should be sent, and when to contin
 
 ### Service Layer
 
-This layer is where your business logic should live. It's just a collection of classes with clear purposes, following the SOLID principles applied to node.js.
+This layer is where your business logic should live. It's just a collection of classes with clear purposes, following the SOLID principles applied to NodeJS.
 
 _In this layer there should not exist any form of 'Mongo query', use the data access layer for that._
 
@@ -81,7 +81,7 @@ _Useful example: Final views of the Perseus forum must be processed here to rest
 
 The pub/sub pattern goes beyond the classic 3 layer architecture proposed here, but it's extremely useful.
 
-The simple node.js API endpoint that creates a user right now, may want to call third-party services, maybe to an analytics service, or maybe start an email sequence. Sooner than later, that simple "create" operation will be doing several things, and you will end up with 1000 lines of code, all in a single function.
+The simple NodeJS API endpoint that creates a user right now, may want to call third-party services, maybe to an analytics service, or maybe start an email sequence. Sooner than later, that simple "create" operation will be doing several things, and you will end up with 1000 lines of code, all in a single function.
 
 That violates the principle of single responsibility. So, it's better to separate responsibilities from the start, so your code remains maintainable.
 
@@ -92,7 +92,7 @@ D.I. or inversion of control (IoC) is a common pattern that will help the organi
 By doing this way you will gain the flexibility to inject a 'compatible dependency' when, for example, you write the unit tests for the service, or when you use the service in another context.
 
 ```TypeScript
-import { Service } from 'typedi';
+import {Service} from 'typedi';
     
 @Service()
 export default class UserService {
@@ -101,15 +101,14 @@ export default class UserService {
     ){}
 
     getMyUser(userId) {
-        const user = this.userModel.findById(userId);
-        return user;
+        return this.userModel.findById(userId);
     }
 }
 ```
 
-### Using dependency injection in node.js
+### Using dependency injection in NodeJS
 
-Using D.I. in express.js is the final piece of the puzzle for this node.js project architecture.
+Using D.I. in express.js is the final piece of the puzzle for this NodeJS project architecture.
 
 ```TypeScript
 route.post('/', 
@@ -125,21 +124,21 @@ route.post('/',
 
 So, now the business logic encapsulated into the service layer, it's easier to use it from a Cron job.
 
-You should never rely on node.js setTimeout or another primitive way of delay the execution of code, but on a framework that persist your jobs, and the execution of them, in a database.
+You should never rely on NodeJS setTimeout or another primitive way of delay the execution of code, but on a framework that persist your jobs, and the execution of them, in a database.
 
 This way you will have control over the failed jobs, and feedback of those who succeed. In this case we use [Agenda](https://github.com/agenda/agenda), a lightweight framework.
 
 ## Loaders
 
-A classic node.js app initialization will have an express.js file in charge of mongo, redis, routes, so far and so on. 
+A classic NodeJS app initialization will have an express.js file in charge of mongo, redis, routes, so far and so on. 
 
 Actually Perseus divides their loading tasks in several files, based on the [W3Tech Microframework](https://www.npmjs.com/package/microframework-w3tec) without direct implementation of the package itself.
 
 ## Configuration
 
-Following the battle-tested concepts of [Twelve-Factor App](https://12factor.net/) for node.js the best approach to store API Keys and database string connections, it's by using [dotenv](https://www.npmjs.com/package/dotenv).
+Following the battle-tested concepts of [Twelve-Factor App](https://12factor.net/) for NodeJS the best approach to store API Keys and database string connections, it's by using [dotenv](https://www.npmjs.com/package/dotenv).
 
-Put a .env file, that must never be committed (but it has to exist with default values in Perseus) then, the npm package dotenv loads the `.env` file and insert the vars into the `process.env` object of node.js.
+Put a .env file, that must never be committed (but it has to exist with default values in Perseus) then, the npm package dotenv loads the `.env` file and insert the vars into the `process.env` object of NodeJS.
 
 That could be enough but, Perseus has an extra step. A `config/index.ts` file where the dotenv npm package and loads the `.env` file and then use an object to store the variables, so we have a structure and code auto completion.
 
