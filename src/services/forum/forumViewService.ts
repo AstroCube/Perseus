@@ -100,12 +100,18 @@ export default class ForumViewService {
                 if (user.groups.some(g => g.group.web_permissions.forum.manage)) query = {parent: {$exists: false}};
             }
 
+            console.log("Correct permissions checking");
+
             const forums: IPaginateResult<IForum> = await this.forumService.list(user, query, {page: -1, perPage: 10});
             let main: IForumMain[] = [];
+
+            console.log("Correct main");
 
             for (const forum of forums.data) {
                 if (!main.some(m => m.category._id === forum.category._id))
                     main.push({category: forum.category, holder: []});
+
+                console.log("Executing for");
 
                 main.find(f => f.category._id === forum.category._id).holder.push(
                     await this.forumUtilities.getHolder(forum, user)
