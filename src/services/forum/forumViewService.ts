@@ -105,9 +105,9 @@ export default class ForumViewService {
 
             let forumHolders: IForumHolder[] = [];
             for (const forum of forums.data) {
+                console.log(await this.forumUtilities.getHolder(forum, user));
                 forumHolders.push(await this.forumUtilities.getHolder(forum, user));
             }
-            console.log(forumHolders);
 
             for (const forum of forumHolders) {
                 if (!main.some(m => m.category._id === forum.forum.category._id))
