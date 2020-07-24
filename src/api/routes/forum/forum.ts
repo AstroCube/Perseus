@@ -2,12 +2,10 @@ import { Router, Request, Response, NextFunction } from "express";
 import { Container } from "typedi";
 import { celebrate, Joi } from "celebrate";
 import middlewares from "../../middlewares";
-import ForumCategoryService from "../../../services/forum/forumCategoryService";
 import {IForumCategory} from "../../../interfaces/forum/IForumCategory";
 import {IPaginateResult} from "mongoose";
 import ForumService from "../../../services/forum/forumService";
 import {IForum, IForumMain, IForumView} from "../../../interfaces/forum/IForum";
-import userOptional from "../../middlewares/userOptional";
 import {IForumPermissions} from "../../../interfaces/permissions/IForumPermissions";
 import ForumViewService from "../../../services/forum/forumViewService";
 const route = Router();
@@ -75,7 +73,7 @@ export default (app: Router) => {
         });
 
     route.get(
-        '/main',
+        '/main/view',
         middlewares.authentication,
         middlewares.userOptional,
         async (req: Request, res: Response, next: NextFunction) => {
