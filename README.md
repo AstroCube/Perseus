@@ -1,8 +1,7 @@
-Perseus: Seocraft Network official Backend
-===================
-
 ![Logo](https://i.imgur.com/2WG09lT.png)
 
+Perseus: Seocraft Network official Backend
+===================
 This repository contains the essential code for all the services that are involved in Seocraft Network to work, such as [Centauri](https://github.com/SeocraftNetwork/Centauri) or [Polaris](https://github.com/SeocraftNetwork/Polaris).
 
 # License
