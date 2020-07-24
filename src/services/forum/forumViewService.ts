@@ -103,9 +103,10 @@ export default class ForumViewService {
             const forums: IPaginateResult<IForum> = await this.forumService.list(user, query, {perPage: 10});
             let main: IForumMain[] = [];
 
+            console.log(forums.data);
+
             let forumHolders: IForumHolder[] = [];
             for (const forum of forums.data) {
-                console.log(await this.forumUtilities.getHolder(forum, user));
                 forumHolders.push(await this.forumUtilities.getHolder(forum, user));
             }
 
