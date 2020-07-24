@@ -1,6 +1,6 @@
 import {Inject, Service} from "typedi";
 import {Logger} from "winston";
-import {IForum, IForumMain, IForumView} from "../../interfaces/forum/IForum";
+import {IForum, IForumHolder, IForumMain, IForumView} from "../../interfaces/forum/IForum";
 import {ForumUtilities} from "../../utilities/forum-utilities";
 import {IUser} from "../../interfaces/IUser";
 import ForumService from "./forumService";
@@ -100,21 +100,21 @@ export default class ForumViewService {
                 if (user.groups.some(g => g.group.web_permissions.forum.manage)) query = {parent: {$exists: false}};
             }
 
-            console.log("Correct permissions checking");
-
             const forums: IPaginateResult<IForum> = await this.forumService.list(user, query, {perPage: 10});
             let main: IForumMain[] = [];
 
-            console.log("Correct main");
-
+            let forumHolders: IForumHolder[] = [];
             for (const forum of forums.data) {
-                if (!main.some(m => m.category._id === forum.category._id))
-                    main.push({category: forum.category, holder: []});
+                forumHolders.push(await this.forumUtilities.getHolder(forum, user));
+            }
 
-                console.log("Executing for");
+            for (const forum of forumHolders) {
+                if (!main.some(m => m.category._id === forum.forum.category._id))
+                    main.push({category: forum.forum.category, holder: []});
 
-                main.find(f => f.category._id === forum.category._id).holder.push(
-                    await this.forumUtilities.getHolder(forum, user)
+
+                main.find(f => f.category._id === forum.forum.category._id).holder.push(
+                    await this.forumUtilities.getHolder(forum.forum, user)
                 );
             }
 
