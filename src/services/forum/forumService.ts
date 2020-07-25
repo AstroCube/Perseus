@@ -104,7 +104,7 @@ export default class ForumService {
             user.groups.some(g => g.group.web_permissions.forum.allowance.some(a => a.id.toString() === id && a.manage));
 
         user.groups.forEach(g => {
-            console.log(g.group.web_permissions.forum.allowance);
+            console.log(g.group.web_permissions.forum.manage);
         });
 
         dotty.deepKeys(manifest, {leavesOnly: true}).forEach((key) => {
