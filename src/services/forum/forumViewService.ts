@@ -103,7 +103,6 @@ export default class ForumViewService {
             let main: IForumMain[] = [];
             let forumHolders: IForumHolder[] = await this.forumUtilities.getHolders(query, user);
 
-
             for (const forum of forumHolders) {
                 if (!main.some(m => m.category._id === forum.forum.category._id))
                     main.push({category: forum.forum.category, holder: []});
