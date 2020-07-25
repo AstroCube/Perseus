@@ -24,8 +24,6 @@ export class ForumUtilities {
             = await this.forumService.list(user, query, {perPage: 10});
         let holders: IForumHolder[] = [];
 
-        console.log(children);
-
         for (const f of children.data) {
             const holder: IForumHolder = await this.getHolder(f as any, user);
             if (holder !== null) holders.push(holder);
@@ -37,6 +35,8 @@ export class ForumUtilities {
     public async getHolder(forum: IForum, user?: IUser): Promise<IForumHolder> {
         let finalForum: any = forum;
         finalForum._id = forum._id.toString();
+
+        console.log(finalForum);
 
         const permissions: IForumPermissions = user ? await this.forumService.getPermissions(user, forum._id) :
             this.getGuestPermissions(forum._id);
