@@ -25,6 +25,7 @@ export class ForumUtilities {
         let holders: IForumHolder[] = [];
 
         for (const f of children.data) {
+            console.log(f);
             await holders.push(await this.getHolder(f, user));
         }
 
