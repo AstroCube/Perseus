@@ -6,7 +6,7 @@ import {IUser} from "../../interfaces/IUser";
 import ForumService from "./forumService";
 import {IPaginateResult} from "mongoose";
 import {ForumPermissible, IForumPermissions} from "../../interfaces/permissions/IForumPermissions";
-import {ITopic, ITopicHolder, ITopicView} from "../../interfaces/forum/ITopic";
+import {ITopic, ITopicHolder, ITopicInteraction, ITopicView} from "../../interfaces/forum/ITopic";
 import {ResponseError} from "../../interfaces/error/ResponseError";
 import TopicService from "./topicService";
 import PostService from "./postService";
@@ -72,13 +72,15 @@ export default class ForumViewService {
             const permissions: IForumPermissions = user ? await this.forumService.getPermissions(user, topic.forum._id) :
                 this.forumUtilities.getGuestPermissions(topic.forum._id);
 
-            if ((!topic.forum.guest && !user) || (user && permissions.view === ForumPermissible.None))
+            if (
+                (!topic.forum.guest && !user) ||
+                (user && permissions.view === ForumPermissible.None) ||
+                (user &&  permissions.view === ForumPermissible.Own && user._id.toString() !== topic.author._id.toString())
+            )
                 throw new ResponseError('You have no access to this forum', 403);
 
-            let query: any = {topic: topic._id};
-            if (permissions.view === ForumPermissible.Own) query = {topic: topic._id, author: user._id};
-
-            const posts: IPaginateResult<IPost> = await this.postService.list(query, {page, perPage, sort: 'createdAt'});
+            const posts: IPaginateResult<IPost> =
+                await this.postService.list({topic: topic._id}, {page, perPage, sort: 'createdAt'});
 
             return {
                 topic,
@@ -118,6 +120,40 @@ export default class ForumViewService {
             throw e;
         }
     }
+
+    public async topicInteractView(topic: string, user: IUser, quote?: string): Promise<ITopicInteraction> {
+        try {
+
+            const topicRecord: ITopic = await this.topicService.get(topic, user);
+            const permissions: IForumPermissions = await this.forumService.getPermissions(user, topicRecord._id);
+
+            if (
+                (permissions.view === ForumPermissible.None)  ||
+                (permissions.view === ForumPermissible.Own && topicRecord._id.toString() !== user._id.toString())
+            ) throw new ResponseError('You do not have access to this forum', 403);
+
+            const original: IPaginateResult<IPost> =
+                await this.postService.list({topic: topicRecord._id}, {sort: 'createdAt'});
+
+            let quotedPost: IPost;
+            if (quote) {
+                quotedPost = await this.postService.get(quote);
+                if (!quotedPost) throw new ResponseError('Requested quote was not found', 404);
+            }
+
+            return {
+                user,
+                topic: topicRecord,
+                original: original.data[0],
+                quote: quotedPost
+            };
+        } catch (e) {
+            this.logger.error('There was an error rendering topic view data: %o', e);
+            throw e;
+        }
+    }
+
+
 
 
 }

@@ -49,7 +49,7 @@ export class ForumUtilities {
             await this.topicService.list(query, {perPage: 10, sort: 'createdAt'});
 
         const messages: IPaginateResult<IPost> =
-            await this.postService.list({topic: {$in: topic.data.map(f => f._id)}}, { perPage: 10, sort: 'createdAt'}, user);
+            await this.postService.list({topic: {$in: topic.data.map(f => f._id)}}, { perPage: 10, sort: 'createdAt'});
 
         return {
             forum: finalForum as IForum,
@@ -63,8 +63,7 @@ export class ForumUtilities {
     public async getUnreadMessages(forum: IForum, topics: ITopic[], user: IUser): Promise<number> {
         const posts: IPaginateResult<IPost> = await this.postService.list(
             {topic: {$in: topics.map(t => t._id)}, viewed: {$ne: user._id}},
-            {perPage: 10},
-            user
+            {perPage: 10}
         );
         return posts.data.length;
     }

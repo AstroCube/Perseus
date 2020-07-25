@@ -54,7 +54,7 @@ export default class PostService {
         }
     }
 
-    public async get(id: string, user?: IUser): Promise<IPost> {
+    public async get(id: string): Promise<IPost> {
         try {
             const postRecord: IPost = await this.postModel.findById(id);
             if (!postRecord) throw new ResponseError('The requested post was not found', 404);
@@ -79,7 +79,7 @@ export default class PostService {
         }
     }
 
-    public async list(query?: any, options?: any, user?: IUser): Promise<IPaginateResult<IPost>> {
+    public async list(query?: any, options?: any): Promise<IPaginateResult<IPost>> {
         try {
             return await this.postModel.paginate({...query}, options);
         } catch (e) {

@@ -12,6 +12,7 @@ import {ITopic} from "../../../interfaces/forum/ITopic";
 import PostService from "../../../services/forum/postService";
 import {IPost} from "../../../interfaces/forum/IPost";
 import userOptional from "../../middlewares/userOptional";
+import ForumViewService from "../../../services/forum/forumViewService";
 const route = Router();
 
 export default (app: Router) => {
@@ -41,14 +42,15 @@ export default (app: Router) => {
         });
 
     route.get(
-        '/:id',
+        '/interact/:id',
         middlewares.authentication,
         middlewares.userOptional,
         async (req: Request, res: Response, next: NextFunction) => {
             try {
-                const postService: PostService = Container.get(PostService);
-                const post: IPost = await postService.get(req.params.id, req.currentUser);
-                return res.json(post).status(200);
+                const forumViewService: ForumViewService = Container.get(ForumViewService);
+                return res.json(
+                    await forumViewService.topicInteractView(req.params.id, req.currentUser, req.query.quote as string)
+                ).status(200);
             } catch (e) {
                 return next(e);
             }
@@ -62,22 +64,6 @@ export default (app: Router) => {
             try {
                 const postService: PostService = Container.get(PostService);
                 const post: IPost = await postService.likeStatus(req.params.id, req.currentUser);
-                return res.json(post).status(200);
-            } catch (e) {
-                return next(e);
-            }
-        });
-
-    route.post(
-        '/list',
-        middlewares.authentication,
-        middlewares.userOptional,
-        async (req: Request, res: Response, next: NextFunction) => {
-            try {
-                const page: number = req.query.page && req.query.page !== '-1' ? parseInt(<string>req.query.page)  :  undefined;
-                const perPage: number = req.query.perPage ? parseInt(<string>req.query.perPage) : 10;
-                const postService: PostService = Container.get(PostService);
-                const post: IPaginateResult<IPost> = await postService.list(req.body, {...req.query, page, perPage}, req.currentUser);
                 return res.json(post).status(200);
             } catch (e) {
                 return next(e);

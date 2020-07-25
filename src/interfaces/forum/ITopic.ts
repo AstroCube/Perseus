@@ -37,3 +37,10 @@ export interface ITopicView {
     posts: IPaginateResult<IPost>;
     permissions: IForumPermissions;
 }
+
+export interface ITopicInteraction {
+    quote?: IPost;
+    topic: ITopic;
+    original: IPost;
+    user: IUser;
+}
