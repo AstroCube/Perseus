@@ -34,14 +34,15 @@ export class ForumUtilities {
 
     public async getHolder(forum: IForum, user?: IUser): Promise<IForumHolder> {
         let finalForum: any = forum;
-        finalForum._id = forum._id.toString();
+        const finalId = forum._id.toString();
+        finalForum._id = finalId;
 
-        const permissions: IForumPermissions = user ? await this.forumService.getPermissions(user, finalForum._id) :
-            this.getGuestPermissions(finalForum._id);
+        const permissions: IForumPermissions = user ? await this.forumService.getPermissions(user, finalId) :
+            this.getGuestPermissions(finalId);
 
         if ((!forum.guest && !user) || (user && permissions.view === ForumPermissible.None)) return null;
-        let query: any = {forum: finalForum._id};
-        if (permissions.view === ForumPermissible.Own) query = {forum: finalForum._id, author: user._id};
+        let query: any = {forum: finalId};
+        if (permissions.view === ForumPermissible.Own) query = {forum: finalId, author: user._id};
 
         console.log(query);
 
