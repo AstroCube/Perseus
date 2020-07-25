@@ -42,8 +42,8 @@ export class ForumUtilities {
 
         if ((forum.guest && !user) || (user && permissions.view === ForumPermissible.None)) return null;
 
-        let query: any = {forum: forum._id};
-        if (permissions.view === ForumPermissible.Own) query = {forum: forum._id, author: user._id};
+        let query: any = {forum: forumId};
+        if (permissions.view === ForumPermissible.Own) query = {forum: forumId, author: user._id};
 
         console.log(query);
 
