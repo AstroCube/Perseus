@@ -39,16 +39,9 @@ export class ForumUtilities {
         const permissions: IForumPermissions = user ? await this.forumService.getPermissions(user, finalForum._id) :
             this.getGuestPermissions(finalForum._id);
 
-        console.log(permissions);
-
         if ((!forum.guest && !user) || (user && permissions.view === ForumPermissible.None)) return null;
-
-        console.log("Not null");
-
         let query: any = {forum: finalForum._id};
         if (permissions.view === ForumPermissible.Own) query = {forum: finalForum._id, author: user._id};
-
-        console.log(query);
 
         const topic: IPaginateResult<ITopic> =
             await this.topicService.list(query, {perPage: 10, sort: 'createdAt'});
