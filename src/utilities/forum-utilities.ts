@@ -36,8 +36,6 @@ export class ForumUtilities {
         let finalForum: any = forum;
         finalForum._id = forum._id.toString();
 
-        console.log(finalForum);
-
         const permissions: IForumPermissions = user ? await this.forumService.getPermissions(user, forum._id) :
             this.getGuestPermissions(forum._id);
 
@@ -46,19 +44,13 @@ export class ForumUtilities {
         let query: any = {forum: finalForum._id};
         if (permissions.view === ForumPermissible.Own) query = {forum: finalForum._id, author: user._id};
 
+        console.log(query);
+
         const topic: IPaginateResult<ITopic> =
             await this.topicService.list(query, {perPage: 10, sort: 'createdAt'});
 
         const messages: IPaginateResult<IPost> =
             await this.postService.list({topic: {$in: topic.data.map(f => f._id)}}, { perPage: 10, sort: 'createdAt'}, user);
-
-        console.log({
-            forum: finalForum as IForum,
-            unread: user ? await this.getUnreadMessages(forum, topic.data, user) : 0,
-            topics: topic.data.length,
-            messages: messages.data.length,
-            lastTopic: topic.data[0]
-        });
 
         return {
             forum: finalForum as IForum,
