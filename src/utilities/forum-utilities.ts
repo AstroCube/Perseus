@@ -34,9 +34,8 @@ export class ForumUtilities {
     }
 
     public async getHolder(forum: IForum, user?: IUser): Promise<IForumHolder> {
-
-        console.log(forum);
-        console.log(forum._id);
+        const forumId: string = forum._id.toString();
+        console.log(forumId);
 
         const permissions: IForumPermissions = user ? await this.forumService.getPermissions(user, forum._id) :
             this.getGuestPermissions(forum._id);
