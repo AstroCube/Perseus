@@ -50,8 +50,6 @@ export class ForumUtilities {
         const messages: IPaginateResult<IPost> =
             await this.postService.list({topic: {$in: topic.data.map(f => f._id)}}, { perPage: 10, sort: 'createdAt'}, user);
 
-        console.log(messages.data);
-
         return {
             forum,
             unread: user ? await this.getUnreadMessages(forum, topic.data, user) : 0,
@@ -67,6 +65,7 @@ export class ForumUtilities {
             {perPage: 10},
             user
         );
+        console.log(posts);
         return posts.data.length;
     }
 
