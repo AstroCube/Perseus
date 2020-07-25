@@ -24,9 +24,9 @@ export default (app: Router) => {
                 subject: Joi.string().required(),
                 author: Joi.string().required(),
                 forum: Joi.string().required(),
-                pinned: Joi.string(),
-                official: Joi.string(),
-                locked: Joi.string()
+                pinned: Joi.boolean(),
+                official: Joi.boolean(),
+                locked: Joi.boolean()
             })
         }),
         middlewares.authentication,
