@@ -67,6 +67,15 @@ export default class PostService {
         }
     }
 
+    public async readTopicMessages(id: string, user: IUser): Promise<void> {
+        try {
+            await this.postModel.updateMany({topic: id}, {$push: {viewed: user._id}});
+        } catch (e) {
+            this.logger.error('There was an error creating a forum: %o', e);
+            throw e;
+        }
+    }
+
     public async likeStatus(id: string, user: IUser): Promise<IPost> {
         try {
             const postRecord: IPost = await this.get(id);

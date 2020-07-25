@@ -82,6 +82,8 @@ export default class ForumViewService {
             const posts: IPaginateResult<IPost> =
                 await this.postService.list({topic: topic._id}, {page, perPage, sort: 'createdAt'});
 
+            if (user) await this.postService.readTopicMessages(topic._id, user);
+
             return {
                 topic,
                 user,

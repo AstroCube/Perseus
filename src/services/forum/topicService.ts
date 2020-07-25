@@ -48,7 +48,7 @@ export default class TopicService {
         }
     }
 
-    public async list(query?: any, options?: any, user?: IUser): Promise<IPaginateResult<ITopic>> {
+    public async list(query?: any, options?: any): Promise<IPaginateResult<ITopic>> {
         try {
             return await this.topicModel.paginate(query, {...options});
         } catch (e) {
