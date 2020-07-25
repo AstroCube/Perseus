@@ -24,7 +24,6 @@ export class ForumUtilities {
             = await this.forumService.list(user, query, {perPage: 10});
         let holders: IForumHolder[] = [];
 
-        console.log(children);
 
         for (const f of children.data) {
             const holder: IForumHolder = await this.getHolder(f, user);
