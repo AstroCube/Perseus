@@ -25,8 +25,8 @@ export class ForumUtilities {
         let holders: IForumHolder[] = [];
 
         for (const f of children.data) {
-            console.log(f);
-            await holders.push(await this.getHolder(f, user));
+            const holder: IForumHolder = await this.getHolder(f, user);
+            if (holder !== null) holders.push();
         }
 
         return holders;
@@ -46,8 +46,6 @@ export class ForumUtilities {
             await this.topicService.list(query, {perPage: 10, sort: 'createdAt'});
         const messages: IPaginateResult<IPost> =
             await this.postService.list({topic: {$in: topic.data.map(f => f._id)}}, { perPage: 10, sort: 'createdAt'}, user);
-
-        console.log("Forum " + forum._id + " got trough correctly");
 
         return {
             forum,

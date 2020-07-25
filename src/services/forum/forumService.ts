@@ -103,6 +103,10 @@ export default class ForumService {
             user.groups.some(g => g.group.web_permissions.forum.manage) ||
             user.groups.some(g => g.group.web_permissions.forum.allowance.some(a => a.id.toString() === id && a.manage));
 
+        user.groups.forEach(g => {
+            console.log(g.group.web_permissions.forum.allowance);
+        });
+
         dotty.deepKeys(manifest, {leavesOnly: true}).forEach((key) => {
             if (key !== "id") {
                 if (typeof dotty.get(manifest, key) === "boolean") {
