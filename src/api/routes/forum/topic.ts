@@ -71,22 +71,6 @@ export default (app: Router) => {
             }
         });
 
-    route.post(
-        '/list',
-        middlewares.authentication,
-        middlewares.userOptional,
-        async (req: Request, res: Response, next: NextFunction) => {
-            try {
-                const page: number = req.query.page && req.query.page !== '-1' ? parseInt(<string>req.query.page)  :  undefined;
-                const perPage: number = req.query.perPage ? parseInt(<string>req.query.perPage) : 10;
-                const topicService: TopicService = Container.get(TopicService);
-                const topic: IPaginateResult<ITopic> = await topicService.list(req.body, {...req.query, page, perPage}, req.currentUser);
-                return res.json(topic).status(200);
-            } catch (e) {
-                return next(e);
-            }
-        });
-
     route.put(
         '/',
         middlewares.authentication,
