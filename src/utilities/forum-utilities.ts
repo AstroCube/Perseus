@@ -26,6 +26,7 @@ export class ForumUtilities {
 
 
         for (const f of children.data) {
+            console.log(f);
             const holder: IForumHolder = await this.getHolder(f, user);
             if (holder !== null) holders.push(holder);
         }
