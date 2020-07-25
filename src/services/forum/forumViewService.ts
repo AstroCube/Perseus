@@ -108,7 +108,6 @@ export default class ForumViewService {
                 if (!main.some(m => m.category._id === forum.forum.category._id))
                     main.push({category: forum.forum.category, holder: []});
 
-
                 main.find(f => f.category._id === forum.forum.category._id).holder.push(
                     await this.forumUtilities.getHolder(forum.forum, user)
                 );

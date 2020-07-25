@@ -65,7 +65,6 @@ export class ForumUtilities {
             {perPage: 10},
             user
         );
-        console.log(posts);
         return posts.data.length;
     }
 
