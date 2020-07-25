@@ -42,6 +42,8 @@ export class ForumUtilities {
         let query: any = {forum: forum._id};
         if (permissions.view === ForumPermissible.Own) query = {forum: forum._id, author: user._id};
 
+        console.log(query);
+
         const topic: IPaginateResult<ITopic> =
             await this.topicService.list(query, {perPage: 10, sort: 'createdAt'});
 
