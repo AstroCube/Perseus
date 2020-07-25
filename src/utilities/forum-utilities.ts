@@ -39,7 +39,9 @@ export class ForumUtilities {
         const permissions: IForumPermissions = user ? await this.forumService.getPermissions(user, finalForum._id) :
             this.getGuestPermissions(finalForum._id);
 
-        if ((forum.guest && !user) || (user && permissions.view === ForumPermissible.None)) return null;
+        console.log(permissions);
+
+        if ((!forum.guest && !user) || (user && permissions.view === ForumPermissible.None)) return null;
 
         console.log("Not null");
 
