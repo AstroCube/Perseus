@@ -45,6 +45,8 @@ export default class PostService {
                 }
             }
 
+            request.viewed = [user._id];
+
             const post: IPost = await this.postModel.create(request);
             if (!post) throw new ResponseError('There was an error creating a post', 500);
             return post;
