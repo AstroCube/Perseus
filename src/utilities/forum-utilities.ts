@@ -45,15 +45,13 @@ export class ForumUtilities {
         let query: any = {forum: forumId};
         if (permissions.view === ForumPermissible.Own) query = {forum: forumId, author: user._id};
 
-        console.log(query);
-
         const topic: IPaginateResult<ITopic> =
             await this.topicService.list(query, {perPage: 10, sort: 'createdAt'});
 
-        console.log(topic);
-
         const messages: IPaginateResult<IPost> =
             await this.postService.list({topic: {$in: topic.data.map(f => f._id)}}, { perPage: 10, sort: 'createdAt'}, user);
+
+        console.log(messages);
 
         return {
             forum,
