@@ -61,7 +61,7 @@ export class ForumUtilities {
 
     public async getUnreadMessages(forum: IForum, topics: ITopic[], user: IUser): Promise<number> {
         const posts: IPaginateResult<IPost> = await this.postService.list(
-            {topic: {$in: topics.map(t => t._id)}, viewed: {$not: user._id}},
+            {topic: {$in: topics.map(t => t._id)}, viewed: {$ne: user._id}},
             {perPage: 10},
             user
         );
