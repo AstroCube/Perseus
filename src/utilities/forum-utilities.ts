@@ -34,16 +34,16 @@ export class ForumUtilities {
     }
 
     public async getHolder(forum: IForum, user?: IUser): Promise<IForumHolder> {
-        const forumId: string = forum._id.toString();
-        forum._id = forumId;
+        let finalForum: any = forum;
+        finalForum._id = forum._id.toString();
 
         const permissions: IForumPermissions = user ? await this.forumService.getPermissions(user, forum._id) :
             this.getGuestPermissions(forum._id);
 
         if ((forum.guest && !user) || (user && permissions.view === ForumPermissible.None)) return null;
 
-        let query: any = {forum: forumId};
-        if (permissions.view === ForumPermissible.Own) query = {forum: forumId, author: user._id};
+        let query: any = {forum: finalForum._id};
+        if (permissions.view === ForumPermissible.Own) query = {forum: finalForum._id, author: user._id};
 
         const topic: IPaginateResult<ITopic> =
             await this.topicService.list(query, {perPage: 10, sort: 'createdAt'});
@@ -52,7 +52,7 @@ export class ForumUtilities {
             await this.postService.list({topic: {$in: topic.data.map(f => f._id)}}, { perPage: 10, sort: 'createdAt'}, user);
 
         return {
-            forum,
+            forum: finalForum as IForum,
             unread: user ? await this.getUnreadMessages(forum, topic.data, user) : 0,
             topics: topic.data.length,
             messages: messages.data.length,
