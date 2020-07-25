@@ -67,7 +67,7 @@ export default class PostService {
 
     public async likeStatus(id: string, user: IUser): Promise<IPost> {
         try {
-            const postRecord: IPost = await this.get(id, user);
+            const postRecord: IPost = await this.get(id);
             if ((postRecord.liked as string[]).includes(user._id))
                 //@ts-ignore
                 return this.postModel.findByIdAndUpdate(id, {liked: {$push: user._id}}, {new: true});
