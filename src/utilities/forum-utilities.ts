@@ -35,7 +35,6 @@ export class ForumUtilities {
 
     public async getHolder(forum: IForum, user?: IUser): Promise<IForumHolder> {
         const forumId: string = forum._id.toString();
-        console.log(forumId);
 
         const permissions: IForumPermissions = user ? await this.forumService.getPermissions(user, forum._id) :
             this.getGuestPermissions(forum._id);
@@ -51,7 +50,7 @@ export class ForumUtilities {
         const messages: IPaginateResult<IPost> =
             await this.postService.list({topic: {$in: topic.data.map(f => f._id)}}, { perPage: 10, sort: 'createdAt'}, user);
 
-        console.log(messages);
+        console.log(messages.data);
 
         return {
             forum,
