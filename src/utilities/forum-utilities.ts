@@ -22,12 +22,10 @@ export class ForumUtilities {
     public async getHolders(query: any, user?: IUser): Promise<IForumHolder[]> {
         const children: IPaginateResult<IForum>
             = await this.forumService.list(user, query, {perPage: 10});
-        console.log(children);
         let holders: IForumHolder[] = [];
 
         for (const f of children.data) {
-            console.log(f);
-            holders.push(await this.getHolder(f, user));
+            await holders.push(await this.getHolder(f, user));
         }
 
         return holders;
@@ -47,6 +45,8 @@ export class ForumUtilities {
             await this.topicService.list(query, {perPage: 10, sort: 'createdAt'});
         const messages: IPaginateResult<IPost> =
             await this.postService.list({topic: {$in: topic.data.map(f => f._id)}}, { perPage: 10, sort: 'createdAt'}, user);
+
+        console.log("Forum " + forum._id + " got trough correctly");
 
         return {
             forum,
