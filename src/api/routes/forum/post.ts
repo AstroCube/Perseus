@@ -42,21 +42,6 @@ export default (app: Router) => {
         });
 
     route.get(
-        '/interact/:id',
-        middlewares.authentication,
-        middlewares.userOptional,
-        async (req: Request, res: Response, next: NextFunction) => {
-            try {
-                const forumViewService: ForumViewService = Container.get(ForumViewService);
-                return res.json(
-                    await forumViewService.topicInteractView(req.params.id, req.currentUser, req.query.quote as string)
-                ).status(200);
-            } catch (e) {
-                return next(e);
-            }
-        });
-
-    route.get(
         '/like-status/:id',
         middlewares.authentication,
         middlewares.userAttachment,

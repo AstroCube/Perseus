@@ -23,7 +23,10 @@ export default (app: Router) => {
             body: Joi.object({
                 subject: Joi.string().required(),
                 author: Joi.string().required(),
-                forum: Joi.string().required()
+                forum: Joi.string().required(),
+                pinned: Joi.string(),
+                official: Joi.string(),
+                locked: Joi.string()
             })
         }),
         middlewares.authentication,
@@ -47,6 +50,21 @@ export default (app: Router) => {
                 const topicService: TopicService = Container.get(TopicService);
                 const topic: ITopic = await topicService.get(req.params.id, req.currentUser);
                 return res.json(topic).status(200);
+            } catch (e) {
+                return next(e);
+            }
+        });
+
+    route.get(
+        '/interact/:id',
+        middlewares.authentication,
+        middlewares.userOptional,
+        async (req: Request, res: Response, next: NextFunction) => {
+            try {
+                const forumViewService: ForumViewService = Container.get(ForumViewService);
+                return res.json(
+                    await forumViewService.topicInteractView(req.params.id, req.currentUser, req.query.quote as string)
+                ).status(200);
             } catch (e) {
                 return next(e);
             }
