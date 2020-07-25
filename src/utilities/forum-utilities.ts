@@ -36,10 +36,12 @@ export class ForumUtilities {
         let finalForum: any = forum;
         finalForum._id = forum._id.toString();
 
-        const permissions: IForumPermissions = user ? await this.forumService.getPermissions(user, forum._id) :
-            this.getGuestPermissions(forum._id);
+        const permissions: IForumPermissions = user ? await this.forumService.getPermissions(user, finalForum._id) :
+            this.getGuestPermissions(finalForum._id);
 
         if ((forum.guest && !user) || (user && permissions.view === ForumPermissible.None)) return null;
+
+        console.log("Not null");
 
         let query: any = {forum: finalForum._id};
         if (permissions.view === ForumPermissible.Own) query = {forum: finalForum._id, author: user._id};
