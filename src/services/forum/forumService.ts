@@ -127,8 +127,6 @@ export default class ForumService {
             }
         });
 
-        console.log(manifest);
-
         if (user.groups.some(g => g.group.web_permissions.forum.official)) manifest.official = true;
 
         return manifest;
