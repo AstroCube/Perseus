@@ -113,9 +113,10 @@ export default class TopicService {
     public async delete(id: string, user: IUser): Promise<void> {
         try {
             const topic: ITopic = await this.topicModel.findById(id);
+            const topicId: string = topic.forum._id.toString();
             if (!topic) throw new ResponseError('The requested topic was not found', 404);
 
-            const permissions: IForumPermissions = await this.forumService.getPermissions(user, topic.forum._id);
+            const permissions: IForumPermissions = await this.forumService.getPermissions(user, topicId);
 
             if (!user.groups.some(g => g.group.web_permissions.forum.manage) && !permissions.manage
             ) {
