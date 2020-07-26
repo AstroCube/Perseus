@@ -1,4 +1,4 @@
-import * as mongodb from  "mongodb";
+import * as mongoose from "mongoose";
 
 export interface IModel {
 
@@ -9,6 +9,6 @@ export interface IModel {
   deletedAt?: string;
   deletedBy?: string;
 
-  delete(user?: mongodb.ObjectId): void;
+  delete(user?: mongoose.Types.ObjectId): void;
 
 }

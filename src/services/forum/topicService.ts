@@ -6,7 +6,7 @@ import {ITopic, ITopicUpdate} from "../../interfaces/forum/ITopic";
 import ForumService from "./forumService";
 import {ForumPermissible, IForumPermissions} from "../../interfaces/permissions/IForumPermissions";
 import {IUser} from "../../interfaces/IUser";
-import * as mongodb from  "mongodb";
+import * as mongoose from "mongoose";
 
 @Service()
 export default class TopicService {
@@ -134,7 +134,7 @@ export default class TopicService {
 
             console.log("Deleted shit well :) :): " + topic);
 
-            await this.postModel.delete({topic: topic._id}, new mongodb.ObjectId(user._id));
+            await this.postModel.delete({topic: topic._id}, mongoose.Types.ObjectId(topic._id));
 
             console.log("Obviously this shit won't reach, but just in case");
 
