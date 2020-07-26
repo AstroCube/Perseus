@@ -80,7 +80,7 @@ export default (app: Router) => {
                 const topic: ITopicView = await topicService.topicViewData(
                     req.params.id,
                     req.query.page as any,
-                    req.query.perPage as any,
+                    req.query.size as any,
                     req.currentUser
                 );
                 return res.json(topic).status(200);
