@@ -129,7 +129,7 @@ export default class TopicService {
 
             console.log("Here passed permissions shit again :)");
 
-            await topic.delete(new Schema.Types.ObjectId(user._id));
+            //await topic.delete(user._id.toString());
 
 
             console.log("Deleted shit well :) :): " + topic);
