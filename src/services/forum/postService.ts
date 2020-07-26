@@ -81,9 +81,9 @@ export default class PostService {
             const postRecord: IPost = await this.get(id);
             if ((postRecord.liked as string[]).includes(user._id))
                 //@ts-ignore
-                return this.postModel.findByIdAndUpdate(id, {liked: {$push: user._id}}, {new: true});
+                return this.postModel.findByIdAndUpdate(id, {$pull: {liked: user._id}}, {new: true});
             //@ts-ignore
-            return this.postModel.findByIdAndUpdate(id, {liked: {$pull: user._id}}, {new: true});
+            return this.postModel.findByIdAndUpdate(id, {$push: {liked: user._id}}, {new: true});
         } catch (e) {
             this.logger.error('There was an error liking post for an user: %o', e);
             throw e;

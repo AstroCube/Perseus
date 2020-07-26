@@ -68,6 +68,8 @@ export default class ForumViewService {
     public async topicViewData(id: string, page: number, perPage: number, user?: IUser): Promise<ITopicView> {
         try {
             const topic: ITopic = await this.topicService.get(id);
+            let modifiedTopic = topic;
+            modifiedTopic.forum._id = topic.forum._id.toString();
 
             const permissions: IForumPermissions = user ? await this.forumService.getPermissions(user, topic.forum._id) :
                 this.forumUtilities.getGuestPermissions(topic.forum._id);
@@ -85,7 +87,7 @@ export default class ForumViewService {
             if (user) await this.postService.readTopicMessages(topic._id, user);
 
             return {
-                topic,
+                topic: modifiedTopic,
                 user,
                 permissions,
                 posts
