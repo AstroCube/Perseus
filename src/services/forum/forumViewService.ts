@@ -81,6 +81,8 @@ export default class ForumViewService {
             )
                 throw new ResponseError('You have no access to this forum', 403);
 
+            console.log({page, perPage, sort: 'createdAt'});
+
             const posts: IPaginateResult<IPost> =
                 await this.postService.list({topic: topic._id}, {page, perPage, sort: 'createdAt'});
 
