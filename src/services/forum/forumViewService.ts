@@ -134,12 +134,8 @@ export default class ForumViewService {
                 (permissions.view === ForumPermissible.Own && topicRecord._id.toString() !== user._id.toString())
             ) throw new ResponseError('You do not have access to this forum', 403);
 
-            console.log({topic: topicRecord._id});
             const original: IPaginateResult<IPost> =
-                await this.postService.list({topic: topicRecord._id}, {perPage: 10, sort: 'createdAt'});
-
-            console.log("Again loggers");
-            console.log(original);
+                await this.postService.list({topic}, {perPage: 10, sort: 'createdAt'});
 
             let quotedPost: IPost;
             if (quote) {
@@ -147,9 +143,12 @@ export default class ForumViewService {
                 if (!quotedPost) throw new ResponseError('Requested quote was not found', 404);
             }
 
+            let finalTopic: ITopic = topicRecord;
+            finalTopic._id = topic;
+
             return {
                 user,
-                topic: topicRecord,
+                topic: finalTopic,
                 original: original.data[0],
                 quote: quotedPost
             };
