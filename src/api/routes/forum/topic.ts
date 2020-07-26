@@ -79,8 +79,8 @@ export default (app: Router) => {
                 const topicService: ForumViewService = Container.get(ForumViewService);
                 const topic: ITopicView = await topicService.topicViewData(
                     req.params.id,
-                    req.query.page as any,
-                    req.query.size as any,
+                    parseInt(req.query.page as any),
+                    parseInt(req.query.size as any),
                     req.currentUser
                 );
                 return res.json(topic).status(200);
