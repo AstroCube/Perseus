@@ -42,5 +42,5 @@ const Match = new mongoose.Schema(
 );
 
 Match.plugin(mongoosePagination);
-Match.plugin(require('mongoose-delete'));
+Match.plugin(require('mongoose-delete'), { overrideMethods: true });
 export default mongoose.model<IMatch & mongoose.Document>('Match', Match);

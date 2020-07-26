@@ -50,5 +50,5 @@ const Post = new mongoose.Schema(
 
 Post.plugin(mongoosePagination);
 Post.plugin(autoPopulate);
-Post.plugin(require('mongoose-delete'));
+Post.plugin(require('mongoose-delete'), { overrideMethods: true });
 export default mongoose.model<IPost & mongoose.Document>('Post', Post);

@@ -15,5 +15,5 @@ const Cluster = new mongoose.Schema(
 );
 
 Cluster.plugin(mongoosePagination);
-Cluster.plugin(require('mongoose-delete'));
+Cluster.plugin(require('mongoose-delete'), { overrideMethods: true });
 export default mongoose.model<ICluster & mongoose.Document>('Cluster', Cluster);

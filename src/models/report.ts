@@ -71,5 +71,5 @@ const Report = new mongoose.Schema(
 
 Report.plugin(mongoosePagination);
 Report.plugin(autoPopulate);
-Report.plugin(require('mongoose-delete'));
+Report.plugin(require('mongoose-delete'), { overrideMethods: true });
 export default mongoose.model<IReport & mongoose.Document>('Report', Report);

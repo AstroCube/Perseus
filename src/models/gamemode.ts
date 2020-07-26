@@ -23,5 +23,5 @@ const Gamemode = new mongoose.Schema(
 
 
 Gamemode.plugin(mongoosePagination);
-Gamemode.plugin(require('mongoose-delete'));
+Gamemode.plugin(require('mongoose-delete'), { overrideMethods: true });
 export default mongoose.model<IGamemode & mongoose.Document>('Gamemode', Gamemode);

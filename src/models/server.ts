@@ -30,5 +30,5 @@ const Server = new mongoose.Schema(
 
 Server.plugin(mongoosePagination);
 Server.plugin(autoPopulate);
-Server.plugin(require('mongoose-delete'));
+Server.plugin(require('mongoose-delete'), { overrideMethods: true });
 export default mongoose.model<IServer & mongoose.Document>('Server', Server);

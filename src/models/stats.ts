@@ -124,5 +124,5 @@ const Stats = new mongoose.Schema(
 
 Stats.plugin(mongoosePagination);
 Stats.plugin(require('mongoose-autopopulate'));
-Stats.plugin(require('mongoose-delete'));
+Stats.plugin(require('mongoose-delete'), { overrideMethods: true });
 export default mongoose.model<IStats & mongoose.Document>('Stats', Stats);

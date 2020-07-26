@@ -60,5 +60,5 @@ const Map = new mongoose.Schema(
 );
 
 Map.plugin(mongoosePagination);
-Map.plugin(require('mongoose-delete'));
+Map.plugin(require('mongoose-delete'), { overrideMethods: true });
 export default mongoose.model<IMap & mongoose.Document>('Map', Map);
