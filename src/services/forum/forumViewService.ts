@@ -137,6 +137,9 @@ export default class ForumViewService {
             const original: IPaginateResult<IPost> =
                 await this.postService.list({topic: topicRecord._id}, {sort: 'createdAt'});
 
+            console.log("Again loggers");
+            console.log(original.data);
+
             let quotedPost: IPost;
             if (quote) {
                 quotedPost = await this.postService.get(quote);
