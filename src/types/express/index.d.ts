@@ -47,7 +47,7 @@ declare global {
   
   export interface DeletableModel<T> extends PaginateModel<T & Document> {
 
-    delete(query?: FilterQuery<T>, user?: Schema.Types.ObjectId);
+    delete(query?: FilterQuery<T>, user?: string);
 
     restore(query?: FilterQuery<T>);
 
