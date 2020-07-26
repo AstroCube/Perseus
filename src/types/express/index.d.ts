@@ -15,7 +15,6 @@ import { IForum } from "../../interfaces/forum/IForum";
 import {ITopic} from "../../interfaces/forum/ITopic";
 import {IPost} from "../../interfaces/forum/IPost";
 import {IFriend} from "../../interfaces/IFriend";
-import {Schema} from "mongoose";
 
 declare global {
   namespace Express {
@@ -47,7 +46,7 @@ declare global {
   
   export interface DeletableModel<T> extends PaginateModel<T & Document> {
 
-    delete(query?: FilterQuery<T>, user?: Schema.Types.ObjectId);
+    delete(query?: FilterQuery<T>);
 
     restore(query?: FilterQuery<T>);
 

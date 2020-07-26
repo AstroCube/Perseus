@@ -1,4 +1,3 @@
-import {Schema} from "mongoose";
 
 export interface IModel {
 
@@ -9,6 +8,6 @@ export interface IModel {
   deletedAt?: string;
   deletedBy?: string;
 
-  delete(user?: Schema.Types.ObjectId): void;
+  delete(): void;
 
 }

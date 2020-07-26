@@ -117,8 +117,6 @@ export default class TopicService {
 
             const permissions: IForumPermissions = await this.forumService.getPermissions(user, topic.forum._id);
 
-            console.log("Here received the permissions :)");
-
             if (!user.groups.some(g => g.group.web_permissions.forum.manage) && !permissions.manage
             ) {
                 if (!permissions.delete) {
@@ -128,14 +126,8 @@ export default class TopicService {
                 }
             }
 
-
-            //await topic.delete(user._id.toString());
-            console.log(user._id.toString());
-
-            await this.postModel.delete({topic: topic._id}, new Schema.Types.ObjectId(user._id.toString()));
-
-            console.log("Obviously this shit won't reach, but just in case");
-
+            await topic.delete();
+            await this.postModel.delete({topic: topic._id});
         } catch (e) {
             this.logger.error('There was an error creating a topic: %o', e);
             throw e;
