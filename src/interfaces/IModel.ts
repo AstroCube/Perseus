@@ -1,3 +1,5 @@
+import * as mongodb from  "mongodb";
+
 export interface IModel {
 
   _id: string;
@@ -7,6 +9,6 @@ export interface IModel {
   deletedAt?: string;
   deletedBy?: string;
 
-  delete(user?: string): void;
+  delete(user?: mongodb.ObjectId): void;
 
 }

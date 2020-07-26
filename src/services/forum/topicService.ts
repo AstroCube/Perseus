@@ -1,4 +1,4 @@
-import {Document, IPaginateResult, Schema} from "mongoose";
+import {IPaginateResult} from "mongoose";
 import {Inject, Service} from "typedi";
 import {Logger} from "winston";
 import {ResponseError} from "../../interfaces/error/ResponseError";
@@ -6,6 +6,7 @@ import {ITopic, ITopicUpdate} from "../../interfaces/forum/ITopic";
 import ForumService from "./forumService";
 import {ForumPermissible, IForumPermissions} from "../../interfaces/permissions/IForumPermissions";
 import {IUser} from "../../interfaces/IUser";
+import * as mongodb from  "mongodb";
 
 @Service()
 export default class TopicService {
@@ -131,10 +132,9 @@ export default class TopicService {
 
             //await topic.delete(user._id.toString());
 
-
             console.log("Deleted shit well :) :): " + topic);
 
-            await this.postModel.delete({topic: topic._id}, user._id.toString());
+            await this.postModel.delete({topic: topic._id}, new mongodb.ObjectId(user._id));
 
             console.log("Obviously this shit won't reach, but just in case");
 
