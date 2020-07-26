@@ -114,7 +114,10 @@ export default class TopicService {
             const topic: ITopic = await this.topicModel.findById(id);
             if (!topic) throw new ResponseError('The requested forum was not found', 404);
 
-            const permissions: IForumPermissions = await this.forumService.getPermissions(user, topic._id);
+            const permissions: IForumPermissions = await this.forumService.getPermissions(user, topic.forum._id);
+
+            console.log("Here received the permissions :)");
+
             if (!user.groups.some(g => g.group.web_permissions.forum.manage) && !permissions.manage
             ) {
                 if (!permissions.delete) {
@@ -124,8 +127,16 @@ export default class TopicService {
                 }
             }
 
+            console.log("Here passed permissions shit again :)");
+
             await topic.delete(user._id);
+
+
+            console.log("Deleted shit well :) :): " + topic);
+
             await this.postModel.delete({topic: topic._id}, user._id);
+
+            console.log("Obviously this shit won't reach, but just in case");
 
         } catch (e) {
             this.logger.error('There was an error creating a topic: %o', e);
