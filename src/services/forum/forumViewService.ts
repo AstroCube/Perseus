@@ -138,7 +138,7 @@ export default class ForumViewService {
                 await this.postService.list({topic: topicRecord._id}, {perPage: 10, sort: 'createdAt'});
 
             console.log("Again loggers");
-            console.log(original.data);
+            console.log(original);
 
             let quotedPost: IPost;
             if (quote) {
