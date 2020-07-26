@@ -1,4 +1,4 @@
-import {Document, FilterQuery, PaginateModel} from 'mongoose';
+import {Document, FilterQuery, PaginateModel, Schema} from 'mongoose';
 import { IUser } from '../../interfaces/IUser';
 import { IGroup } from "../../interfaces/IGroup";
 import { IServer } from "../../interfaces/IServer";
@@ -15,6 +15,7 @@ import { IForum } from "../../interfaces/forum/IForum";
 import {ITopic} from "../../interfaces/forum/ITopic";
 import {IPost} from "../../interfaces/forum/IPost";
 import {IFriend} from "../../interfaces/IFriend";
+import mongoose from "../../loaders/mongoose";
 
 declare global {
   namespace Express {
@@ -46,7 +47,7 @@ declare global {
   
   export interface DeletableModel<T> extends PaginateModel<T & Document> {
 
-    delete(query?: FilterQuery<T>, user?: string);
+    delete(query?: FilterQuery<T>, user?: Schema.Types.ObjectId);
 
     restore(query?: FilterQuery<T>);
 

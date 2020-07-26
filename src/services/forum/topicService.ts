@@ -1,4 +1,4 @@
-import {Document, IPaginateResult} from "mongoose";
+import {Document, IPaginateResult, Schema} from "mongoose";
 import {Inject, Service} from "typedi";
 import {Logger} from "winston";
 import {ResponseError} from "../../interfaces/error/ResponseError";
@@ -129,12 +129,12 @@ export default class TopicService {
 
             console.log("Here passed permissions shit again :)");
 
-            //await topic.delete(user._id);
+            await topic.delete(new Schema.Types.ObjectId(user._id));
 
 
             console.log("Deleted shit well :) :): " + topic);
 
-            await this.postModel.delete({topic: topic._id}, user._id);
+            await this.postModel.delete({topic: topic._id}, new Schema.Types.ObjectId(user._id));
 
             console.log("Obviously this shit won't reach, but just in case");
 
