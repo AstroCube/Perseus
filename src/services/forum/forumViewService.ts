@@ -134,6 +134,7 @@ export default class ForumViewService {
                 (permissions.view === ForumPermissible.Own && topicRecord._id.toString() !== user._id.toString())
             ) throw new ResponseError('You do not have access to this forum', 403);
 
+            console.log({topic: topicRecord._id});
             const original: IPaginateResult<IPost> =
                 await this.postService.list({topic: topicRecord._id}, {perPage: 10, sort: 'createdAt'});
 
