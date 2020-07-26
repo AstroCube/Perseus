@@ -134,7 +134,7 @@ export default class TopicService {
 
             console.log("Deleted shit well :) :): " + topic);
 
-            await this.postModel.delete({topic: topic._id}, new Schema.Types.ObjectId(user._id));
+            await this.postModel.delete({topic: topic._id}, user._id.toString());
 
             console.log("Obviously this shit won't reach, but just in case");
 
