@@ -93,7 +93,7 @@ export class ForumUtilities {
 
         return {
             topic,
-            unread: user ? posts.data.filter(post => (post.viewed as string[]).includes(user ? user._id : '')).length : 0,
+            unread: user ? posts.data.filter(post => !(post.viewed as string[]).includes(user ? user._id : '')).length : 0,
             messages: posts.data.length,
             views: unique.length,
             lastPost: posts.data.sort((a, b) => parseInt(b.createdAt) - parseInt(a.createdAt))[0]

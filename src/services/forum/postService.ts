@@ -69,7 +69,7 @@ export default class PostService {
 
     public async readTopicMessages(id: string, user: IUser): Promise<void> {
         try {
-            await this.postModel.updateMany({topic: id}, {$push: {viewed: user._id}});
+            await this.postModel.updateMany({topic: id, viewed: {$ne: user._id}}, {$push: {viewed: user._id}});
         } catch (e) {
             this.logger.error('There was an error creating a forum: %o', e);
             throw e;
