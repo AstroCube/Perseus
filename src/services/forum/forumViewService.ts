@@ -38,13 +38,13 @@ export default class ForumViewService {
             if (permissions.view === ForumPermissible.Own) query = {forum: forum._id, author: user._id};
 
             let pinned: IPaginateResult<ITopic> =
-                await this.topicService.list({...query, pinned: true}, {perPage: 10, sort: 'createdAt'});
+                await this.topicService.list({...query, pinned: true}, {perPage: 10, sort: {createdAt: -1}});
 
             let pinPlaceholder: ITopicHolder[] = [];
             for (const pin of pinned.data) pinPlaceholder.push(await this.forumUtilities.getTopicHolder(pin, user));
 
             let topics: IPaginateResult<ITopic> =
-                await this.topicService.list({...query, pinned: false}, {page, perPage, sort: 'createdAt'});
+                await this.topicService.list({...query, pinned: false}, {page, perPage, sort: {createdAt: -1}});
             let topicPlaceholder: ITopicHolder[] = [];
             for (const topic of topics.data) topicPlaceholder.push(await this.forumUtilities.getTopicHolder(topic, user));
 
