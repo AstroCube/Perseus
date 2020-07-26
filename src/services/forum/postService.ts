@@ -133,10 +133,24 @@ export default class PostService {
         }
     }
 
-    public async delete(id: string): Promise<void> {
+    public async delete(id: string, user: IUser): Promise<void> {
         try {
-            // TODO: Create forum, topic and post deletion
-            await this.postModel.findByIdAndDelete(id);
+
+            const post: IPost = await this.postModel.findById(id);
+            if (!post) throw new ResponseError('The requested post was not found', 404);
+
+            const permissions: IForumPermissions = await this.forumService.getPermissions(user, (post.topic as ITopic).forum._id);
+
+            if (!user.groups.some(g => g.group.web_permissions.forum.manage) && !permissions.manage
+            ) {
+                if (!permissions.delete) {
+                    const date: Date = new Date(new Date(post.createdAt).getTime() + (15 * 60000));
+                    if (date.getTime() < new Date().getTime() || user._id.toString() !== post.author.toString())
+                        throw new ResponseError('You do not have permission to update the post.', 403);
+                }
+            }
+
+            await post.delete();
         } catch (e) {
             this.logger.error('There was an error creating a post: %o', e);
             throw e;

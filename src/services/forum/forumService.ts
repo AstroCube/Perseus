@@ -6,13 +6,17 @@ import {IForum} from "../../interfaces/forum/IForum";
 import {IUser} from "../../interfaces/IUser";
 import {ForumPermissible, IForumPermissions} from "../../interfaces/permissions/IForumPermissions";
 import dotty = require('dotty');
+import {ITopic} from "../../interfaces/forum/ITopic";
+import TopicService from "./topicService";
 
 @Service()
 export default class ForumService {
 
     constructor(
         @Inject('forumModel') private forumModel : Models.ForumModel,
-        @Inject('logger') private logger: Logger
+        @Inject('topicModel') private topicModel : Models.TopicModel,
+        @Inject('logger') private logger: Logger,
+        private topicService: TopicService
     ) {}
 
     public async create(request: IForum): Promise<IForum> {
@@ -63,10 +67,12 @@ export default class ForumService {
         }
     }
 
-    public async delete(id: string): Promise<void> {
+    public async delete(id: string, user: IUser): Promise<void> {
         try {
-            // TODO: Create forum, topic and post deletion
-            await this.forumModel.findByIdAndDelete(id);
+            let forumTopics: ITopic[] = await this.topicModel.find({forum: id} as any);
+            for (const t of forumTopics) {
+                await this.topicService.delete(id, user);
+            }
         } catch (e) {
             this.logger.error('There was an error deleting a forum: %o', e);
             throw e;

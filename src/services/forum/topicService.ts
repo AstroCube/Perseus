@@ -113,7 +113,7 @@ export default class TopicService {
     public async delete(id: string, user: IUser): Promise<void> {
         try {
             const topic: ITopic = await this.topicModel.findById(id);
-            if (!topic) throw new ResponseError('The requested forum was not found', 404);
+            if (!topic) throw new ResponseError('The requested topic was not found', 404);
 
             const permissions: IForumPermissions = await this.forumService.getPermissions(user, topic.forum._id);
 
@@ -121,7 +121,7 @@ export default class TopicService {
             ) {
                 if (!permissions.delete) {
                     const date: Date = new Date(new Date(topic.createdAt).getTime() + (15 * 60000));
-                    if (date.getTime() < new Date().getTime() || user._id.toString() !== topic._id.toString())
+                    if (date.getTime() < new Date().getTime() || user._id.toString() !== topic.author.toString())
                         throw new ResponseError('You do not have permission to update the topic.', 403);
                 }
             }

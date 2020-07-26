@@ -139,7 +139,7 @@ export default (app: Router) => {
         async (req: Request, res: Response, next: NextFunction) => {
             try {
                 const forumService: ForumService = Container.get(ForumService);
-                await forumService.delete(req.params.id);
+                await forumService.delete(req.params.id, req.currentUser);
                 return res.json({deleted: true}).status(200);
             } catch (e) {
                 return next(e);

@@ -72,11 +72,11 @@ export default (app: Router) => {
     route.delete(
         '/:id',
         middlewares.authentication,
-        middlewares.userOptional,
+        middlewares.userAttachment,
         async (req: Request, res: Response, next: NextFunction) => {
             try {
                 const postService: PostService = Container.get(PostService);
-                await postService.delete(req.params.id);
+                await postService.delete(req.params.id, req.currentUser);
                 return res.json({deleted: true}).status(200);
             } catch (e) {
                 return next(e);
