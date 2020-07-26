@@ -115,14 +115,16 @@ export default class PostService {
              * Check if user hast All permissions, otherwise if is the same and hasn't elapsed 15 minutes after
              * post creation to generate edition access.
              */
-            if (permissions.edit !== ForumPermissible.All && (postRecord.topic as ITopic).author._id.toString() !== user._id.toString()) {
-                throw new ResponseError('You do not have permission to update the topic.', 403);
-            } else {
-                const date: Date = new Date(new Date(postRecord.createdAt).getTime() + (15 * 60000));
-                if (date.getTime() < new Date().getTime() || permissions.edit === ForumPermissible.None)
+            if (!user.groups.some(g => g.group.web_permissions.forum.manage) && !permissions.manage
+            ) {
+                if (permissions.edit !== ForumPermissible.All && (postRecord.topic as ITopic).author._id.toString() !== user._id.toString()) {
                     throw new ResponseError('You do not have permission to update the topic.', 403);
+                } else {
+                    const date: Date = new Date(new Date(postRecord.createdAt).getTime() + (15 * 60000));
+                    if (date.getTime() < new Date().getTime() || permissions.edit === ForumPermissible.None)
+                        throw new ResponseError('You can not edit the topic after 15 minutes of created.', 403);
+                }
             }
-
 
             return this.postModel.findByIdAndUpdate(post._id, {...post, lastAction: user._id}, {new: true});
         } catch (e) {
