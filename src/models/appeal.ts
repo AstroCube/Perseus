@@ -57,4 +57,5 @@ const Appeal = new mongoose.Schema(
 
 Appeal.plugin(mongoosePagination);
 Appeal.plugin(autoPopulate);
+Appeal.plugin(require('mongoose-delete'));
 export default mongoose.model<IAppeal & mongoose.Document>('Appeal', Appeal);

@@ -90,4 +90,5 @@ const User = new mongoose.Schema(
 
 User.plugin(mongoosePagination);
 User.plugin(require('mongoose-autopopulate'));
+User.plugin(require('mongoose-delete'));
 export default mongoose.model<IUser & mongoose.Document>('User', User);

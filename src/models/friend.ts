@@ -26,4 +26,5 @@ const Friend = new mongoose.Schema(
 
 
 Friend.plugin(mongoosePagination);
+Friend.plugin(require('mongoose-delete'));
 export default mongoose.model<IFriend & mongoose.Document>('Friend', Friend);

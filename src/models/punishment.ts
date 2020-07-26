@@ -57,4 +57,5 @@ const Punishment = new mongoose.Schema(
 
 Punishment.plugin(mongoosePagination);
 Punishment.plugin(autoPopulate);
+Punishment.plugin(require('mongoose-delete'));
 export default mongoose.model<IPunishment & mongoose.Document>('Punishment', Punishment);

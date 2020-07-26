@@ -1,4 +1,4 @@
-import { Document, PaginateModel } from 'mongoose';
+import {Document, FilterQuery, PaginateModel} from 'mongoose';
 import { IUser } from '../../interfaces/IUser';
 import { IGroup } from "../../interfaces/IGroup";
 import { IServer } from "../../interfaces/IServer";
@@ -26,21 +26,29 @@ declare global {
   }
 
   namespace Models {
-    export type AppealModel = PaginateModel<IAppeal & Document>;
-    export type ClusterModel = PaginateModel<ICluster & Document>;
-    export type FriendModel = PaginateModel<IFriend & Document>;
-    export type ForumModel = PaginateModel<IForum & Document>;
-    export type ForumCategoryModel = PaginateModel<IForumCategory & Document>;
-    export type GamemodeModel = PaginateModel<IGamemode & Document>;
-    export type GroupModel = PaginateModel<IGroup & Document>;
-    export type MapModel = PaginateModel<IMap & Document>;
-    export type MatchModel = PaginateModel<IMatch & Document>;
-    export type PostModel = PaginateModel<IPost & Document>;
-    export type PunishmentModel = PaginateModel<IPunishment & Document>;
-    export type ReportModel = PaginateModel<IReport & Document>;
-    export type ServerModel = PaginateModel<IServer & Document>;
-    export type StatsModel = PaginateModel<IStats & Document>;
-    export type TopicModel = PaginateModel<ITopic & Document>;
-    export type UserModel = PaginateModel<IUser & Document>;
+    export type AppealModel = DeletableModel<IAppeal & Document>;
+    export type ClusterModel = DeletableModel<ICluster & Document>;
+    export type FriendModel = DeletableModel<IFriend & Document>;
+    export type ForumModel = DeletableModel<IForum & Document>;
+    export type ForumCategoryModel = DeletableModel<IForumCategory & Document>;
+    export type GamemodeModel = DeletableModel<IGamemode & Document>;
+    export type GroupModel = DeletableModel<IGroup & Document>;
+    export type MapModel = DeletableModel<IMap & Document>;
+    export type MatchModel = DeletableModel<IMatch & Document>;
+    export type PostModel = DeletableModel<IPost & Document>;
+    export type PunishmentModel = DeletableModel<IPunishment & Document>;
+    export type ReportModel = DeletableModel<IReport & Document>;
+    export type ServerModel = DeletableModel<IServer & Document>;
+    export type StatsModel = DeletableModel<IStats & Document>;
+    export type TopicModel = DeletableModel<ITopic & Document>;
+    export type UserModel = DeletableModel<IUser & Document>;
+  }
+  
+  export interface DeletableModel<T> extends PaginateModel<T & Document> {
+
+    delete(query?: FilterQuery<T>, user?: string);
+
+    restore(query?: FilterQuery<T>);
+
   }
 }

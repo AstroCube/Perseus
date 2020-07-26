@@ -23,4 +23,5 @@ const ForumCategory = new mongoose.Schema(
 
 ForumCategory.plugin(mongoosePagination);
 ForumCategory.plugin(autoPopulate);
+ForumCategory.plugin(require('mongoose-delete'));
 export default mongoose.model<IForumCategory & mongoose.Document>('ForumCategory', ForumCategory);

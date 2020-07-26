@@ -49,5 +49,5 @@ const Topic = new mongoose.Schema(
 
 Topic.plugin(mongoosePagination);
 Topic.plugin(autoPopulate);
-
+Topic.plugin(require('mongoose-delete'));
 export default mongoose.model<ITopic & mongoose.Document>('Topic', Topic);

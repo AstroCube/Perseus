@@ -13,6 +13,7 @@ export default class TopicService {
     constructor(
         @Inject('topicModel') private topicModel : Models.TopicModel,
         @Inject('forumModel') private forumModel : Models.ForumModel,
+        @Inject('postModel') private postModel: Models.PostModel,
         @Inject('logger') private logger: Logger,
         private forumService: ForumService,
     ) {}
@@ -108,10 +109,24 @@ export default class TopicService {
         }
     }
 
-    public async delete(id: string): Promise<void> {
+    public async delete(id: string, user: IUser): Promise<void> {
         try {
-            // TODO: Create forum, topic and post deletion
-            await this.topicModel.findByIdAndDelete(id);
+            const topic: ITopic = await this.topicModel.findById(id);
+            if (!topic) throw new ResponseError('The requested forum was not found', 404);
+
+            const permissions: IForumPermissions = await this.forumService.getPermissions(user, topic._id);
+            if (!user.groups.some(g => g.group.web_permissions.forum.manage) && !permissions.manage
+            ) {
+                if (!permissions.delete) {
+                    const date: Date = new Date(new Date(topic.createdAt).getTime() + (15 * 60000));
+                    if (date.getTime() < new Date().getTime() || user._id.toString() !== topic._id.toString())
+                        throw new ResponseError('You do not have permission to update the topic.', 403);
+                }
+            }
+
+            await topic.delete(user._id);
+            await this.postModel.delete({topic: topic._id}, user._id);
+
         } catch (e) {
             this.logger.error('There was an error creating a topic: %o', e);
             throw e;

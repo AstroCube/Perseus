@@ -85,4 +85,5 @@ const Group = new mongoose.Schema(
 
 Group.plugin(mongoosePagination);
 Group.plugin(require('mongoose-autopopulate'));
+Group.plugin(require('mongoose-delete'));
 export default mongoose.model<IGroup & mongoose.Document>('Group', Group);

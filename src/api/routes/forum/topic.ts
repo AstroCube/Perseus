@@ -124,7 +124,7 @@ export default (app: Router) => {
         async (req: Request, res: Response, next: NextFunction) => {
             try {
                 const topicService: TopicService = Container.get(TopicService);
-                await topicService.delete(req.params.id);
+                await topicService.delete(req.params.id, req.currentUser);
                 return res.json({deleted: true}).status(200);
             } catch (e) {
                 return next(e);

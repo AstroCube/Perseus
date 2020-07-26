@@ -39,4 +39,5 @@ const Forum = new mongoose.Schema(
 
 Forum.plugin(mongoosePagination);
 Forum.plugin(autoPopulate);
+Forum.plugin(require('mongoose-delete'));
 export default mongoose.model<IForum & mongoose.Document>('Forum', Forum);

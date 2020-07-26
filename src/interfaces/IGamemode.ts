@@ -1,6 +1,6 @@
 import {IModel} from "./IModel";
 
-export interface IGamemode extends IModel{
+export interface IGamemode extends IModel {
   name: string;
   lobby: string;
   navigator: string;
