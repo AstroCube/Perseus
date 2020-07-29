@@ -157,4 +157,25 @@ export default class PostService {
         }
     }
 
+    public async readAll(id: string, user: IUser): Promise<void> {
+        try {
+
+            const permissions: IForumPermissions = await this.forumService.getPermissions(user, id);
+            if (permissions.view === ForumPermissible.None)
+                throw new ResponseError('You do not have access to read this forum', 403);
+
+            let query: any =  {forum: id};
+            if (permissions.view === ForumPermissible.Own) query = {forum: id, author: user._id};
+
+            const allowedTopics: IPaginateResult<ITopic> =
+                await this.topicService.list(query, {perPage: 10});
+
+            allowedTopics.data.forEach(t => this.readTopicMessages(t._id, user));
+
+        } catch (e) {
+            this.logger.error('There was an checking as read all posts for user: %o', e);
+            throw e;
+        }
+    }
+
 }

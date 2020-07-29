@@ -11,6 +11,7 @@ import TopicService from "../../../services/forum/topicService";
 import {ITopic, ITopicUpdate, ITopicView} from "../../../interfaces/forum/ITopic";
 import userOptional from "../../middlewares/userOptional";
 import ForumViewService from "../../../services/forum/forumViewService";
+import PostService from "../../../services/forum/postService";
 const route = Router();
 
 export default (app: Router) => {
@@ -125,6 +126,20 @@ export default (app: Router) => {
             try {
                 const topicService: TopicService = Container.get(TopicService);
                 await topicService.delete(req.params.id, req.currentUser);
+                return res.json({deleted: true}).status(200);
+            } catch (e) {
+                return next(e);
+            }
+        });
+
+    route.get(
+        'read-all/:id',
+        middlewares.authentication,
+        middlewares.userAttachment,
+        async (req: Request, res: Response, next: NextFunction) => {
+            try {
+                const postService: PostService = Container.get(PostService);
+                await postService.readTopicMessages(req.params.id, req.currentUser);
                 return res.json({deleted: true}).status(200);
             } catch (e) {
                 return next(e);
