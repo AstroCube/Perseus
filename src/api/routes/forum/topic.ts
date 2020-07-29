@@ -133,7 +133,7 @@ export default (app: Router) => {
         });
 
     route.get(
-        'read-all/:id',
+        '/read-all/:id',
         middlewares.authentication,
         middlewares.userAttachment,
         async (req: Request, res: Response, next: NextFunction) => {
