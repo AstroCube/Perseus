@@ -78,11 +78,14 @@ export default class GroupService {
       let staffGroups: IStaffGroup[] = [];
 
       const groupList: IGroup[] = await this.groupModel.find({staff: true});
-      for (const group of groupList) {
-        staffGroups.push({group, user: await this.userModel
-              //@ts-ignore
-              .find({groups: {group: {_id: group._id}}})
-              .select({password: -1, salt: -1})});
+      for (const iterateGroup of groupList) {
+        console.log(iterateGroup._id);
+        const users: IUser[] =  await this.userModel
+            //@ts-ignore
+            .find({groups: {group: {_id: iterateGroup._id}}})
+            .select({password: -1, salt: -1});
+
+        staffGroups.push({group: iterateGroup, user: users});
       }
 
       return staffGroups;
