@@ -139,7 +139,7 @@ export default (app: Router) => {
         async (req: Request, res: Response, next: NextFunction) => {
             try {
                 const postService: PostService = Container.get(PostService);
-                await postService.readTopicMessages(req.params.id, req.currentUser);
+                await postService.readAll(req.params.id, req.currentUser);
                 return res.json({deleted: true}).status(200);
             } catch (e) {
                 return next(e);
