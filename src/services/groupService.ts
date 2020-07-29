@@ -81,7 +81,7 @@ export default class GroupService {
       for (const group of groupList) {
         staffGroups.push({group, user: await this.userModel
               //@ts-ignore
-              .find({groups: {group: group._id}})
+              .find({groups: {group: {_id: group._id}}})
               .select({password: -1, salt: -1})});
       }
 
