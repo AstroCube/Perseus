@@ -1,6 +1,6 @@
 import { Service, Inject } from 'typedi';
 import { IUser } from '../interfaces/IUser';
-import {IGroup, IPermissions} from "../interfaces/IGroup";
+import {IGroup, IPermissions, IStaffGroup} from "../interfaces/IGroup";
 import { IPaginateResult } from "mongoose";
 import { Logger } from "winston";
 import dotty = require('dotty');
@@ -69,6 +69,25 @@ export default class GroupService {
       return userRecord;
     } catch (e) {
       this.logger.error('There was an error adding a user to a group: %o', e);
+      throw e;
+    }
+  }
+
+  public async getStaffBoard(): Promise<IStaffGroup[]> {
+    try {
+      let staffGroups: IStaffGroup[] = [];
+
+      const groupList: IGroup[] = await this.groupModel.find({staff: true});
+      for (const group of groupList) {
+        staffGroups.push({group, user: await this.userModel
+              //@ts-ignore
+              .find({groups: {group: group._id}})
+              .select({password: -1, salt: -1})});
+      }
+
+      return staffGroups;
+    } catch (e) {
+      this.logger.error('Error while obtaining staff list: %o', e);
       throw e;
     }
   }

@@ -1,7 +1,7 @@
 import { Router, Request, Response, NextFunction } from "express";
 import { Container } from "typedi";
 import GroupService from "../../services/groupService";
-import {IGroup, IPermissions} from "../../interfaces/IGroup";
+import {IGroup, IPermissions, IStaffGroup} from "../../interfaces/IGroup";
 import middlewares from "../middlewares";
 import { celebrate, Joi } from "celebrate";
 import { IPaginateResult } from "mongoose";
@@ -10,37 +10,37 @@ const route = Router();
 
 export default (app: Router) => {
 
-  app.use('/group', route);
+    app.use('/group', route);
 
-  route.post(
-    '/create',
-    middlewares.authentication,
-    middlewares.userAttachment,
-    middlewares.permissions("group.create"),
-    async (req: Request, res: Response, next: NextFunction) => {
-      try {
-        const groupService : GroupService = Container.get(GroupService);
-        const group : IGroup = await groupService.createGroup(req.body as IGroup, req.currentUser);
-        return res.json(group).status(200);
-      } catch (e) {
-        return next(e);
-      }
-    });
+    route.post(
+        '/create',
+        middlewares.authentication,
+        middlewares.userAttachment,
+        middlewares.permissions("group.create"),
+        async (req: Request, res: Response, next: NextFunction) => {
+            try {
+                const groupService: GroupService = Container.get(GroupService);
+                const group: IGroup = await groupService.createGroup(req.body as IGroup, req.currentUser);
+                return res.json(group).status(200);
+            } catch (e) {
+                return next(e);
+            }
+        });
 
-  route.get(
-    '/view/:id',
-    middlewares.authentication,
-    middlewares.userAttachment,
-    middlewares.permissions("group.read"),
-    async (req: Request, res: Response, next: NextFunction) => {
-      try {
-        const groupService : GroupService = Container.get(GroupService);
-        const group : IGroup = await groupService.viewGroup(req.params.id);
-        return res.json(group).status(200);
-      } catch (e) {
-        return next(e);
-      }
-    });
+    route.get(
+        '/view/:id',
+        middlewares.authentication,
+        middlewares.userAttachment,
+        middlewares.permissions("group.read"),
+        async (req: Request, res: Response, next: NextFunction) => {
+            try {
+                const groupService: GroupService = Container.get(GroupService);
+                const group: IGroup = await groupService.viewGroup(req.params.id);
+                return res.json(group).status(200);
+            } catch (e) {
+                return next(e);
+            }
+        });
 
     route.get(
         '/manifest',
@@ -56,22 +56,34 @@ export default (app: Router) => {
             }
         });
 
-  route.get(
-    '/list/:page?',
-    middlewares.authentication,
-    middlewares.userAttachment,
-    middlewares.permissions("group.read"),
-    async (req: Request, res: Response, next: NextFunction) => {
-      try {
-        const service : GroupService = Container.get(GroupService);
-        let pages: number = 1;
-        if (req.params.page) pages = + req.params.page;
-        const group : IPaginateResult<IGroup> = await service.listGroup(pages);
-        return res.status(200).json(group);
-      } catch (e) {
-        next(e);
-      }
-    });
+    route.get(
+        '/staff',
+        async (req: Request, res: Response, next: NextFunction) => {
+            try {
+                const groupService: GroupService = Container.get(GroupService);
+                const group: IStaffGroup[] = await groupService.getStaffBoard();
+                return res.json(group).status(200);
+            } catch (e) {
+                return next(e);
+            }
+        });
+
+    route.get(
+        '/list/:page?',
+        middlewares.authentication,
+        middlewares.userAttachment,
+        middlewares.permissions("group.read"),
+        async (req: Request, res: Response, next: NextFunction) => {
+            try {
+                const service: GroupService = Container.get(GroupService);
+                let pages: number = 1;
+                if (req.params.page) pages = +req.params.page;
+                const group: IPaginateResult<IGroup> = await service.listGroup(pages);
+                return res.status(200).json(group);
+            } catch (e) {
+                next(e);
+            }
+        });
 
   route.put(
     '/update/:id',

@@ -3,6 +3,7 @@ import {IForumPermissions} from "./permissions/IForumPermissions";
 import { IPunishmentPermissions } from "./permissions/IPunishmentPermissions";
 import { IAppealsPermissions } from "./permissions/IAppealsPermissions";
 import { IReportsPermissions } from "./permissions/IReportsPermissions";
+import {IUser} from "./IUser";
 
 export interface IGroup extends IModel {
   name: string;
@@ -45,4 +46,9 @@ export interface IPermissions {
     official: boolean;
     allowance: IForumPermissions[];
   };
+}
+
+export interface IStaffGroup {
+  user: IUser[];
+  group: IGroup;
 }
