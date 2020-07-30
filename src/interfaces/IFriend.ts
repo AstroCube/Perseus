@@ -7,3 +7,8 @@ export interface IFriend extends IModel {
     issuer: IUser | string;
     website: boolean;
 }
+
+export interface IFriendProfile {
+    friends: IFriend[];
+    commons: number;
+}

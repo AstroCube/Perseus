@@ -8,7 +8,7 @@ import PunishmentService from "./punishmentService";
 import {IPunishment} from "../interfaces/IPunishment";
 import dotty = require('dotty');
 import {ResponseError} from "../interfaces/error/ResponseError";
-import {IFriend} from "../interfaces/IFriend";
+import {IFriend, IFriendProfile} from "../interfaces/IFriend";
 
 @Service()
 export default class FriendService {
@@ -45,6 +45,42 @@ export default class FriendService {
             return await this.friendModel.paginate(query, options);
         } catch (e) {
             this.logger.error('There was an error obtaining friend list: %o', e);
+            throw e;
+        }
+    }
+
+    public async profile(profile: string, user?: IUser): Promise<IFriendProfile> {
+        try {
+            const userFriends: IFriend[] =
+                await this.friendModel.find(
+                    {
+                        $or: [
+                            {sender: profile},
+                            {receiver: profile}
+                        ]
+                    })
+                    .populate("sender receiver");
+
+
+            let friendsId = [];
+            userFriends.forEach(friend => {
+                if ((friend.sender as IUser)._id.toString() === profile) friendsId.push((friend.receiver as IUser)._id);
+                if ((friend.receiver as IUser)._id.toString() === profile) friendsId.push((friend.sender as IUser)._id);
+            });
+
+            const common: IFriend[] = user ? await this.friendModel.find(
+                {
+                    $or: [
+                        {sender: user._id, receiver: {$in: friendsId}},
+                        {receiver: user._id, sender: {$in: friendsId}}
+                    ]
+                }
+            ) : [];
+
+            return {commons: common.length, friends: userFriends};
+
+        } catch (e) {
+            this.logger.error('There was an error obtaining friend profile list: %o', e);
             throw e;
         }
     }

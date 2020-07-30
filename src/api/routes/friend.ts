@@ -57,6 +57,19 @@ export default (app: Router) => {
             }
         });
 
+    route.post(
+        '/profile/:id',
+        middlewares.authentication,
+        middlewares.userOptional,
+        async (req: Request, res: Response, next: NextFunction) => {
+            try {
+                const friendService: FriendService = Container.get(FriendService);
+                return res.json(await friendService.profile(req.params.id, req.currentUser)).status(200);
+            } catch (e) {
+                return next(e);
+            }
+        });
+
     route.delete(
         '/delete',
         middlewares.cluster,
