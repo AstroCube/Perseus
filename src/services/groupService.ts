@@ -83,8 +83,7 @@ export default class GroupService {
         console.log({groups: {group: iterateGroup._id}});
         const users: IUser[] =  await this.userModel
             //@ts-ignore
-            .find({groups: {group: iterateGroup._id.toString()}})
-            .select({password: -1, salt: -1});
+            .find({"groups.group": req.params.id});
 
         console.log(iterateGroup);
 
