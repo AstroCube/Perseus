@@ -105,7 +105,8 @@ export default (app: Router) => {
         celebrate({
             body: Joi.object({
                 user: Joi.string().required(),
-                group: Joi.string().required()
+                group: Joi.string().required(),
+                comment: Joi.string()
             })
         }),
         middlewares.authentication,
@@ -114,7 +115,7 @@ export default (app: Router) => {
         async (req: Request, res: Response, next: NextFunction) => {
             try {
                 const groupService : GroupService = Container.get(GroupService);
-                const user : IUser = await groupService.addUser(req.body.user, req.body.group);
+                const user : IUser = await groupService.addUser(req.body.user, req.body.group, req.body.comment);
                 return res.json(user).status(200);
             } catch (e) {
                 return next(e);

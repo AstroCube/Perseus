@@ -60,9 +60,9 @@ export default class GroupService {
     }
   }
 
-  public async addUser(id : string, group : string): Promise<IUser> {
+  public async addUser(id: string, group: string, comment?: string): Promise<IUser> {
     try {
-      const userRecord = await this.userModel.findByIdAndUpdate(id, {$push: {group: {id: group, joined: new Date()}}}, {new: true});
+      const userRecord = await this.userModel.findByIdAndUpdate(id, {$push: {group: {id: group, joined: new Date(), comment: comment}}}, {new: true});
       if (!userRecord) throw new ResponseError("Queried user does not exist.", 500);
       Reflect.deleteProperty(userRecord, 'password');
       Reflect.deleteProperty(userRecord, 'salt');
