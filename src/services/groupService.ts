@@ -94,7 +94,7 @@ export default class GroupService {
       let userRecord = await this.userModel.findByIdAndUpdate(id, {$pull: {group: {id: group}}}, {new: true});
       if (!userRecord) throw new ResponseError("Queried user does not exist.", 404);
 
-      if (!userRecord.groups.some(e => e.group._id === group))
+      if (!userRecord.groups.some(e => e.group._id.toString() === group))
         throw new ResponseError("Queried user is not currently in this group.");
 
       userRecord.groups = userRecord.groups.filter((group) => group.group._id.toString() !== group.toString());
