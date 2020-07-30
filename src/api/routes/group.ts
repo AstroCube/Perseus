@@ -43,7 +43,7 @@ export default (app: Router) => {
         });
 
     route.get(
-        '/manifest',
+        '/actionable/manifest',
         middlewares.authentication,
         middlewares.userAttachment,
         async (req: Request, res: Response, next: NextFunction) => {
@@ -57,7 +57,7 @@ export default (app: Router) => {
         });
 
     route.get(
-        '/staff',
+        '/actionable/staff',
         async (req: Request, res: Response, next: NextFunction) => {
             try {
                 const groupService: GroupService = Container.get(GroupService);
@@ -101,7 +101,7 @@ export default (app: Router) => {
         });
 
     route.post(
-        '/add-user',
+        '/actionable/add-user',
         celebrate({
             body: Joi.object({
                 user: Joi.string().required(),
@@ -123,7 +123,7 @@ export default (app: Router) => {
         });
 
     route.post(
-        '/remove-user',
+        '/actionable/remove-user',
         celebrate({
             body: Joi.object({
                 user: Joi.string().required(),
