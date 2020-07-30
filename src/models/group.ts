@@ -1,6 +1,7 @@
 import { IGroup } from "../interfaces/IGroup";
 import * as mongoose from "mongoose";
 import { mongoosePagination } from "ts-mongoose-pagination";
+import {Schema} from "mongoose";
 
 const Group = new mongoose.Schema(
   {
@@ -78,7 +79,12 @@ const Group = new mongoose.Schema(
         assign: Boolean,
         view: { type: String, enum: ['All', 'Involved'] }
       }
-    }
+    },
+    createdBy: {
+      type: Schema.Types.ObjectId,
+      ref: 'User',
+      required: true
+    },
   },
   { timestamps: true }
 );

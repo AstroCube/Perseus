@@ -40,9 +40,9 @@ export default class GroupService {
     }
   }
 
-  public async listGroup(page : number): Promise<IPaginateResult<IGroup>> {
+  public async listGroup(query: any, options: any): Promise<IPaginateResult<IGroup>> {
     try {
-      return await this.groupModel.paginate({}, { page: page, perPage: 10 });
+      return await this.groupModel.paginate(query, options);
     } catch (e) {
       this.logger.error('There was an error listing groups %o', e);
       throw e;
