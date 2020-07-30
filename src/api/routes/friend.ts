@@ -57,7 +57,7 @@ export default (app: Router) => {
             }
         });
 
-    route.post(
+    route.get(
         '/profile/:id',
         middlewares.authentication,
         middlewares.userOptional,
