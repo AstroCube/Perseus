@@ -93,7 +93,7 @@ export default (app: Router) => {
         async (req: Request, res: Response, next: NextFunction) => {
             try {
                 const groupService : GroupService = Container.get(GroupService);
-                const group : IGroup = await groupService.updateGroup(req.params.id, req.body as IGroup);
+                const group : IGroup = await groupService.updateGroup(req.body as IGroup);
                 return res.json(group).status(200);
             } catch (e) {
                 return next(e);

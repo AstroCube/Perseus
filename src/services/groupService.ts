@@ -49,9 +49,9 @@ export default class GroupService {
     }
   }
 
-  public async updateGroup(id : string, updatable : IGroup): Promise<IGroup> {
+  public async updateGroup(group: IGroup): Promise<IGroup> {
     try {
-      const groupRecord = await this.groupModel.findByIdAndUpdate(id, updatable, {new: true});
+      const groupRecord = await this.groupModel.findByIdAndUpdate(group._id, group, {new: true});
       if (!groupRecord) throw new ResponseError("Queried group does not exist.", 404);
       return groupRecord;
     } catch (e) {
