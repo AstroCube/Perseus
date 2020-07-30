@@ -62,7 +62,8 @@ export default class GroupService {
 
   public async addUser(id: string, group: string, comment?: string): Promise<void> {
     try {
-      const userRecord = await this.userModel.findByIdAndUpdate(id, {$push: {group: {id: group, joined: new Date(), comment: comment}}}, {new: true});
+      //@ts-ignore
+      const userRecord = await this.userModel.findByIdAndUpdate(id, {$push: {groups: {group: group, joined: new Date(), comment: comment}}}, {new: true});
       if (!userRecord) throw new ResponseError("Queried user does not exist.", 500);
     } catch (e) {
       this.logger.error('There was an error adding a user to a group: %o', e);
@@ -91,15 +92,9 @@ export default class GroupService {
 
   public async removeUser(id: string, group: string): Promise<void> {
     try {
-      let userRecord = await this.userModel.findByIdAndUpdate(id, {$pull: {group: {id: group}}}, {new: true});
+      //@ts-ignore
+      let userRecord = await this.userModel.findByIdAndUpdate(id, {$pull: {groups: {group: group}}}, {new: true});
       if (!userRecord) throw new ResponseError("Queried user does not exist.", 404);
-
-      if (!userRecord.groups.some(e => e.group._id.toString() === group))
-        throw new ResponseError("Queried user is not currently in this group.");
-
-      userRecord.groups = userRecord.groups.filter((group) => group.group._id.toString() !== group.toString());
-      console.log(userRecord);
-      await userRecord.save();
     } catch (e) {
       this.logger.error('There was an error removing a user from a group: %o', e);
       throw e;
