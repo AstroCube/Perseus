@@ -98,6 +98,7 @@ export default class GroupService {
         throw new ResponseError("Queried user is not currently in this group.");
 
       userRecord.groups = userRecord.groups.filter((group) => group.group._id.toString() !== group.toString());
+      console.log(userRecord);
       await userRecord.save();
     } catch (e) {
       this.logger.error('There was an error removing a user from a group: %o', e);
