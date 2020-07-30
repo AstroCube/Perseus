@@ -89,10 +89,16 @@ export default class GroupService {
     }
   }
 
-  public async removeUser(id : string, group : string): Promise<void> {
+  public async removeUser(id: string, group: string): Promise<void> {
     try {
-      const userRecord = await this.userModel.findByIdAndUpdate(id, {$pull: {group: {id: group}}}, {new: true});
+      let userRecord = await this.userModel.findByIdAndUpdate(id, {$pull: {group: {id: group}}}, {new: true});
       if (!userRecord) throw new ResponseError("Queried user does not exist.", 404);
+
+      if (!userRecord.groups.some(e => e.group._id === group))
+        throw new ResponseError("Queried user is not currently in this group.");
+
+      userRecord.groups = userRecord.groups.filter((group) => group.group._id.toString() !== group.toString());
+      await userRecord.save();
     } catch (e) {
       this.logger.error('There was an error removing a user from a group: %o', e);
       throw e;
