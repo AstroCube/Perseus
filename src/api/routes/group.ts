@@ -114,9 +114,9 @@ export default (app: Router) => {
         middlewares.permissions("group.manage"),
         async (req: Request, res: Response, next: NextFunction) => {
             try {
-                const groupService : GroupService = Container.get(GroupService);
-                const user : IUser = await groupService.addUser(req.body.user, req.body.group, req.body.comment);
-                return res.json(user).status(200);
+                const groupService: GroupService = Container.get(GroupService);
+                await groupService.addUser(req.body.user, req.body.group, req.body.comment);
+                return res.json(true).status(200);
             } catch (e) {
                 return next(e);
             }
@@ -135,9 +135,9 @@ export default (app: Router) => {
         middlewares.permissions("group.manage"),
         async (req: Request, res: Response, next: NextFunction) => {
             try {
-                const groupService : GroupService = Container.get(GroupService);
-                const user : IUser = await groupService.removeUser(req.body.user, req.body.group);
-                return res.json(user).status(200);
+                const groupService: GroupService = Container.get(GroupService);
+                await groupService.removeUser(req.body.user, req.body.group);
+                return res.json(true).status(200);
             } catch (e) {
                 return next(e);
             }

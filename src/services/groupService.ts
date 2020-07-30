@@ -60,13 +60,10 @@ export default class GroupService {
     }
   }
 
-  public async addUser(id: string, group: string, comment?: string): Promise<IUser> {
+  public async addUser(id: string, group: string, comment?: string): Promise<void> {
     try {
       const userRecord = await this.userModel.findByIdAndUpdate(id, {$push: {group: {id: group, joined: new Date(), comment: comment}}}, {new: true});
       if (!userRecord) throw new ResponseError("Queried user does not exist.", 500);
-      Reflect.deleteProperty(userRecord, 'password');
-      Reflect.deleteProperty(userRecord, 'salt');
-      return userRecord;
     } catch (e) {
       this.logger.error('There was an error adding a user to a group: %o', e);
       throw e;
@@ -92,13 +89,10 @@ export default class GroupService {
     }
   }
 
-  public async removeUser(id : string, group : string): Promise<IUser> {
+  public async removeUser(id : string, group : string): Promise<void> {
     try {
       const userRecord = await this.userModel.findByIdAndUpdate(id, {$pull: {group: {id: group}}}, {new: true});
       if (!userRecord) throw new ResponseError("Queried user does not exist.", 404);
-      Reflect.deleteProperty(userRecord, 'password');
-      Reflect.deleteProperty(userRecord, 'salt');
-      return userRecord;
     } catch (e) {
       this.logger.error('There was an error removing a user from a group: %o', e);
       throw e;
