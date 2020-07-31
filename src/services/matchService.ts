@@ -49,13 +49,9 @@ export default class MatchService {
     }
   }
 
-  public async list(query: any, page: number, size: number): Promise<IPaginateResult<IMatch>> {
+  public async list(query?: any, options?: any): Promise<IPaginateResult<IMatch>> {
     try {
-      return await this.matchModel.paginate(query,
-          {
-            sort: {createdAt: 1},
-            page: page, perPage: size
-          });
+      return await this.matchModel.paginate(query, options);
     } catch (e) {
       this.logger.error(e);
       throw e;

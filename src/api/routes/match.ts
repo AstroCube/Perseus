@@ -35,7 +35,6 @@ export default (app: Router) => {
 
     route.get(
         '/:id',
-        middlewares.cluster,
         async (req: Request, res: Response, next: NextFunction) => {
             try {
                 const matchService: MatchService = Container.get(MatchService);
@@ -48,13 +47,12 @@ export default (app: Router) => {
 
     route.post(
         '/list',
-        middlewares.cluster,
         async (req: Request, res: Response, next: NextFunction) => {
             try {
                 const page: number = req.query.page && req.query.page !== '-1' ? parseInt(<string>req.query.page)  :  undefined;
                 const perPage: number = req.query.perPage ? parseInt(<string>req.query.perPage) : 10;
                 const matchService: MatchService = Container.get(MatchService);
-                const match: IPaginateResult<IMatch> = await matchService.list(req.body, page, perPage);
+                const match: IPaginateResult<IMatch> = await matchService.list(req.body, {...req.query, page, perPage});
                 return res.json(match).status(200);
             } catch (e) {
                 return next(e);
