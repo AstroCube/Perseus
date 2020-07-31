@@ -84,7 +84,8 @@ export default class ReportService {
             if (!report) throw new ResponseError('The requested report was not found', 404);
 
             const permissions: IPermissions = await this.groupService.permissionsManifest(user);
-            if (!permissions.reports.assign) throw new ResponseError('You do not have permission to assign reports', 404);
+            if (!permissions.reports.assign)
+                throw new ResponseError('You do not have permission to assign reports', 403);
 
             //@ts-ignore
             report.assigned = user._id;
