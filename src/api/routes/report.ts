@@ -12,7 +12,7 @@ export default (app: Router) => {
   app.use('/report', route);
 
   route.post(
-    '/create',
+    '/',
       middlewares.authentication,
       middlewares.userAttachment,
       async (req: Request, res: Response, next: NextFunction) => {
@@ -26,7 +26,21 @@ export default (app: Router) => {
     });
 
     route.get(
-        '/get/:id',
+        '/actionable/assign/:id',
+        middlewares.authentication,
+        middlewares.userAttachment,
+        async (req: Request, res: Response, next: NextFunction) => {
+            try {
+                const service: ReportService = Container.get(ReportService);
+                await service.assign(req.params.id, req.currentUser);
+                return res.json({assigned: true}).status(200);
+            } catch (e) {
+                return next(e);
+            }
+        });
+
+    route.get(
+        '/:id',
         middlewares.authentication,
         middlewares.userAttachment,
         async (req: Request, res: Response, next: NextFunction) => {
@@ -57,7 +71,7 @@ export default (app: Router) => {
         });
 
     route.put(
-        '/action/:id',
+        '/actionable/action/:id',
         middlewares.authentication,
         middlewares.userAttachment,
         async (req: Request, res: Response, next: NextFunction) => {
@@ -71,7 +85,7 @@ export default (app: Router) => {
         });
 
     route.get(
-        '/permissions',
+        '/actionable/permissions',
         middlewares.authentication,
         middlewares.userAttachment,
         async (req: Request, res: Response, next: NextFunction) => {

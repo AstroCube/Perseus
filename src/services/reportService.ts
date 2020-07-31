@@ -6,13 +6,16 @@ import PunishmentService from "./punishmentService";
 import {IReport, IReportAction, IReportCreation, ReportActionType} from "../interfaces/IReport";
 import {IReportsPermissions} from "../interfaces/permissions/IReportsPermissions";
 import {ResponseError} from "../interfaces/error/ResponseError";
+import GroupService from "./groupService";
+import {IPermissions} from "../interfaces/IGroup";
 
 @Service()
 export default class ReportService {
 
     constructor(
         @Inject('reportModel') private reportModel : Models.ReportModel,
-        @Inject('logger') private logger: Logger
+        @Inject('logger') private logger: Logger,
+        private groupService: GroupService
     ) {}
 
     public async createReport(body: IReportCreation, requester: IUser): Promise<IReport> {
@@ -71,6 +74,23 @@ export default class ReportService {
             return await this.reportModel.paginate({...query.query ? query.query : query, ...encapsulation}, {page, perPage});
         } catch (e) {
             this.logger.error(e);
+            throw e;
+        }
+    }
+
+    public async assign(id: string, user: IUser): Promise<void> {
+        try{
+            let report: IReport = await this.reportModel.findById(id);
+            if (!report) throw new ResponseError('The requested report was not found', 404);
+
+            const permissions: IPermissions = await this.groupService.permissionsManifest(user);
+            if (!permissions.reports.assign) throw new ResponseError('You do not have permission to assign reports', 404);
+
+            //@ts-ignore
+            report.assigned = user._id;
+            this.reportModel.findByIdAndUpdate(id, report);
+        } catch (e) {
+            this.logger.error("There was an error during report assignation: %o", e);
             throw e;
         }
     }
