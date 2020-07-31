@@ -146,4 +146,17 @@ export default (app: Router) => {
             }
         });
 
+    route.get(
+        '/new-topics',
+        middlewares.authentication,
+        middlewares.userOptional,
+        async (req: Request, res: Response, next: NextFunction) => {
+            try {
+                const forumView: ForumViewService = Container.get(ForumViewService);
+                return res.json(await forumView.getNewTopics(req.currentUser)).status(200);
+            } catch (e) {
+                return next(e);
+            }
+        });
+
 };

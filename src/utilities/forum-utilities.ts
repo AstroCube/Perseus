@@ -21,7 +21,7 @@ export class ForumUtilities {
 
     public async getHolders(query: any, user?: IUser): Promise<IForumHolder[]> {
         const children: IPaginateResult<IForum>
-            = await this.forumService.list(user, query, {perPage: 10});
+            = await this.forumService.list(query, {perPage: 10});
         let holders: IForumHolder[] = [];
 
         for (const f of children.data) {

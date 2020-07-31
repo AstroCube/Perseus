@@ -47,7 +47,7 @@ export default class ForumService {
         }
     }
 
-    public async list(user: IUser, query?: any, options?: any): Promise<IPaginateResult<IForum>> {
+    public async list(query?: any, options?: any): Promise<IPaginateResult<IForum>> {
         try {
             return await this.forumModel.paginate(query, options);
         } catch (e) {

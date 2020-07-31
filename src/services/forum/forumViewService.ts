@@ -160,7 +160,32 @@ export default class ForumViewService {
         }
     }
 
+    public async getNewTopics(user?: IUser): Promise<IPaginateResult<ITopic>> {
+        try {
+            const guestForums: IPaginateResult<IForum> =
+                await this.forumService.list({guest: true});
+            const guestId: string [] = guestForums.data.map(g => g._id);
 
+            let query: any = {forum: {$in: guestId}};
+            if (user) {
+                if (user.groups.some(g => g.group.web_permissions.forum.manage))
+                    query  = {};
+                else
+                    query = {
+                    $or: [
+                        {forum: {$in: guestId}},
+                        {forum: {$in: this.forumService.getFullViewForums(user)}},
+                        {forum: {$in: this.forumService.getOwnViewForums(user), author: user._id}}
+                        ]
+                };
+            }
 
+            return this.topicService.list(query, {page: 1, perPage: 10});
+        }
+        catch (e) {
+            this.logger.error('There was an error obtaining last posts: %o', e);
+            throw e;
+        }
+    }
 
 }
