@@ -15,6 +15,8 @@ import { IForum } from "../../interfaces/forum/IForum";
 import {ITopic} from "../../interfaces/forum/ITopic";
 import {IPost} from "../../interfaces/forum/IPost";
 import {IFriend} from "../../interfaces/IFriend";
+import {IChannel} from "../../interfaces/channel/IChannel";
+import {IChannelMessage} from "../../interfaces/channel/IChannelMessage";
 
 declare global {
   namespace Express {
@@ -26,6 +28,10 @@ declare global {
   }
 
   namespace Models {
+
+    export type ChannelModel = PaginateModel<IChannel & Document>;
+    export type ChannelMessageModel = PaginateModel<IChannelMessage & Document>;
+
     export type AppealModel = DeletableModel<IAppeal & Document>;
     export type ClusterModel = DeletableModel<ICluster & Document>;
     export type FriendModel = DeletableModel<IFriend & Document>;

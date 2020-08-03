@@ -35,6 +35,14 @@ export default async ({ expressApp }) => {
         name: 'appealModel',
         model: require('../models/appeal').default
     };
+    const channelModel = {
+        name: 'channelModel',
+        model: require('../models/channel/channel').default
+    };
+    const channelMessageModel = {
+        name: 'channelMessageModel',
+        model: require('../models/channel/channelMessage').default
+    };
     const clusterModel = {
         name: 'clusterModel',
         model: require('../models/cluster').default
@@ -102,6 +110,8 @@ export default async ({ expressApp }) => {
         mongoConnection,
         models: [
             appealModel,
+            channelModel,
+            channelMessageModel,
             clusterModel,
             friendModel,
             forumModel,
