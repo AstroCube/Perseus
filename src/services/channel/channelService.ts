@@ -8,7 +8,7 @@ export default class ChannelService {
 
     constructor(
         @Inject('channelModel') private channelModel: Models.ChannelModel,
-        @Inject('channelMessageModel') private channelMessageModel: Models.ChannelModel,
+        @Inject('channelMessageModel') private channelMessageModel: Models.ChannelMessageModel,
         @Inject('logger') private logger,
         @Inject('agendaInstance') private agenda: Agenda
     ) {}
@@ -29,7 +29,7 @@ export default class ChannelService {
 
             return channelRecord;
         } catch (e) {
-            this.logger.error('There was an error obtaining a message channel: %o', e);
+            this.logger.error('There was an error creating a message channel: %o', e);
             throw e;
         }
     }
@@ -51,7 +51,7 @@ export default class ChannelService {
             if (!channelRecord) throw new ResponseError('The requested channel could not be found', 400);
             return channelRecord;
         } catch (e) {
-            this.logger.error('There was an error obtaining a message channel: %o', e);
+            this.logger.error('There was an error updating a message channel: %o', e);
             throw e;
         }
     }
@@ -62,7 +62,7 @@ export default class ChannelService {
             for (const m of messages) m.delete();
             await this.channelModel.findByIdAndDelete(id);
         } catch (e) {
-            this.logger.error('There was an error obtaining a message channel: %o', e);
+            this.logger.error('There was an error deleting a message channel: %o', e);
             throw e;
         }
     }

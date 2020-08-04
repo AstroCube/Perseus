@@ -16,9 +16,14 @@ import forumCategory from "./routes/forum/forumCategory";
 import forum from "./routes/forum/forum";
 import topic from "./routes/forum/topic";
 import post from "./routes/forum/post";
+import channel from "./routes/channel/channel";
+import channelMessage from "./routes/channel/channelMessage";
 
 export default () => {
     const app = Router();
+
+    channel(app);
+    channelMessage(app);
 
     appeal(app);
     auth(app);
