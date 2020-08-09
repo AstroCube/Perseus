@@ -83,7 +83,7 @@ export default (app: Router) => {
     });
 
   route.delete(
-    '/:id',
+    '/',
     cluster,
     serverAttachment,
     async (req: Request, res: Response, next: NextFunction) => {
