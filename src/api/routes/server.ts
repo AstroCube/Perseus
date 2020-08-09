@@ -2,7 +2,7 @@ import { Router, Request, Response, NextFunction } from "express";
 import { Container } from "typedi";
 import { Logger } from "winston";
 import ServerService from "../../services/serverService";
-import { IServer, IServerAuthResponse } from "../../interfaces/IServer";
+import { IServer } from "../../interfaces/IServer";
 import serverAttachment from "../middlewares/serverAttachment";
 import cluster from "../middlewares/cluster";
 import {celebrate, Joi} from "celebrate";
