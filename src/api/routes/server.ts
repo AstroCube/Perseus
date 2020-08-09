@@ -29,8 +29,8 @@ export default (app: Router) => {
       const logger : Logger = Container.get('logger');
       try {
         const service: ServerService = Container.get(ServerService);
-        const server: IServerAuthResponse = await service.loadServer(req.body as IServer);
-        return res.json(server).status(200);
+        const token: string = await service.loadServer(req.body as IServer);
+        return res.json(token).status(200);
       } catch (e) {
         logger.error( e );
         return next(e);

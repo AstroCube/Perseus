@@ -13,8 +13,3 @@ export interface IServer extends IModel {
 export enum ServerType {
   Lobby, Game, Special, Bungee
 }
-
-export interface IServerAuthResponse {
-  server: IServer;
-  token: string;
-}

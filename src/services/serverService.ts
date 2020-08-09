@@ -1,11 +1,12 @@
 import { Inject, Service } from "typedi";
 import { Logger } from "winston";
-import { IServer, IServerAuthResponse } from "../interfaces/IServer";
+import { IServer} from "../interfaces/IServer";
 import { ICluster } from "../interfaces/ICluster";
 import ClusterService from "./clusterService";
 import jwt from "jsonwebtoken";
 import config from "../config";
 import {ResponseError} from "../interfaces/error/ResponseError";
+
 @Service()
 export default class ServerService {
 
@@ -15,7 +16,7 @@ export default class ServerService {
     private clusterService: ClusterService
   ) {}
 
-  public async loadServer(authorization: IServer): Promise<IServerAuthResponse> {
+  public async loadServer(authorization: IServer): Promise<string> {
     try {
       Reflect.deleteProperty(authorization, '_id');
       const cluster: ICluster = await this.clusterService.viewCluster(authorization.cluster);
@@ -25,7 +26,7 @@ export default class ServerService {
       });
       this.logger.info("Successfully loaded server %o to the database with name " + serverRecord.slug, serverRecord._id);
       if (!serverRecord) throw new ResponseError("Server could not be created", 500);
-      return {server: serverRecord, token: ServerService.generateToken(serverRecord._id)};
+      return ServerService.generateToken(serverRecord._id);
     } catch (e) {
       this.logger.error(e);
       throw e;
