@@ -31,7 +31,7 @@ export default class UserSubscriber {
     try {
       if (!login.user.address.some(address => address.number === login.address.number)) {
         login.user.address.push(login.address);
-        await service.updateUser(login.user._id, login.user);
+        await service.updateUser(login.user);
       }
     } catch (e) {
       Logger.error("Error while executing login event %o", e);
