@@ -55,24 +55,24 @@ export default class UserService {
     }
   }
 
-  public async listUsers(page : number): Promise<IPaginateResult<IUser>> {
+  public async listUsers(query: any, options: any): Promise<IPaginateResult<IUser>> {
     try {
-      return await this.userModel.paginate({}, { page: page, perPage: 10 });
+      return await this.userModel.paginate(query, {...options, select: {password: -1, salt: -1}});
     } catch (e) {
       this.logger.error(e);
       throw e;
     }
   }
 
-  public async updateUser(id : string, updatable : IUser): Promise<IUser> {
+  public async updateUser(user : IUser): Promise<IUser> {
     try {
-      Reflect.deleteProperty(updatable, 'password');
-      Reflect.deleteProperty(updatable, 'salt');
-      const userRecord = await this.userModel.findByIdAndUpdate(id, updatable, {new: true});
+      Reflect.deleteProperty(user, 'password');
+      Reflect.deleteProperty(user, 'salt');
+      const userRecord = await this.userModel.findByIdAndUpdate(user._id, user, {new: true});
       if (!userRecord) throw new ResponseError("The requested user could not be updated", 500);
       Reflect.deleteProperty(userRecord, 'password');
       Reflect.deleteProperty(userRecord, 'salt');
-      this.logger.info('Username %o updated successfully', updatable.username);
+      this.logger.info('Username %o updated successfully', user.username);
       return userRecord.toObject();
     } catch (e) {
       this.logger.error(e);
@@ -165,7 +165,7 @@ export default class UserService {
       let userRecord: IUser = await this.viewUser(verification.user);
       userRecord.verified = true;
       userRecord.email = verification.email;
-      await this.updateUser(userRecord._id, userRecord);
+      await this.updateUser(userRecord);
       await this.redis.deleteKey(key);
       this.logger.info('User %o successfully verified with email %e', userRecord.username, verification.email);
       return true;

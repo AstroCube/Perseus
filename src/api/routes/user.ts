@@ -6,6 +6,7 @@ import config from '../../config';
 import {IMailRegister, IPasswordUpdate, IUser} from "../../interfaces/IUser";
 import { IPaginateResult, Types } from "mongoose";
 import { celebrate, Joi } from "celebrate";
+import {ResponseError} from "../../interfaces/error/ResponseError";
 const route = Router();
 
 export default (app: Router) => {
@@ -13,7 +14,7 @@ export default (app: Router) => {
   app.use('/users', route);
 
   route.get(
-    '/view/:id',
+    '/:id',
     async (req: Request, res: Response, next: NextFunction) => {
       try {
         const service : UserService = Container.get(UserService);
@@ -30,48 +31,49 @@ export default (app: Router) => {
       }
     });
 
-  route.get(
-    '/view-game/:id',
-    middlewares.cluster,
+  route.post(
+    '/list',
     async (req: Request, res: Response, next: NextFunction) => {
       try {
         const service : UserService = Container.get(UserService);
-        const user: IUser = await service.viewUser(req.params.id);
+          const page: number = req.query.page && req.query.page !== '-1' ? parseInt(<string>req.query.page)  :  undefined;
+          const perPage: number = req.query.perPage ? parseInt(<string>req.query.perPage) : 10;
+        const user : IPaginateResult<IUser> = await service.listUsers(req.body, {...req.query, page, perPage});
         return res.status(200).json(user);
       } catch (e) {
         next(e);
       }
     });
 
-  route.get(
-    '/find-game/:username',
-    middlewares.cluster,
-    async (req: Request, res: Response, next: NextFunction) => {
-      try {
-        const service : UserService = Container.get(UserService);
-        const user: IUser = await service.getUserByName(req.params.username);
-        return res.status(200).json(user);
-      } catch (e) {
-        next(e);
-      }
-    });
+    route.put(
+        '/',
+        middlewares.cluster,
+        middlewares.serverAttachment,
+        async (req: Request, res: Response, next: NextFunction) => {
+            try {
+                const service : UserService = Container.get(UserService);
+                const user: IUser = await service.updateUser(req.body);
+                return res.status(200).json(user);
+            } catch (e) {
+                next(e);
+            }
+        });
 
-  route.get(
-    '/list/:page?',
-    middlewares.authentication,
-    middlewares.userAttachment,
-    middlewares.permissions("user.read"),
-    async (req: Request, res: Response, next: NextFunction) => {
-      try {
-        const service : UserService = Container.get(UserService);
-        let pages: number = 1;
-        if (req.params.page) pages = + req.params.page;
-        const user : IPaginateResult<IUser> = await service.listUsers(pages);
-        return res.status(200).json(user);
-      } catch (e) {
-        next(e);
-      }
-    });
+    route.put(
+        '/website',
+        middlewares.authentication,
+        middlewares.userAttachment,
+        async (req: Request, res: Response, next: NextFunction) => {
+            try {
+                const service : UserService = Container.get(UserService);
+                //TODO: Do complete logic at service
+                if (req.body._id.toString() !== req.currentUser._id.toString()) throw new ResponseError('Not authorized to update other users', 403);
+                const user: IUser = await service.updateUser(req.body);
+                return res.status(200).json(user);
+            } catch (e) {
+                next(e);
+            }
+        });
 
     route.get(
         '/list-all/:own?',
@@ -93,48 +95,6 @@ export default (app: Router) => {
     middlewares.userAttachment,
     async (req: Request, res: Response) => {
       return res.status(200).json(req.currentUser);
-    });
-
-  route.put(
-    '/update/:id',
-    middlewares.authentication,
-    middlewares.userAttachment,
-    middlewares.permissions("user.update"),
-    async (req: Request, res: Response, next: NextFunction) => {
-      try {
-        const service : UserService = Container.get(UserService);
-        const user : IUser = await service.updateUser(req.params.id, req.body as IUser);
-        return res.status(200).json(user);
-      } catch (e) {
-        next(e);
-      }
-    });
-
-  route.put(
-    '/update-game/:id',
-    middlewares.cluster,
-    async (req: Request, res: Response, next: NextFunction) => {
-      try {
-        const service : UserService = Container.get(UserService);
-        const user : IUser = await service.updateUser(req.params.id, req.body as IUser);
-        return res.status(200).json(user);
-      } catch (e) {
-        next(e);
-      }
-    });
-
-  route.put(
-    '/update-profile',
-    middlewares.authentication,
-    middlewares.userAttachment,
-    async (req: Request, res: Response, next: NextFunction) => {
-      try {
-        const service : UserService = Container.get(UserService);
-        const user : IUser = await service.updateUser(req.currentUser._id, req.body as IUser);
-        return res.status(200).json(user);
-      } catch (e) {
-        next(e);
-      }
     });
 
   route.put(
