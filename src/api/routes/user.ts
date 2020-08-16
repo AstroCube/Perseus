@@ -11,7 +11,7 @@ const route = Router();
 
 export default (app: Router) => {
 
-  app.use('/users', route);
+  app.use('/user', route);
 
   route.get(
     '/:id',
