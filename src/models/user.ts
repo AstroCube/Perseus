@@ -36,7 +36,7 @@ const User = new mongoose.Schema(
       online: {type: Boolean, default: false},
       lastGame: {type: String, default: "register"},
       lastLobby: {type: String, default: "main_lobby"},
-      premium: {type: Boolean, default: false}
+      authorize: {type: String, default: "Password", enum: ['Password', 'Premium'] }
     },
     verified: {type: Boolean, default: false},
     level: {type: Number, default: 1},

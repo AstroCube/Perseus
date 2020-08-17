@@ -2,6 +2,7 @@ import { IModel } from "./IModel";
 import { IPublicInfo } from "./user/IPublicInfo";
 import { IGameSettings } from "./user/IGameSettings";
 import { IGroup } from "./IGroup";
+import exp from "constants";
 
 export interface IUser extends IModel {
   username: string;
@@ -33,7 +34,11 @@ export interface IGameSession {
   online: boolean;
   lastGame: string;
   lastLobby: string;
-  premium: boolean;
+  authorize: AuthorizationMethod;
+}
+
+export enum AuthorizationMethod {
+  Password = "Password", Premium = "Premium"
 }
 
 export interface IUserIP {
