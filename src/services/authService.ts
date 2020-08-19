@@ -52,7 +52,7 @@ export default class AuthService {
         const lookup = geoIp.lookup(login.address);
         const address: IUserIP = {
           number: login.address,
-          country: lookup.country || "US",
+          country: lookup ? lookup.country : "US",
           primary: false
         };
         this.dispatcher.dispatch(events.user.serverLogin, {user: userRecord, address});
@@ -70,6 +70,7 @@ export default class AuthService {
     try {
       const salt = randomBytes(32);
       const hashedPassword = await argon2.hash(register.password, {salt});
+      const lookup = geoIp.lookup(login.address);
       const registeredUser = await this.userModel.findByIdAndUpdate(register.user,
         {
           password: hashedPassword,
@@ -77,7 +78,7 @@ export default class AuthService {
           $push: {
             address: {
               number: register.address,
-              country: geoIp.lookup(register.address).country,
+              country: lookup ? lookup.country : "US",
               primary: true
             }
           }
