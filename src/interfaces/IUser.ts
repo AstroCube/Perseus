@@ -34,6 +34,7 @@ export interface IGameSession {
   online: boolean;
   lastGame: string;
   lastLobby: string;
+  premium: boolean;
   authorize: AuthorizationMethod;
 }
 

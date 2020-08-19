@@ -70,7 +70,7 @@ export default class AuthService {
     try {
       const salt = randomBytes(32);
       const hashedPassword = await argon2.hash(register.password, {salt});
-      const lookup = geoIp.lookup(login.address);
+      const lookup = geoIp.lookup(register.address);
       const registeredUser = await this.userModel.findByIdAndUpdate(register.user,
         {
           password: hashedPassword,
