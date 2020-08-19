@@ -49,9 +49,10 @@ export default class AuthService {
       if (!userRecord) throw new ResponseError('The requested user does not exists', 404);
       const validPassword = await argon2.verify(userRecord.password, login.password);
       if (validPassword) {
+        const lookup = geoIp.lookup(login.address);
         const address: IUserIP = {
           number: login.address,
-          country: geoIp.lookup(login.address).country,
+          country: lookup.country || "US",
           primary: false
         };
         this.dispatcher.dispatch(events.user.serverLogin, {user: userRecord, address});
