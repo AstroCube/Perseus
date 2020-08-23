@@ -16,6 +16,11 @@ export interface IGeneralSettings {
   parties: boolean;
   status: boolean;
   hiding: boolean;
+  hideType: HideTypes;
+}
+
+export enum HideTypes {
+  Alone = "Alone", Friendless = "Friendless", Default = "Default"
 }
 
 export interface IForumSettings {

@@ -77,7 +77,8 @@ const User = new mongoose.Schema(
         friends: {type: Boolean, default: false},
         parties: {type: Boolean, default: false},
         status: {type: Boolean, default: false},
-        hiding: {type: Boolean, default: false}
+        hiding: {type: Boolean, default: false},
+        hideType: {type: String, default: 'Default', enum: ['Alone', 'Friendless', 'Default']}
       },
       forum: {
         subscribe: {type: Boolean, default: false},
