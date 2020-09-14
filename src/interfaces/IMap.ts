@@ -5,7 +5,7 @@ export interface IMap extends IModel {
   name: string;
   identifierName: string;
   file: string;
-  configuration: string;
+  configuration: any;
   image: string;
   author: string | IUser;
   version: string;
