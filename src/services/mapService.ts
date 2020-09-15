@@ -16,6 +16,7 @@ export default class MapService {
    */
   public create(map: IMap): Promise<IMap> {
     try {
+      return null;
     } catch (e) {
       this.logger.error(e);
       throw e;
