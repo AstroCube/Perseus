@@ -90,7 +90,7 @@ export default (app: Router) => {
         });
 
   route.get(
-    '/me',
+    '/profile/me',
     middlewares.authentication,
     middlewares.userAttachment,
     async (req: Request, res: Response) => {
