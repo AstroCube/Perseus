@@ -16,6 +16,7 @@ export default class MapService {
    */
   public create(map: IMap): Promise<IMap> {
     try {
+        
     } catch (e) {
       this.logger.error(e);
       throw e;
@@ -23,3 +24,4 @@ export default class MapService {
   }
 
 }
+
