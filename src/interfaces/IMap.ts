@@ -4,9 +4,9 @@ import {IUser} from "./IUser";
 export interface IMap extends IModel {
   name: string;
   identifierName: string;
-  file: string;
+  file: Buffer[];
   configuration: any;
-  image: string;
+  image: Buffer[];
   author: string | IUser;
   version: string;
   contributors: IMapContributors[];
