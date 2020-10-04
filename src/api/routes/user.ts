@@ -36,8 +36,8 @@ export default (app: Router) => {
     async (req: Request, res: Response, next: NextFunction) => {
       try {
         const service : UserService = Container.get(UserService);
-          const page: number = req.query.page && req.query.page !== '-1' ? parseInt(<string>req.query.page)  :  undefined;
-          const perPage: number = req.query.perPage ? parseInt(<string>req.query.perPage) : 10;
+          const page: number = req.query.page && req.query.page !== '-1' ? parseInt(req.query.page as string)  :  undefined;
+          const perPage: number = req.query.perPage ? parseInt(req.query.perPage as string) : 10;
         const user : IPaginateResult<IUser> = await service.listUsers(req.body, {...req.query, page, perPage});
         return res.status(200).json(user);
       } catch (e) {
@@ -66,7 +66,7 @@ export default (app: Router) => {
         async (req: Request, res: Response, next: NextFunction) => {
             try {
                 const service : UserService = Container.get(UserService);
-                //TODO: Do complete logic at service
+                // TODO: Do complete logic at service
                 if (req.body._id.toString() !== req.currentUser._id.toString()) throw new ResponseError('Not authorized to update other users', 403);
                 const user: IUser = await service.updateUser(req.body);
                 return res.status(200).json(user);
@@ -181,9 +181,9 @@ export default (app: Router) => {
             try {
                 const service: UserService = Container.get(UserService);
                 await service.verifyCode({
-                    email: new Buffer(<string> req.query.mail, 'base64').toString('ascii'),
-                    user: new Buffer(<string> req.query.user, 'base64').toString('ascii'),
-                    code: <string> req.query.id
+                    email: new Buffer(req.query.mail as string, 'base64').toString('ascii'),
+                    user: new Buffer(req.query.user as string, 'base64').toString('ascii'),
+                    code: req.query.id as string
                 });
                 return res.redirect(config.api.frontend + '/login?verified=true');
             } catch (e) {
