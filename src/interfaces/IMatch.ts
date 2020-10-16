@@ -5,6 +5,8 @@ export interface IMatch extends IModel {
   map: string;
   server?: IServer | string;
   teams: IMatchTeam[];
+  spectators: string[];
+  pending: IMatchAssignable[];
   winner: string[];
   status: any;
   gamemode: string;
@@ -20,4 +22,9 @@ export interface IMatchTeam {
 export interface IMatchMember {
   user: string;
   joinedAt: string;
+}
+
+export interface IMatchAssignable {
+  responsible: string;
+  involved: string[];
 }
