@@ -12,6 +12,14 @@ export default (app: Router) => {
 
   app.use('/server', route);
 
+    route.get(
+        '/view/me',
+        cluster,
+        serverAttachment,
+        async (req: Request, res: Response, next: NextFunction) => {
+            return res.status(200).send(req.currentServer);
+        });
+
   route.post(
     '/',
       celebrate({
