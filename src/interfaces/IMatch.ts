@@ -11,6 +11,8 @@ export interface IMatch extends IModel {
   status: any;
   gamemode: string;
   subGamemode: string;
+  query: any;
+  requestedBy: string;
 }
 
 export interface IMatchTeam {

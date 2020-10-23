@@ -50,7 +50,12 @@ const Match = new mongoose.Schema(
             type: Schema.Types.ObjectId,
             ref: 'Gamemode'
         },
-        subGamemode: String
+        subGamemode: String,
+        query: Schema.Types.Mixed,
+        requestedBy: {
+            type: Schema.Types.ObjectId,
+            ref: 'User'
+        }
     },
     { timestamps: true }
 );
