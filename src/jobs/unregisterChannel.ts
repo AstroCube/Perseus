@@ -1,8 +1,5 @@
-import { Container } from 'typedi';
-import { Logger } from "winston";
-import { IUser } from "../interfaces/IUser";
-import { Document, PaginateModel } from 'mongoose';
-import {IChannel} from "../interfaces/channel/IChannel";
+import {Container} from 'typedi';
+import {Logger} from "winston";
 import ChannelService from "../services/channel/channelService";
 
 export default class UnregisterChannel {

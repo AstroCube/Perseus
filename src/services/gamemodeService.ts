@@ -1,5 +1,5 @@
-import { Service, Inject } from 'typedi';
-import { IGamemode } from "../interfaces/IGamemode";
+import {Inject, Service} from 'typedi';
+import {IGamemode} from "../interfaces/IGamemode";
 import {ResponseError} from "../interfaces/error/ResponseError";
 import {IPaginateResult} from "mongoose";
 

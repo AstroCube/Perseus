@@ -1,10 +1,11 @@
-import { Router, Request, Response, NextFunction } from "express";
-import { Container } from "typedi";
-import { IPaginateResult } from "mongoose";
+import {NextFunction, Request, Response, Router} from "express";
+import {Container} from "typedi";
+import {IPaginateResult} from "mongoose";
 import middlewares from "../middlewares";
 import ReportService from "../../services/reportService";
 import {IReport} from "../../interfaces/IReport";
 import {IReportsPermissions} from "../../interfaces/permissions/IReportsPermissions";
+
 const route = Router();
 
 export default (app: Router) => {

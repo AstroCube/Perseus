@@ -1,7 +1,7 @@
 import mongoose, {Schema} from "mongoose";
 import {mongoosePagination} from "ts-mongoose-pagination";
-import autoPopulate = require('mongoose-autopopulate');
 import {IReport} from "../interfaces/IReport";
+import autoPopulate = require('mongoose-autopopulate');
 
 
 const Report = new mongoose.Schema(

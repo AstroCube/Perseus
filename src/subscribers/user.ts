@@ -1,9 +1,9 @@
-import { Container } from 'typedi';
-import { EventSubscriber, On } from 'event-dispatch';
+import {Container} from 'typedi';
+import {EventSubscriber, On} from 'event-dispatch';
 import events from './events';
 import {IMailUpdateVerification, IMailVerifyRequest, IUser, IUserIP} from "../interfaces/IUser";
 import MailerService from "../services/mailerService";
-import { Logger } from "winston";
+import {Logger} from "winston";
 import RedisService from "../services/redisService";
 import UserService from "../services/userService";
 

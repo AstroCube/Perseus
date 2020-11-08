@@ -1,10 +1,11 @@
-import { Router, Request, Response, NextFunction } from "express";
-import { Container } from "typedi";
-import { celebrate, Joi } from "celebrate";
+import {NextFunction, Request, Response, Router} from "express";
+import {Container} from "typedi";
+import {celebrate, Joi} from "celebrate";
 import middlewares from "../../middlewares";
 import ForumCategoryService from "../../../services/forum/forumCategoryService";
 import {IForumCategory} from "../../../interfaces/forum/IForumCategory";
 import {IPaginateResult} from "mongoose";
+
 const route = Router();
 
 export default (app: Router) => {

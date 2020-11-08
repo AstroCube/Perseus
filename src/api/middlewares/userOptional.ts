@@ -1,5 +1,5 @@
-import { Container } from 'typedi';
-import { Logger } from "winston";
+import {Container} from 'typedi';
+import {Logger} from "winston";
 
 const userOptional = async (req, res, next) => {
   const logger : Logger = Container.get('logger');

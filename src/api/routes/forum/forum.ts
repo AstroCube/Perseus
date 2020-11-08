@@ -1,6 +1,6 @@
-import { Router, Request, Response, NextFunction } from "express";
-import { Container } from "typedi";
-import { celebrate, Joi } from "celebrate";
+import {NextFunction, Request, Response, Router} from "express";
+import {Container} from "typedi";
+import {celebrate, Joi} from "celebrate";
 import middlewares from "../../middlewares";
 import {IForumCategory} from "../../../interfaces/forum/IForumCategory";
 import {IPaginateResult} from "mongoose";
@@ -8,6 +8,7 @@ import ForumService from "../../../services/forum/forumService";
 import {IForum, IForumMain, IForumView} from "../../../interfaces/forum/IForum";
 import {IForumPermissions} from "../../../interfaces/permissions/IForumPermissions";
 import ForumViewService from "../../../services/forum/forumViewService";
+
 const route = Router();
 
 export default (app: Router) => {

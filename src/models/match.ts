@@ -1,5 +1,5 @@
 import mongoose, {Schema} from "mongoose";
-import { IMatch } from "../interfaces/IMatch";
+import {IMatch} from "../interfaces/IMatch";
 import {mongoosePagination} from "ts-mongoose-pagination";
 
 

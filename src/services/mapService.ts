@@ -1,5 +1,5 @@
-import { Service, Inject } from 'typedi';
-import { Logger } from "winston";
+import {Inject, Service} from 'typedi';
+import {Logger} from "winston";
 import {IMap} from "../interfaces/IMap";
 import * as fs from "fs";
 import {ResponseError} from "../interfaces/error/ResponseError";

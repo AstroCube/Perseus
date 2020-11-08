@@ -1,9 +1,10 @@
-import { Router, Request, Response, NextFunction } from "express";
-import { Container } from "typedi";
+import {NextFunction, Request, Response, Router} from "express";
+import {Container} from "typedi";
 import middlewares from "../middlewares";
-import { celebrate, Joi } from "celebrate";
+import {celebrate, Joi} from "celebrate";
 import FriendService from "../../services/friendService";
 import {IFriend} from "../../interfaces/IFriend";
+
 const route = Router();
 
 export default (app: Router) => {

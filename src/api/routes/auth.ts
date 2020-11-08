@@ -1,8 +1,9 @@
-import { Router, Request, Response, NextFunction } from "express";
-import { Container } from "typedi";
-import { celebrate, Joi } from "celebrate";
+import {NextFunction, Request, Response, Router} from "express";
+import {Container} from "typedi";
+import {celebrate, Joi} from "celebrate";
 import AuthService from "../../services/authService";
-import { IUser } from "../../interfaces/IUser";
+import {IUser} from "../../interfaces/IUser";
+
 const route = Router();
 
 export default (app: Router) => {

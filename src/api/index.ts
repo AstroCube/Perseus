@@ -1,4 +1,4 @@
-import { Router } from 'express';
+import {Router} from 'express';
 import appeal from "./routes/appeal";
 import punishment from "./routes/punishment";
 import user from "./routes/user";

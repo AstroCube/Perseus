@@ -1,7 +1,7 @@
-import { IGroup } from "../interfaces/IGroup";
+import {IGroup} from "../interfaces/IGroup";
 import * as mongoose from "mongoose";
-import { mongoosePagination } from "ts-mongoose-pagination";
 import {Schema} from "mongoose";
+import {mongoosePagination} from "ts-mongoose-pagination";
 
 const Group = new mongoose.Schema(
   {

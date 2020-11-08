@@ -1,10 +1,11 @@
-import { Router, Request, Response, NextFunction } from "express";
-import { Container } from "typedi";
-import { celebrate, Joi } from "celebrate";
+import {NextFunction, Request, Response, Router} from "express";
+import {Container} from "typedi";
+import {celebrate, Joi} from "celebrate";
 import cluster from "../middlewares/cluster";
 import {Logger} from "winston";
 import GoalService from "../../services/goalService";
 import {IGoal} from "../../interfaces/stats/IGoal";
+
 const route = Router();
 
 export default (app: Router) => {

@@ -1,7 +1,7 @@
 import mongoose, {Schema} from "mongoose";
 import {mongoosePagination} from "ts-mongoose-pagination";
-import autoPopulate = require('mongoose-autopopulate');
 import {IForum} from "../../interfaces/forum/IForum";
+import autoPopulate = require('mongoose-autopopulate');
 
 const Forum = new mongoose.Schema(
     {

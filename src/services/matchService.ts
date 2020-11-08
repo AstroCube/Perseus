@@ -1,5 +1,5 @@
-import { Service, Inject } from 'typedi';
-import { Logger } from "winston";
+import {Inject, Service} from 'typedi';
+import {Logger} from "winston";
 import {ResponseError} from "../interfaces/error/ResponseError";
 import {IPaginateResult} from "mongoose";
 import {IMatch} from "../interfaces/IMatch";

@@ -1,17 +1,12 @@
-import { Router, Request, Response, NextFunction } from "express";
-import { Container } from "typedi";
-import { celebrate, Joi } from "celebrate";
+import {NextFunction, Request, Response, Router} from "express";
+import {Container} from "typedi";
+import {celebrate, Joi} from "celebrate";
 import middlewares from "../../middlewares";
-import ForumCategoryService from "../../../services/forum/forumCategoryService";
-import {IForumCategory} from "../../../interfaces/forum/IForumCategory";
-import {IPaginateResult} from "mongoose";
-import ForumService from "../../../services/forum/forumService";
-import {IForum} from "../../../interfaces/forum/IForum";
 import TopicService from "../../../services/forum/topicService";
 import {ITopic, ITopicUpdate, ITopicView} from "../../../interfaces/forum/ITopic";
-import userOptional from "../../middlewares/userOptional";
 import ForumViewService from "../../../services/forum/forumViewService";
 import PostService from "../../../services/forum/postService";
+
 const route = Router();
 
 export default (app: Router) => {

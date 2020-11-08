@@ -6,8 +6,8 @@ import {IUser} from "../interfaces/IUser";
 import {IAppealPermissible, IAppealsPermissions} from "../interfaces/permissions/IAppealsPermissions";
 import PunishmentService from "./punishmentService";
 import {IPunishment} from "../interfaces/IPunishment";
-import dotty = require('dotty');
 import {ResponseError} from "../interfaces/error/ResponseError";
+import dotty = require('dotty');
 
 @Service()
 export default class AppealService {

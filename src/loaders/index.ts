@@ -6,7 +6,7 @@ import jobsLoader from './jobs';
 import mailLoader from './mailer';
 import Logger from './logger';
 import config from '../config';
-import { TransportOptions } from "nodemailer";
+import {TransportOptions} from "nodemailer";
 import './events';
 
 

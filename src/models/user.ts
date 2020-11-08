@@ -1,6 +1,6 @@
-import { IUser } from '../interfaces/IUser';
-import mongoose, { Schema } from "mongoose";
-import { mongoosePagination } from "ts-mongoose-pagination";
+import {IUser} from '../interfaces/IUser';
+import mongoose, {Schema} from "mongoose";
+import {mongoosePagination} from "ts-mongoose-pagination";
 
 
 const User = new mongoose.Schema(

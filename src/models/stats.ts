@@ -1,7 +1,7 @@
 import * as mongoose from "mongoose";
-import { mongoosePagination } from "ts-mongoose-pagination";
-import { Schema } from "mongoose";
-import { IStats } from "../interfaces/IStats";
+import {Schema} from "mongoose";
+import {mongoosePagination} from "ts-mongoose-pagination";
+import {IStats} from "../interfaces/IStats";
 
 const Stats = new mongoose.Schema(
   {

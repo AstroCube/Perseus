@@ -1,10 +1,10 @@
-import { Service, Inject } from 'typedi';
-import { IUser } from '../interfaces/IUser';
+import {Inject, Service} from 'typedi';
+import {IUser} from '../interfaces/IUser';
 import {IGroup, IPermissions, IStaffGroup} from "../interfaces/IGroup";
-import { IPaginateResult } from "mongoose";
-import { Logger } from "winston";
-import dotty = require('dotty');
+import {IPaginateResult} from "mongoose";
+import {Logger} from "winston";
 import {ResponseError} from "../interfaces/error/ResponseError";
+import dotty = require('dotty');
 
 @Service()
 export default class GroupService {

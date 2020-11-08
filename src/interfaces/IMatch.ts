@@ -1,4 +1,4 @@
-import { IModel } from "./IModel";
+import {IModel} from "./IModel";
 import {IServer} from "./IServer";
 
 export interface IMatch extends IModel {

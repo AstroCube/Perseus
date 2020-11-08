@@ -1,5 +1,5 @@
-import mongoose, { Schema } from "mongoose";
-import { IMap } from "../interfaces/IMap";
+import mongoose, {Schema} from "mongoose";
+import {IMap} from "../interfaces/IMap";
 import {mongoosePagination} from "ts-mongoose-pagination";
 
 

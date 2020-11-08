@@ -1,5 +1,5 @@
-import { Container } from "typedi";
-import { Logger } from "winston";
+import {Container} from "typedi";
+import {Logger} from "winston";
 
 /**
  * Attach server to req.currentServer

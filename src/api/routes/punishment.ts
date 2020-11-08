@@ -1,9 +1,10 @@
-import { Router, Request, Response, NextFunction } from "express";
-import { Container } from "typedi";
+import {NextFunction, Request, Response, Router} from "express";
+import {Container} from "typedi";
 import {IPunishment} from "../../interfaces/IPunishment";
 import PunishmentService from "../../services/punishmentService";
 import middlewares from "../middlewares";
 import {IPaginateResult} from "mongoose";
+
 const route = Router();
 
 export default (app: Router) => {

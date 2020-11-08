@@ -1,6 +1,6 @@
-import { Inject, Service } from "typedi";
-import { Logger } from "winston";
-import { IStats } from "../interfaces/IStats";
+import {Inject, Service} from "typedi";
+import {Logger} from "winston";
+import {IStats} from "../interfaces/IStats";
 import {ResponseError} from "../interfaces/error/ResponseError";
 
 @Service()
