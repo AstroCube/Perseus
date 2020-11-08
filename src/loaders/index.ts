@@ -63,6 +63,10 @@ export default async ({ expressApp }) => {
         name: 'gamemodeModel',
         model: require('../models/gamemode').default
     };
+    const goalModel = {
+        name: 'goalModel',
+        model: require('../models/goal').default
+    }
     const groupModel = {
         name: 'groupModel',
         model: require('../models/group').default
@@ -117,6 +121,7 @@ export default async ({ expressApp }) => {
             forumModel,
             forumCategoryModel,
             gamemodeModel,
+            goalModel,
             groupModel,
             mapModel,
             matchModel,
