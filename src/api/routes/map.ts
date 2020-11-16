@@ -1,9 +1,6 @@
 import { Router, Request, Response, NextFunction } from "express";
-import { Container } from "typedi";
 import middlewares from "../middlewares";
-import { celebrate, Joi } from "celebrate";
-import MapService from "../../services/mapService";
-import {IMap} from "../../interfaces/IMap";
+import { celebrate } from "celebrate";
 const route = Router();
 
 export default (app: Router) => {
@@ -13,6 +10,7 @@ export default (app: Router) => {
   route.post(
     '/',
     celebrate({
+      /*
       body: Joi.object({
         name: Joi.string().required(),
         file: Joi.string().required(),
@@ -25,13 +23,12 @@ export default (app: Router) => {
         description: Joi.string().required(),
         contributors: Joi.string()
       })
+       */
     }),
     middlewares.cluster,
     async (req: Request, res: Response, next: NextFunction) => {
       try {
-        const mapService: MapService = Container.get(MapService);
-        const map: IMap = await mapService.create(req.body);
-        return res.json(map).status(200);
+        return res.json(req).status(200);
       } catch (e) {
         return next(e);
       }
