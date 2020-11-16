@@ -1,6 +1,6 @@
 import { Router, Request, Response, NextFunction } from "express";
-import middlewares from "../middlewares";
-import { celebrate, Joi } from "celebrate";
+import {StorageService} from "../../services/storageService";
+import {Container} from "typedi";
 const route = Router();
 
 export default (app: Router) => {
@@ -27,6 +27,9 @@ export default (app: Router) => {
      */
     async (req: Request, res: Response, next: NextFunction) => {
       try {
+
+        const storage: StorageService = Container.get(StorageService);
+        await storage.writeFile(req.body.slime, "test.slime");
         return res.json(req).status(200);
       } catch (e) {
         return next(e);
