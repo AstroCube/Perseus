@@ -1,6 +1,6 @@
 import { Router, Request, Response, NextFunction } from "express";
 import middlewares from "../middlewares";
-import { celebrate } from "celebrate";
+import { celebrate, Joi } from "celebrate";
 const route = Router();
 
 export default (app: Router) => {
@@ -9,8 +9,8 @@ export default (app: Router) => {
 
   route.post(
     '/',
+    /*
     celebrate({
-      /*
       body: Joi.object({
         name: Joi.string().required(),
         file: Joi.string().required(),
@@ -23,8 +23,8 @@ export default (app: Router) => {
         description: Joi.string().required(),
         contributors: Joi.string()
       })
-       */
     }),
+     */
     middlewares.cluster,
     async (req: Request, res: Response, next: NextFunction) => {
       try {
