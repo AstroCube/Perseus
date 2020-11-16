@@ -5,8 +5,8 @@ import { RedisClient } from "redis";
 import * as Mail from "nodemailer/lib/mailer";
 
 export default (
-  {mailer, redisClient, mongoConnection, models}:
-    {mailer: Mail, redisClient: RedisClient; mongoConnection; models: { name: string; model: any }[] }
+  {mailer, redisClient, storageClient, mongoConnection, models}:
+    {mailer: Mail, redisClient: RedisClient; storageClient, mongoConnection; models: { name: string; model: any }[] }
     ) => {
     try {
         models.forEach(m => {
@@ -18,6 +18,7 @@ export default (
 
         Container.set('redis', redisClient);
         Container.set('agendaInstance', agendaInstance);
+        Container.set('storage', storageClient);
         Container.set('mailClient', mailer);
         Container.set('logger', LoggerInstance);
 

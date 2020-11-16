@@ -48,6 +48,7 @@
     "path": "^0.12.7",
     "redis": "^3.0.2",
     "reflect-metadata": "^0.1.12",
+    "seaweedfs.js": "^0.2.0",
     "shelljs": "^0.8.4",
     "ts-mongoose-pagination": "^1.1.2",
     "typedi": "^0.8.0",
