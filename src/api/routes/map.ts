@@ -25,7 +25,6 @@ export default (app: Router) => {
       })
     }),
      */
-    middlewares.cluster,
     async (req: Request, res: Response, next: NextFunction) => {
       try {
         return res.json(req).status(200);
