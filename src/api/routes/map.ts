@@ -36,7 +36,7 @@ export default (app: Router) => {
       }
     });
 
-    route.post(
+    route.get(
         '/:id',
         async (req: Request, res: Response, next: NextFunction) => {
             try {
