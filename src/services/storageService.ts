@@ -9,15 +9,18 @@ export class StorageService {
     ) {
     }
 
-    public async writeFile(file: string, name: string): Promise<any> {
-        fs.writeFileSync("/tmp/" + name, file, 'base64');
-        const response = await this.storageClient.write("/tmp/" + name);
-        await fs.unlinkSync("/tmp/" + name);
-        return response;
+    public async writeFile(file: string): Promise<any> {
+        return await this.storageClient.write(StorageService.base64toFile(file));
     }
 
     public async readFile(id: string): Promise<Buffer> {
-        return await this.storageClient.read(id);
+        const waitress = await this.storageClient.read(id);
+        console.log(waitress);
+        return waitress;
+    }
+
+    private static base64toFile(file: string): Buffer {
+        return Buffer.from(file, 'base64');
     }
 
 }

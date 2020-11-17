@@ -1,6 +1,7 @@
 import { Router, Request, Response, NextFunction } from "express";
 import {StorageService} from "../../services/storageService";
 import {Container} from "typedi";
+import * as stream from "stream";
 const route = Router();
 
 export default (app: Router) => {
@@ -29,7 +30,7 @@ export default (app: Router) => {
       try {
 
         const storage: StorageService = Container.get(StorageService);
-        const idk = await storage.writeFile(req.body.slime, req.body.name);
+        const idk = await storage.writeFile(req.body.slime);
         console.log(idk);
         return res.json({test: true}).status(200);
       } catch (e) {
@@ -42,7 +43,12 @@ export default (app: Router) => {
         async (req: Request, res: Response, next: NextFunction) => {
             try {
                 const storage: StorageService = Container.get(StorageService);
-                return res.status(200).send(await storage.readFile(req.params.id));
+                const readStream = new stream.PassThrough();
+                readStream.end(await storage.readFile(req.params.id));
+                res.set('Content-disposition', 'attachment; filename=' + "demo.slime");
+                res.set('Content-Type', 'text/plain');
+                readStream.pipe(res);
+                return res.status(200);
             } catch (e) {
                 return next(e);
             }
