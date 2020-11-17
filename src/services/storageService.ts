@@ -14,6 +14,7 @@ export class StorageService {
 
     public async readFile(id: string): Promise<Buffer> {
         const waitress = await this.storageClient.read(id);
+        console.log(waitress);
         return waitress;
     }
 
