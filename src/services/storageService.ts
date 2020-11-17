@@ -12,8 +12,21 @@ export class StorageService {
 
         console.log(this.storageClient);
 
-        const test = await this.storageClient.write(Buffer.from(file, 'base64'), "");
-        console.log(test);
+        const test = await this.storageClient.write(new Buffer("atroo")).then((fileInfo) => {
+
+            // The fid's will be the same, to access each variaton just
+            // add _ARRAYINDEX to the end of the fid. In this case fileB
+            // would be: fid + "_1"
+
+            const fidA = fileInfo;
+            const fidB = fileInfo + "_1";
+
+            console.log(fileInfo);
+
+            return fileInfo;
+        }).catch((err) => {
+            console.log(err);
+        });
         return test;
     }
 
