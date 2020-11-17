@@ -10,8 +10,8 @@ export class StorageService {
     }
 
     public async writeFile(file: string, name: string): Promise<any> {
-        await fs.writeFileSync("/tmp/" + name, file, 'base64');
-        const response = await this.storageClient.write("tmp/" + name);
+        fs.writeFileSync("/tmp/" + name, file, 'base64');
+        const response = await this.storageClient.write("/tmp/" + name);
         await fs.unlinkSync("/tmp/" + name);
         return response;
     }
