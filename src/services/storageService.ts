@@ -9,6 +9,9 @@ export class StorageService {
     }
 
     public async writeFile(file: string): Promise<any> {
+
+        console.log(this.storageClient);
+
         const test = await this.storageClient.write(Buffer.from(file, 'base64'), "");
         console.log(test);
         return test;

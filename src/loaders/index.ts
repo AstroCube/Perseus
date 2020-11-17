@@ -6,7 +6,7 @@ import jobsLoader from './jobs';
 import mailLoader from './mailer';
 import Logger from './logger';
 import config from '../config';
-import Storage from 'seaweedfs.js';
+import Storage from 'node-seaweedfs';
 import { TransportOptions } from "nodemailer";
 import './events';
 
