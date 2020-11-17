@@ -8,8 +8,8 @@ export class StorageService {
     ) {
     }
 
-    public async writeFile(file: string): Promise<any> {
-        return await this.storageClient.write(StorageService.base64toFile(file));
+    public async writeFile(file: any): Promise<any> {
+        return await this.storageClient.write(file);
     }
 
     public async readFile(id: string): Promise<Buffer> {
