@@ -9,25 +9,12 @@ export class StorageService {
     }
 
     public async writeFile(file: string): Promise<any> {
+        return await this.storageClient.write(StorageService.base64toFile(file));
+    }
 
-        console.log(this.storageClient);
-
-        const test = await this.storageClient.write(new Buffer("atroo")).then((fileInfo) => {
-
-            // The fid's will be the same, to access each variaton just
-            // add _ARRAYINDEX to the end of the fid. In this case fileB
-            // would be: fid + "_1"
-
-            const fidA = fileInfo;
-            const fidB = fileInfo + "_1";
-
-            console.log(fileInfo);
-
-            return fileInfo;
-        }).catch((err) => {
-            console.log(err);
-        });
-        return test;
+    public async readFile(id: string): Promise<Buffer> {
+        const waitress = await this.storageClient.read(id);
+        return waitress;
     }
 
     private static base64toFile(file: string): Buffer {

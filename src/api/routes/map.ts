@@ -36,4 +36,15 @@ export default (app: Router) => {
       }
     });
 
+    route.post(
+        '/:id',
+        async (req: Request, res: Response, next: NextFunction) => {
+            try {
+                const storage: StorageService = Container.get(StorageService);
+                return res.status(200).send(await storage.readFile(req.params.id));
+            } catch (e) {
+                return next(e);
+            }
+        });
+
 };
