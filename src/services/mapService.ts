@@ -3,14 +3,16 @@ import { Logger } from "winston";
 import {IMap} from "../interfaces/IMap";
 import {ResponseError} from "../interfaces/error/ResponseError";
 import {IPaginateResult} from "mongoose";
-import {IMatch} from "../interfaces/IMatch";
+import {StorageService} from "./storageService";
+import {IStorageManifest} from "../interfaces/IStorageManifest";
 
 @Service()
 export default class MapService {
 
   constructor(
     @Inject('mapModel') private mapModel : Models.MapModel,
-    @Inject('logger') private logger : Logger
+    @Inject('logger') private logger : Logger,
+    private storageService: StorageService
   ) {}
 
   /**
@@ -19,7 +21,20 @@ export default class MapService {
    */
   public async create(map: IMap): Promise<IMap> {
     try {
-      const mapModel: IMap = await this.mapModel.create(map);
+
+      const mapFile: IStorageManifest = await this.storageService.writeFile(map.file);
+      const mapImage: IStorageManifest = await this.storageService.writeFile(map.image);
+      const configuration: IStorageManifest = await this.storageService.writeFile(map.configuration);
+
+      const mapModel: IMap = await this.mapModel.create(
+          {
+            ...map,
+            file: mapFile.fid,
+            image: mapFile.fid,
+            configuration: mapFile.fid
+          }
+      );
+
       if (!mapModel) throw new ResponseError('There was an error creating the map', 500);
       return mapModel;
     } catch (e) {

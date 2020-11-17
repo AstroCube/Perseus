@@ -1,5 +1,5 @@
 import {Inject, Service} from "typedi";
-import fs from 'fs';
+import {IStorageManifest} from "../interfaces/IStorageManifest";
 
 @Service()
 export class StorageService {
@@ -9,14 +9,12 @@ export class StorageService {
     ) {
     }
 
-    public async writeFile(file: string): Promise<any> {
+    public async writeFile(file: string): Promise<IStorageManifest> {
         return await this.storageClient.write(StorageService.base64toFile(file));
     }
 
     public async readFile(id: string): Promise<Buffer> {
-        const waitress = await this.storageClient.read(id);
-        console.log(waitress);
-        return waitress;
+        return await this.storageClient.read(id);
     }
 
     private static base64toFile(file: string): Buffer {
