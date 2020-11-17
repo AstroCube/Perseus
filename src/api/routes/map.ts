@@ -29,9 +29,8 @@ export default (app: Router) => {
       try {
 
         const storage: StorageService = Container.get(StorageService);
-        console.log("Reading");
-        // await storage.writeFile(req.body.slime);
-        return res.json(req).status(200);
+        await storage.writeFile(req.body.slime);
+        return res.json({shittie: true}).status(200);
       } catch (e) {
         return next(e);
       }
