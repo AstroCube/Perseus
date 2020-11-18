@@ -23,15 +23,15 @@ export default class MapService {
     try {
 
       const mapFile: IStorageManifest = await this.storageService.writeFile(map.file);
-      const mapImage: IStorageManifest = await this.storageService.writeFile(map.image);
+      const image: IStorageManifest = await this.storageService.writeFile(map.image);
       const configuration: IStorageManifest = await this.storageService.writeFile(map.configuration);
 
       const mapModel: IMap = await this.mapModel.create(
           {
             ...map,
             file: mapFile.fid,
-            image: mapFile.fid,
-            configuration: mapFile.fid
+            image: image.fid,
+            configuration: configuration.fid
           }
       );
 
