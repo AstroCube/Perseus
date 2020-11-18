@@ -12,23 +12,30 @@ const Map = new mongoose.Schema(
         unique: true,
         lowercase: true
     },
-    file: {
-        type: String,
-        required: true
-    },
-    configuration: {
-        type: String,
-        required: true
-    },
-    image:  {
-        type: String,
-        required: true
-    },
+    versions: [
+        {
+            file: {
+                type: String,
+                required: true
+            },
+            configuration: {
+                type: String,
+                required: true
+            },
+            image:  {
+                type: String,
+                required: true
+            },
+            version:  {
+                type: String,
+                required: true
+            }
+        }
+    ],
     author: {
       type: Schema.Types.ObjectId,
       ref: 'User'
     },
-    version: String,
     contributors: [{
       _id: false,
       contributor: {

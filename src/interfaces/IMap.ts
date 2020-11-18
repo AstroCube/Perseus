@@ -4,16 +4,20 @@ import {IUser} from "./IUser";
 export interface IMap extends IModel {
   name: string;
   identifierName: string;
-  file: string;
-  configuration: string;
-  image: string;
   author: string | IUser;
-  version: string;
   contributors: IMapContributors[];
   gamemode: string;
   subGamemode: string[];
   description: string;
   rating: IMapRating[];
+  versions: IMapVersion[];
+}
+
+export interface IMapVersion {
+  version: string;
+  file: string;
+  image: string;
+  configuration: string;
 }
 
 export interface IMapContributors {
