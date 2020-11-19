@@ -5,6 +5,10 @@ import * as stream from "stream";
 import {celebrate, Joi} from "celebrate";
 import MapService from "../../services/mapService";
 import {IMap, IMapCreation} from "../../interfaces/IMap";
+import PunishmentService from "../../services/punishmentService";
+import {IPunishment} from "../../interfaces/IPunishment";
+import middlewares from "../middlewares";
+import {IPaginateResult} from "mongoose";
 const route = Router();
 
 export default (app: Router) => {
@@ -36,12 +40,66 @@ export default (app: Router) => {
       }
     });
 
+    route.put(
+        '/',
+        celebrate({
+            body: Joi.object({
+                _id: Joi.string().required(),
+                name: Joi.string().required(),
+                author: Joi.string().required(),
+                description: Joi.string().required(),
+                contributors: Joi.string()
+            })
+        }),
+        async (req: Request, res: Response, next: NextFunction) => {
+            try {
+                const service: MapService = Container.get(MapService);
+                return res.json(service.updateFile(req.body._id, req.body)).status(200);
+            } catch (e) {
+                return next(e);
+            }
+        });
+
+    route.post(
+        '/update-version',
+        celebrate({
+            body: Joi.object({
+                _id: Joi.string().required(),
+                file: Joi.string().required(),
+                configuration: Joi.string().required(),
+                image: Joi.string().required(),
+                version: Joi.string().required()
+            })
+        }),
+        async (req: Request, res: Response, next: NextFunction) => {
+            try {
+                const service: MapService = Container.get(MapService);
+                return res.json(service.updateFile(req.body._id, req.body)).status(200);
+            } catch (e) {
+                return next(e);
+            }
+        });
+
     route.get(
         '/:id',
         async (req: Request, res: Response, next: NextFunction) => {
             try {
                 const service: MapService = Container.get(MapService);
                 return res.json(service.get(req.params.id)).status(200);
+            } catch (e) {
+                return next(e);
+            }
+        });
+
+    route.post(
+        '/list',
+        middlewares.authentication,
+        middlewares.userAttachment,
+        async (req: Request, res: Response, next: NextFunction) => {
+            try {
+                const service: MapService = Container.get(MapService);
+                const map: IPaginateResult<IMap> = await service.list(req.body, req.query);
+                return res.json(map).status(200);
             } catch (e) {
                 return next(e);
             }
@@ -94,5 +152,29 @@ export default (app: Router) => {
                 return next(e);
             }
         });
+
+    route.get(
+        '/get/:id',
+        async (req: Request, res: Response, next: NextFunction) => {
+            try {
+                const service: PunishmentService = Container.get(PunishmentService);
+                const punishment: IPunishment = await service.getPunishment(req.params.id);
+                return res.json(punishment).status(200);
+            } catch (e) {
+                return next(e);
+            }
+        });
+
+    route.delete(
+        '/:id',
+        async (req: Request, res: Response, next: NextFunction) => {
+            try {
+                const service: MapService = Container.get(MapService);
+                return res.json(service.delete(req.params.id)).status(200);
+            } catch (e) {
+                return next(e);
+            }
+        }
+    );
 
 };
