@@ -1,7 +1,12 @@
 import {IModel} from "./IModel";
 import {IUser} from "./IUser";
 
-export interface IMap extends IModel {
+export interface IMap extends IMapBase, IModel {
+}
+
+export interface IMapCreation extends IMapBase, IMapVersion {}
+
+export interface IMapBase {
   name: string;
   identifierName: string;
   author: string | IUser;

@@ -1,6 +1,6 @@
 import { Service, Inject } from 'typedi';
 import { Logger } from "winston";
-import {IMap} from "../interfaces/IMap";
+import {IMap, IMapCreation, IMapVersion} from "../interfaces/IMap";
 import {ResponseError} from "../interfaces/error/ResponseError";
 import {IPaginateResult} from "mongoose";
 import {StorageService} from "./storageService";
@@ -19,7 +19,7 @@ export default class MapService {
    * Create map with provided data from route.
    * @param map to be created with provided data
    */
-  public async create(map: IMap): Promise<IMap> {
+  public async create(map: IMapCreation): Promise<IMap> {
     try {
 
       const mapFile: IStorageManifest = await this.storageService.writeFile(map.file);
@@ -28,10 +28,13 @@ export default class MapService {
 
       const mapModel: IMap = await this.mapModel.create(
           {
-            ...map,
-            file: mapFile.fid,
-            image: image.fid,
-            configuration: configuration.fid
+            ...map as any,
+            versions: [{
+              file: mapFile.fid,
+              image: image.fid,
+              configuration: configuration.fid,
+              version: map.version
+            }]
           }
       );
 
@@ -49,7 +52,8 @@ export default class MapService {
    */
   public async get(id: string): Promise<IMap> {
     try {
-      const mapModel: IMap = await this.mapModel.findById(id);
+      const mapModel: IMap = await this.mapModel.findById(id)
+          .select({versions: {file: -1, image: -1, configuration: -1}});
       if (!mapModel) throw new ResponseError('The requested map was not found', 500);
       return mapModel;
     } catch (e) {
@@ -65,7 +69,7 @@ export default class MapService {
    */
   public async list(query?: any, options?: any): Promise<IPaginateResult<IMap>> {
     try {
-      return await this.mapModel.paginate(query, {...options, select: {file: -1, configuration: -1}});
+      return await this.mapModel.paginate(query, {...options, select: {versions: -1}});
     } catch (e) {
       this.logger.error(e);
       throw e;
@@ -78,6 +82,9 @@ export default class MapService {
    */
   public async update(map: IMap): Promise<IMap> {
     try {
+
+      Reflect.deleteProperty(map, 'versions');
+      Reflect.deleteProperty(map, 'rating');
 
       const currentMap: IMap = await this.mapModel.findById(map._id);
 
