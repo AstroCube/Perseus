@@ -1,13 +1,10 @@
-import {Inject, Service} from 'typedi';
-import {Logger} from "winston";
-import {IMap} from "../interfaces/IMap";
-import * as fs from "fs";
+import { Service, Inject } from 'typedi';
+import { Logger } from "winston";
+import {IMap, IMapCreation, IMapVersion} from "../interfaces/IMap";
 import {ResponseError} from "../interfaces/error/ResponseError";
 import {IPaginateResult} from "mongoose";
-import path from "path";
-import {IUser} from "../interfaces/IUser";
-import GroupService from "./groupService";
-import {IPermissions} from "../interfaces/IGroup";
+import {StorageService} from "./storageService";
+import {IStorageManifest} from "../interfaces/IStorageManifest";
 
 @Service()
 export default class MapService {
@@ -15,143 +12,186 @@ export default class MapService {
   constructor(
     @Inject('mapModel') private mapModel : Models.MapModel,
     @Inject('logger') private logger : Logger,
-    private groupService: GroupService
+    private storageService: StorageService
   ) {}
 
-  public async loadMap(map: IMap): Promise<IMap> {
+  /**
+   * Create map with provided data from route.
+   * @param map to be created with provided data
+   */
+  public async create(map: IMapCreation): Promise<IMap> {
     try {
 
-      /**
-       * If the map processed by the Core is not available at the database, will start
-       * creating a new record at the database, creating an identifier for the map file inside
-       * the folders.
-       *
-       * In case of already existing map will check if version is higher to generate an update
-       * and remove the old files, creating new ones and finally returning the new map.
-       *
-       * If version is smaller or equals to actual one MUST return the existent version. Keep in
-       * mind that Mongo will store only the file name. Will never return the complete file nor
-       * custom-made values.
-       */
+      const mapFile: IStorageManifest = await this.storageService.writeFile(map.file);
+      const image: IStorageManifest = await this.storageService.writeFile(map.image);
+      const configuration: IStorageManifest = await this.storageService.writeFile(map.configuration);
 
-      const existentMap: IMap = await this.mapModel.findOne({identifierName: map.name.toLowerCase()});
-      if (!existentMap) return await this.createMap(map);
-      if (
-          parseInt(map.version.replace(/\./g, ""), 10) >
-          parseInt(existentMap.version.replace(/\./g, ""), 10)
-      ) await this.updateMap(map);
-      return existentMap;
+      const mapModel: IMap = await this.mapModel.create(
+          {
+            ...map as any,
+            versions: [{
+              file: mapFile.fid,
+              image: image.fid,
+              configuration: configuration.fid,
+              version: map.version
+            }]
+          }
+      );
+
+      if (!mapModel) throw new ResponseError('There was an error creating the map', 500);
+      return mapModel;
     } catch (e) {
-      this.logger.error('There was an error loading a map: %o', e);
+      this.logger.error(e);
       throw e;
     }
   }
 
-  public async getMap(id: string, populate?: boolean): Promise<IMap> {
+  /**
+   * Retrieve certain map with an ID
+   * @param id to be retrieved
+   */
+  public async get(id: string): Promise<IMap> {
     try {
-      const map: IMap = populate ? await this.mapModel.findById(id)
-          .populate('author', '-password -salt')
-          .populate('contributors.contributor', '-password -salt') :
-          await this.mapModel.findById(id);
-      if (!map) throw new ResponseError('The requested map does not exist', 404);
-      return map;
+      const mapModel: IMap = await this.mapModel.findById(id)
+          .select({versions: {file: -1, image: -1, configuration: -1}});
+      if (!mapModel) throw new ResponseError('The requested map was not found', 404);
+      return mapModel;
     } catch (e) {
-      this.logger.error('There was an error obtaining a map: %o', e);
+      this.logger.error(e);
       throw e;
     }
   }
 
-  public async listMaps(query?: any, options?: any): Promise<IPaginateResult<IMap>> {
+  /**
+   * Obtain a certain list of maps conditioned by certain options
+   * @param query to be found
+   * @param options to be conditioned
+   */
+  public async list(query?: any, options?: any): Promise<IPaginateResult<IMap>> {
     try {
-      return await this.mapModel.paginate(query, {...options,
-        populate: [{path: 'author', select: '-password -salt'}, {path: 'contributors.contributor', select: '-password -salt'}]
-      });
+      return await this.mapModel.paginate(query, {...options, select: {versions: -1}});
     } catch (e) {
-      this.logger.error('There was an error listing map: %o', e);
+      this.logger.error(e);
       throw e;
     }
   }
 
-  public async getMapFile(id: string, folder: string, ext: string, user?: IUser): Promise<any> {
+  /**
+   * Update certain map from database
+   * @param map to update
+   */
+  public async update(map: IMap): Promise<IMap> {
     try {
 
-      /**
-       * For map file: Folder - 'map'. Ext - 'zip'
-       * For config file: Folder - 'configuration'. Ext - 'json'
-       * For image file: Folder - 'images'. Ext - 'png'
-       */
+      Reflect.deleteProperty(map, 'versions');
+      Reflect.deleteProperty(map, 'rating');
 
-      const map: IMap = await this.mapModel.findById(id);
-      if (user && folder !== 'images') {
-        const manifest: IPermissions = await this.groupService.permissionsManifest(user);
-        if (!manifest.maps &&
-            map.author.toString() !== user._id.toString() &&
-            !map.contributors.some(c => c.contributor.toString() === user._id)
-        ) throw new ResponseError('You can not access to the map files.', 404);
+      const currentMap: IMap = await this.mapModel.findById(map._id);
+
+      if (!currentMap)
+        throw new ResponseError('There was an error creating the map', 500);
+
+      return await this.mapModel.findByIdAndUpdate(map._id, map);
+    } catch (e) {
+      this.logger.error(e);
+      throw e;
+    }
+  }
+
+  /**
+   * Update certain map from database
+   * @param map to update
+   * @param version to be added
+   */
+  public async updateFile(map: string, version: IMapVersion): Promise<IMap> {
+    try {
+
+      const currentMap: IMap = await this.mapModel.findById(map);
+
+      const file: IStorageManifest = await this.storageService.writeFile(version.file);
+      const image: IStorageManifest = await this.storageService.writeFile(version.image);
+      const configuration: IStorageManifest = await this.storageService.writeFile(version.configuration);
+
+      if (!currentMap) {
+        throw new ResponseError('The requested map was not found', 404);
       }
 
-      const filePath = './uploads/map/' + folder + '/' + map._id + '.' + ext;
-      if (!fs.existsSync(filePath)) throw new ResponseError('The requested file was not found', 404);
-      return await path.resolve(filePath);
-
+      return await this.mapModel.findByIdAndUpdate(map,
+          // @ts-ignore
+          {versions: {$push: {file, image, configuration, version: version.version}}}
+          );
     } catch (e) {
-      this.logger.error('There was an error obtaining a file from a map %o', e);
+      this.logger.error(e);
       throw e;
     }
   }
 
-  private async createMap(map: IMap): Promise<IMap> {
-    await MapService.serializeMapFiles(map);
-    return await this.mapModel.create({
-      ...map,
-      file: map._id + '.zip',
-      configuration: map._id + '.json',
-      image: map._id + '.png'
-    } as IMap);
+  /**
+   * Return a certain image buffer.
+   * @param map
+   * @param version
+   */
+  public async getImage(map: string, version?: string): Promise<Buffer>  {
+    try {
+      return this.storageService.readFile((await this.getRequestedVersion(map, version)).image);
+    } catch (e) {
+      this.logger.error(e);
+      throw e;
+    }
   }
 
-  private async updateMap(map: IMap): Promise<IMap> {
-    await MapService.unlinkMapFiles(map);
-    await MapService.serializeMapFiles(map);
-    return this.mapModel.findByIdAndUpdate(map._id, {
-      ...map,
-      file: map._id + '.zip',
-      configuration: map._id + '.json',
-      image: map._id + '.png'
-    } as IMap);
+  public async getConfiguration(map: string, version?: string): Promise<Buffer>  {
+    try {
+      return this.storageService.readFile((await this.getRequestedVersion(map, version)).configuration);
+    } catch (e) {
+      this.logger.error(e);
+      throw e;
+    }
   }
 
-  private static async serializeMapFiles(map: IMap): Promise<void> {
-    await MapService.serializeDefault(
-        map.file.split(";base64,").pop(),
-        map._id + '.zip',
-        './uploads/map/file/'
-    );
-    await MapService.serializeDefault(
-        map.configuration.split(";base64,").pop(),
-        map._id + '.json',
-        './uploads/map/configuration/'
-    );
-    await MapService.serializeDefault(
-        map.image.split(";base64,").pop(),
-        map._id + '.png',
-        './uploads/map/image/'
-    );
+  public async getFile(map: string, version?: string): Promise<Buffer>  {
+    try {
+      return this.storageService.readFile((await this.getRequestedVersion(map, version)).file);
+    } catch (e) {
+      this.logger.error(e);
+      throw e;
+    }
   }
 
-  private static async unlinkMapFiles(map: IMap): Promise<void> {
-    await MapService.unlinkDefault(map.file, './uploads/map/file/');
-    await MapService.unlinkDefault(map.configuration, './uploads/map/configuration/');
-    await MapService.unlinkDefault(map.image, './uploads/map/image/');
+  /**
+   * Soft deletion of a certain map
+   * @param id of map to be deleted
+   */
+  public async delete(id: string): Promise<void> {
+    try {
+      await this.mapModel.findByIdAndDelete(id);
+    } catch (e) {
+      this.logger.error(e);
+      throw e;
+    }
   }
 
-  private static async unlinkDefault(name: string, path: string): Promise<void> {
-    await fs.unlinkSync(path + name);
-  }
+  private async getRequestedVersion(map: string, version?: string): Promise<IMapVersion> {
+    const currentMap: IMap = await this.mapModel.findById(map);
+    if (!currentMap) {
+      throw new ResponseError('The requested map was not found', 404);
+    }
 
-  private static async serializeDefault(base: string, name: string, path: string): Promise<void> {
-    await fs.writeFileSync(path + name, base, {encoding: "base64"});
-  }
+    const versions = currentMap.versions.sort((a, b) =>
+        // tslint:disable-next-line:radix
+        parseInt(b.version.replace(/\./g, "")) - parseInt(a.version.replace(/\./g, "")));
 
+    if (version) {
+
+      if (!versions.some(v => v.version === version)) {
+        throw new ResponseError('The requested map version was not found', 404);
+      }
+
+      return versions.find(s => s.version === version);
+    }
+
+    return versions[0];
+  }
 
 }
+

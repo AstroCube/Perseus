@@ -8,3 +8,5 @@ folders.forEach((folder) => {
     const folderFinal = folder.replace('./src/', '');
     shell.cp('-R', folder, buildFolder + folderFinal);
 });
+
+shell.mkdir(buildFolder + 'tmp');

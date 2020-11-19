@@ -44,6 +44,7 @@
     "mongoose": "^5.9.17",
     "mongoose-autopopulate": "^0.12.2",
     "mongoose-delete": "^0.5.2",
+    "node-seaweedfs": "^1.4.0",
     "nodemailer": "^6.4.8",
     "path": "^0.12.7",
     "redis": "^3.0.2",

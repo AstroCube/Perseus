@@ -1,10 +1,13 @@
-import {NextFunction, Request, Response, Router} from "express";
+import { Router, Request, Response, NextFunction } from "express";
 import {Container} from "typedi";
-import middlewares from "../middlewares";
+import * as stream from "stream";
 import {celebrate, Joi} from "celebrate";
 import MapService from "../../services/mapService";
-import {IMap} from "../../interfaces/IMap";
-
+import {IMap, IMapCreation} from "../../interfaces/IMap";
+import PunishmentService from "../../services/punishmentService";
+import {IPunishment} from "../../interfaces/IPunishment";
+import middlewares from "../middlewares";
+import {IPaginateResult} from "mongoose";
 const route = Router();
 
 export default (app: Router) => {
@@ -27,25 +30,61 @@ export default (app: Router) => {
         contributors: Joi.string()
       })
     }),
-    middlewares.cluster,
     async (req: Request, res: Response, next: NextFunction) => {
       try {
-        const mapService: MapService = Container.get(MapService);
-        const map: IMap = await mapService.loadMap(req.body);
-        return res.json(map).status(200);
+        const service: MapService = Container.get(MapService);
+        return res.json(service.create(req.body as IMapCreation)).status(200);
       } catch (e) {
         return next(e);
       }
     });
 
+    route.put(
+        '/',
+        celebrate({
+            body: Joi.object({
+                _id: Joi.string().required(),
+                name: Joi.string().required(),
+                author: Joi.string().required(),
+                description: Joi.string().required(),
+                contributors: Joi.string()
+            })
+        }),
+        async (req: Request, res: Response, next: NextFunction) => {
+            try {
+                const service: MapService = Container.get(MapService);
+                return res.json(service.updateFile(req.body._id, req.body)).status(200);
+            } catch (e) {
+                return next(e);
+            }
+        });
+
+    route.post(
+        '/update-version',
+        celebrate({
+            body: Joi.object({
+                _id: Joi.string().required(),
+                file: Joi.string().required(),
+                configuration: Joi.string().required(),
+                image: Joi.string().required(),
+                version: Joi.string().required()
+            })
+        }),
+        async (req: Request, res: Response, next: NextFunction) => {
+            try {
+                const service: MapService = Container.get(MapService);
+                return res.json(service.updateFile(req.body._id, req.body)).status(200);
+            } catch (e) {
+                return next(e);
+            }
+        });
+
     route.get(
         '/:id',
         async (req: Request, res: Response, next: NextFunction) => {
             try {
-                const mapService: MapService = Container.get(MapService);
-                const populate = Boolean(req.query.populate) || false;
-                const map: IMap = await mapService.getMap(req.params.id, populate);
-                return res.json(map).status(200);
+                const service: MapService = Container.get(MapService);
+                return res.json(service.get(req.params.id)).status(200);
             } catch (e) {
                 return next(e);
             }
@@ -53,47 +92,88 @@ export default (app: Router) => {
 
     route.post(
         '/list',
-        async (req: Request, res: Response, next: NextFunction) => {
-            try {
-                const page: number = req.query.page && req.query.page !== '-1' ? parseInt(<string>req.query.page)  :  undefined;
-                const perPage: number = req.query.perPage ? parseInt(<string>req.query.perPage) : 10;
-                const mapService: MapService = Container.get(MapService);
-                return res.json(await mapService.listMaps(req.body, {...req.query, page, perPage})).status(200);
-            } catch (e) {
-                return next(e);
-            }
-        });
-
-    route.post(
-        '/get-file',
-        celebrate({
-            body: Joi.object({
-                id: Joi.string().required(),
-                type: Joi.string().required(),
-                extension: Joi.string().required()
-            })
-        }),
         middlewares.authentication,
         middlewares.userAttachment,
         async (req: Request, res: Response, next: NextFunction) => {
             try {
-                const mapService: MapService = Container.get(MapService);
-                return res.sendFile(await mapService.getMapFile(req.body.id, req.body.type, req.body.extension, req.currentUser));
+                const service: MapService = Container.get(MapService);
+                const map: IPaginateResult<IMap> = await service.list(req.body, req.query);
+                return res.json(map).status(200);
             } catch (e) {
                 return next(e);
             }
         });
 
     route.get(
-        '/get-image/:id',
+        '/image/:id',
         async (req: Request, res: Response, next: NextFunction) => {
             try {
-                const mapService: MapService = Container.get(MapService);
-                return res.sendFile(await mapService.getMapFile(req.params.id, 'images', 'png', req.currentUser));
+                const service: MapService = Container.get(MapService);
+                const readStream = new stream.PassThrough();
+                readStream.end(await service.getImage(req.params.id, req.query.version as any));
+                res.set('Content-disposition', 'attachment; filename=' + req.params.id + ".jpg");
+                res.set('Content-Type', 'text/plain');
+                readStream.pipe(res);
+                return res.status(200);
             } catch (e) {
                 return next(e);
             }
         });
 
+    route.get(
+        '/file/:id',
+        async (req: Request, res: Response, next: NextFunction) => {
+            try {
+                const service: MapService = Container.get(MapService);
+                const readStream = new stream.PassThrough();
+                readStream.end(await service.getFile(req.params.id, req.query.version as any));
+                res.set('Content-disposition', 'attachment; filename=' + req.params.id + ".slime");
+                res.set('Content-Type', 'text/plain');
+                readStream.pipe(res);
+                return res.status(200);
+            } catch (e) {
+                return next(e);
+            }
+        });
+
+    route.get(
+        '/config/:id',
+        async (req: Request, res: Response, next: NextFunction) => {
+            try {
+                const service: MapService = Container.get(MapService);
+                const readStream = new stream.PassThrough();
+                readStream.end(await service.getConfiguration(req.params.id, req.query.version as any));
+                res.set('Content-disposition', 'attachment; filename=' + req.params.id + ".json");
+                res.set('Content-Type', 'text/plain');
+                readStream.pipe(res);
+                return res.status(200);
+            } catch (e) {
+                return next(e);
+            }
+        });
+
+    route.get(
+        '/get/:id',
+        async (req: Request, res: Response, next: NextFunction) => {
+            try {
+                const service: PunishmentService = Container.get(PunishmentService);
+                const punishment: IPunishment = await service.getPunishment(req.params.id);
+                return res.json(punishment).status(200);
+            } catch (e) {
+                return next(e);
+            }
+        });
+
+    route.delete(
+        '/:id',
+        async (req: Request, res: Response, next: NextFunction) => {
+            try {
+                const service: MapService = Container.get(MapService);
+                return res.json(service.delete(req.params.id)).status(200);
+            } catch (e) {
+                return next(e);
+            }
+        }
+    );
 
 };

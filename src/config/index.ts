@@ -37,6 +37,10 @@ export default {
             pass: 'OlaAdios24'
         }
     },
+    storage: {
+        server: '127.0.0.1',
+        port: 9333
+    },
     redis: {
         port: 6379,
         host: process.env.REDIS_HOST,

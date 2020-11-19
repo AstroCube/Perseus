@@ -6,7 +6,8 @@ import jobsLoader from './jobs';
 import mailLoader from './mailer';
 import Logger from './logger';
 import config from '../config';
-import {TransportOptions} from "nodemailer";
+import Storage from 'node-seaweedfs';
+import { TransportOptions } from "nodemailer";
 import './events';
 
 
@@ -19,6 +20,8 @@ export default async ({ expressApp }) => {
        Logger.error("Error with redis connection: %o", err);
     });
     Logger.info('Redis successfully connected');
+
+    const storageClient = await new Storage(config.storage);
 
     const mailer = await mailLoader({
         host: config.emails.host,
@@ -112,6 +115,7 @@ export default async ({ expressApp }) => {
         mailer,
         redisClient,
         mongoConnection,
+        storageClient,
         models: [
             appealModel,
             channelModel,
