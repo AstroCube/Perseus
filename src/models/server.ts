@@ -1,5 +1,5 @@
-import mongoose, { Schema } from "mongoose";
-import { IServer } from "../interfaces/IServer";
+import mongoose, {Schema} from "mongoose";
+import {IServer} from "../interfaces/IServer";
 import {mongoosePagination} from "ts-mongoose-pagination";
 import autoPopulate = require('mongoose-autopopulate');
 

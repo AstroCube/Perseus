@@ -1,12 +1,12 @@
-import { Service, Inject } from 'typedi';
+import {Inject, Service} from 'typedi';
 import jwt from 'jsonwebtoken';
 import config from '../config';
 import argon2 from 'argon2';
 import * as geoIp from 'geoip-lite';
-import { IServerAuthentication, IUser, IUserIP } from "../interfaces/IUser";
+import {IServerAuthentication, IUser, IUserIP} from "../interfaces/IUser";
 import events from "../subscribers/events";
-import { EventDispatcher, EventDispatcherInterface } from "../decorators/eventDispatcher";
-import { randomBytes } from "crypto";
+import {EventDispatcher, EventDispatcherInterface} from "../decorators/eventDispatcher";
+import {randomBytes} from "crypto";
 import StatsService from "./statsService";
 import {ResponseError} from "../interfaces/error/ResponseError";
 

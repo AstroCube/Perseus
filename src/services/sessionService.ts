@@ -1,8 +1,8 @@
-import { Inject, Service } from "typedi";
-import { IAuthenticationResponse, IAuthenticationSession, IServerSwitch } from "../interfaces/ISession";
+import {Inject, Service} from "typedi";
+import {IAuthenticationResponse, IAuthenticationSession, IServerSwitch} from "../interfaces/ISession";
 import {IGameSession, IUser, IUserIP} from "../interfaces/IUser";
 import config from '../config';
-import { Logger } from "winston";
+import {Logger} from "winston";
 import {ResponseError} from "../interfaces/error/ResponseError";
 
 @Service()

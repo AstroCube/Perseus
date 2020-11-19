@@ -1,12 +1,13 @@
-import { Router, Request, Response, NextFunction } from "express";
-import { Container } from "typedi";
+import {NextFunction, Request, Response, Router} from "express";
+import {Container} from "typedi";
 import UserService from "../../services/userService";
 import middlewares from '../middlewares';
 import config from '../../config';
 import {IMailRegister, IPasswordUpdate, IUser} from "../../interfaces/IUser";
-import { IPaginateResult, Types } from "mongoose";
-import { celebrate, Joi } from "celebrate";
+import {IPaginateResult, Types} from "mongoose";
+import {celebrate, Joi} from "celebrate";
 import {ResponseError} from "../../interfaces/error/ResponseError";
+
 const route = Router();
 
 export default (app: Router) => {

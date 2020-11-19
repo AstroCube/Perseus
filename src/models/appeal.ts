@@ -1,7 +1,7 @@
 import mongoose, {Schema} from "mongoose";
 import {mongoosePagination} from "ts-mongoose-pagination";
-import autoPopulate = require('mongoose-autopopulate');
 import {IAppeal} from "../interfaces/IAppeal";
+import autoPopulate = require('mongoose-autopopulate');
 
 
 const Appeal = new mongoose.Schema(

@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { IGamemode } from "../interfaces/IGamemode";
+import {IGamemode} from "../interfaces/IGamemode";
 import {mongoosePagination} from "ts-mongoose-pagination";
 
 

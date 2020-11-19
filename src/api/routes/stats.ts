@@ -1,8 +1,9 @@
-import { Router, Request, Response, NextFunction } from "express";
-import { Container } from "typedi";
+import {NextFunction, Request, Response, Router} from "express";
+import {Container} from "typedi";
 import middlewares from "../middlewares";
 import StatsService from "../../services/statsService";
 import {IStats} from "../../interfaces/IStats";
+
 const route = Router();
 
 export default (app: Router) => {

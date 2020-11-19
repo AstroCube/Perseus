@@ -1,9 +1,10 @@
-import { Router, Request, Response, NextFunction } from "express";
-import { Container } from "typedi";
+import {NextFunction, Request, Response, Router} from "express";
+import {Container} from "typedi";
 import ChannelService from "../../../services/channel/channelService";
 import {ChannelVisibility, IChannel} from "../../../interfaces/channel/IChannel";
 import {celebrate, Joi} from "celebrate";
 import middlewares from "../../middlewares";
+
 const route = Router();
 
 export default (app: Router) => {

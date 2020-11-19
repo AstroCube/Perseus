@@ -1,8 +1,8 @@
-import { IModel } from "./IModel";
+import {IModel} from "./IModel";
 import {IForumPermissions} from "./permissions/IForumPermissions";
-import { IPunishmentPermissions } from "./permissions/IPunishmentPermissions";
-import { IAppealsPermissions } from "./permissions/IAppealsPermissions";
-import { IReportsPermissions } from "./permissions/IReportsPermissions";
+import {IPunishmentPermissions} from "./permissions/IPunishmentPermissions";
+import {IAppealsPermissions} from "./permissions/IAppealsPermissions";
+import {IReportsPermissions} from "./permissions/IReportsPermissions";
 import {IUser} from "./IUser";
 
 export interface IGroup extends IModel {

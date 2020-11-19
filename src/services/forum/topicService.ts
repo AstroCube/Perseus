@@ -6,7 +6,6 @@ import {ITopic, ITopicUpdate} from "../../interfaces/forum/ITopic";
 import ForumService from "./forumService";
 import {ForumPermissible, IForumPermissions} from "../../interfaces/permissions/IForumPermissions";
 import {IUser} from "../../interfaces/IUser";
-import {Schema} from "mongoose";
 
 @Service()
 export default class TopicService {

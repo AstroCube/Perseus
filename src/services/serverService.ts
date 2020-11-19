@@ -1,7 +1,7 @@
-import { Inject, Service } from "typedi";
-import { Logger } from "winston";
-import { IServer} from "../interfaces/IServer";
-import { ICluster } from "../interfaces/ICluster";
+import {Inject, Service} from "typedi";
+import {Logger} from "winston";
+import {IServer} from "../interfaces/IServer";
+import {ICluster} from "../interfaces/ICluster";
 import ClusterService from "./clusterService";
 import jwt from "jsonwebtoken";
 import config from "../config";

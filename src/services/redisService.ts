@@ -1,6 +1,6 @@
-import { Inject, Service } from "typedi";
-import { RedisClient } from "redis";
-import { promisify } from "util";
+import {Inject, Service} from "typedi";
+import {RedisClient} from "redis";
+import {promisify} from "util";
 
 @Service()
 export default class RedisService {

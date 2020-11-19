@@ -1,8 +1,9 @@
-import { Router, Request, Response, NextFunction } from "express";
-import { Container } from "typedi";
+import {NextFunction, Request, Response, Router} from "express";
+import {Container} from "typedi";
 import GamemodeService from "../../services/gamemodeService";
-import { IGamemode } from "../../interfaces/IGamemode";
+import {IGamemode} from "../../interfaces/IGamemode";
 import {IPaginateResult} from "mongoose";
+
 const route = Router();
 
 export default (app: Router) => {

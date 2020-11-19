@@ -1,14 +1,18 @@
-import { IModel } from "./IModel";
+import {IModel} from "./IModel";
 import {IServer} from "./IServer";
 
 export interface IMatch extends IModel {
   map: string;
   server?: IServer | string;
   teams: IMatchTeam[];
+  spectators: string[];
+  pending: IMatchAssignable[];
   winner: string[];
   status: any;
   gamemode: string;
   subGamemode: string;
+  query: any;
+  requestedBy: string;
 }
 
 export interface IMatchTeam {
@@ -20,4 +24,9 @@ export interface IMatchTeam {
 export interface IMatchMember {
   user: string;
   joinedAt: string;
+}
+
+export interface IMatchAssignable {
+  responsible: string;
+  involved: string[];
 }

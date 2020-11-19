@@ -1,4 +1,4 @@
-import { Service, Inject } from 'typedi';
+import {Inject, Service} from 'typedi';
 import {IChannel} from "../../interfaces/channel/IChannel";
 import Agenda from "agenda";
 import {ResponseError} from "../../interfaces/error/ResponseError";

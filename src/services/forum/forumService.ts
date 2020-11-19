@@ -5,9 +5,9 @@ import {ResponseError} from "../../interfaces/error/ResponseError";
 import {IForum} from "../../interfaces/forum/IForum";
 import {IUser} from "../../interfaces/IUser";
 import {ForumPermissible, IForumPermissions} from "../../interfaces/permissions/IForumPermissions";
-import dotty = require('dotty');
 import {ITopic} from "../../interfaces/forum/ITopic";
 import TopicService from "./topicService";
+import dotty = require('dotty');
 
 @Service()
 export default class ForumService {

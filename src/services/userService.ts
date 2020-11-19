@@ -1,10 +1,10 @@
-import { Inject, Service } from "typedi";
+import {Inject, Service} from "typedi";
 import {IMailRegister, IMailUpdateVerification, IPasswordUpdate, IUser} from "../interfaces/IUser";
-import { IPaginateResult } from "mongoose";
-import { Logger } from "winston";
+import {IPaginateResult} from "mongoose";
+import {Logger} from "winston";
 import argon2 from "argon2";
-import { randomBytes } from "crypto";
-import { EventDispatcher, EventDispatcherInterface } from "../decorators/eventDispatcher";
+import {randomBytes} from "crypto";
+import {EventDispatcher, EventDispatcherInterface} from "../decorators/eventDispatcher";
 import events from "../subscribers/events";
 import RedisService from "./redisService";
 import {ResponseError} from "../interfaces/error/ResponseError";

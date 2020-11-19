@@ -1,5 +1,5 @@
-import { Container } from 'typedi';
-import { Logger } from "winston";
+import {Container} from 'typedi';
+import {Logger} from "winston";
 import {ResponseError} from "../../interfaces/error/ResponseError";
 
 const userAttachment = async (req, res, next) => {

@@ -1,11 +1,11 @@
-import { Router, Request, Response, NextFunction } from "express";
-import { Container } from "typedi";
+import {NextFunction, Request, Response, Router} from "express";
+import {Container} from "typedi";
 import GroupService from "../../services/groupService";
 import {IGroup, IPermissions, IStaffGroup} from "../../interfaces/IGroup";
 import middlewares from "../middlewares";
-import { celebrate, Joi } from "celebrate";
-import { IPaginateResult } from "mongoose";
-import { IUser } from "../../interfaces/IUser";
+import {celebrate, Joi} from "celebrate";
+import {IPaginateResult} from "mongoose";
+
 const route = Router();
 
 export default (app: Router) => {

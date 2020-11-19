@@ -1,4 +1,4 @@
-import { Router } from 'express';
+import {Router} from 'express';
 import appeal from "./routes/appeal";
 import punishment from "./routes/punishment";
 import user from "./routes/user";
@@ -18,6 +18,7 @@ import topic from "./routes/forum/topic";
 import post from "./routes/forum/post";
 import channel from "./routes/channel/channel";
 import channelMessage from "./routes/channel/channelMessage";
+import goal from "./routes/goal";
 
 export default () => {
     const app = Router();
@@ -34,6 +35,7 @@ export default () => {
     map(app);
     match(app);
     gamemode(app);
+    goal(app)
     post(app);
     punishment(app);
     topic(app);

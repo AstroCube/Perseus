@@ -1,10 +1,11 @@
-import { Router, Request, Response, NextFunction } from "express";
-import { Container } from "typedi";
+import {NextFunction, Request, Response, Router} from "express";
+import {Container} from "typedi";
 import {IAppeal} from "../../interfaces/IAppeal";
 import AppealService from "../../services/appealService";
-import { IPaginateResult } from "mongoose";
+import {IPaginateResult} from "mongoose";
 import middlewares from "../middlewares";
 import {IAppealsPermissions} from "../../interfaces/permissions/IAppealsPermissions";
+
 const route = Router();
 
 export default (app: Router) => {

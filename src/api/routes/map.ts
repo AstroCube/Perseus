@@ -1,5 +1,4 @@
 import { Router, Request, Response, NextFunction } from "express";
-import {StorageService} from "../../services/storageService";
 import {Container} from "typedi";
 import * as stream from "stream";
 import {celebrate, Joi} from "celebrate";

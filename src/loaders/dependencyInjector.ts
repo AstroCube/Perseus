@@ -1,7 +1,7 @@
-import { Container } from 'typedi';
+import {Container} from 'typedi';
 import LoggerInstance from './logger';
 import agendaFactory from './agenda';
-import { RedisClient } from "redis";
+import {RedisClient} from "redis";
 import * as Mail from "nodemailer/lib/mailer";
 
 export default (

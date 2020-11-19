@@ -1,12 +1,7 @@
 import {IPaginateResult} from "mongoose";
 import {Inject, Service} from "typedi";
 import {Logger} from "winston";
-import {IAppeal, IAppealAction, IAppealActionType, IAppealCreation} from "../interfaces/IAppeal";
 import {IUser} from "../interfaces/IUser";
-import {IAppealPermissible, IAppealsPermissions} from "../interfaces/permissions/IAppealsPermissions";
-import PunishmentService from "./punishmentService";
-import {IPunishment} from "../interfaces/IPunishment";
-import dotty = require('dotty');
 import {ResponseError} from "../interfaces/error/ResponseError";
 import {IFriend, IFriendProfile} from "../interfaces/IFriend";
 

@@ -1,16 +1,25 @@
-import { Router, Request, Response, NextFunction } from "express";
-import { Container } from "typedi";
-import { Logger } from "winston";
+import {NextFunction, Request, Response, Router} from "express";
+import {Container} from "typedi";
+import {Logger} from "winston";
 import ServerService from "../../services/serverService";
-import { IServer } from "../../interfaces/IServer";
+import {IServer} from "../../interfaces/IServer";
 import serverAttachment from "../middlewares/serverAttachment";
 import cluster from "../middlewares/cluster";
 import {celebrate, Joi} from "celebrate";
+
 const route = Router();
 
 export default (app: Router) => {
 
   app.use('/server', route);
+
+    route.get(
+        '/view/me',
+        cluster,
+        serverAttachment,
+        async (req: Request, res: Response, next: NextFunction) => {
+            return res.status(200).send(req.currentServer);
+        });
 
   route.post(
     '/',

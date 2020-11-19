@@ -1,7 +1,7 @@
 import mongoose, {Schema} from "mongoose";
 import {mongoosePagination} from "ts-mongoose-pagination";
-import autoPopulate = require('mongoose-autopopulate');
 import {IFriend} from "../interfaces/IFriend";
+import autoPopulate = require('mongoose-autopopulate');
 
 
 const Friend = new mongoose.Schema(

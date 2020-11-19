@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { ICluster } from "../interfaces/ICluster";
+import {ICluster} from "../interfaces/ICluster";
 import {mongoosePagination} from "ts-mongoose-pagination";
 
 

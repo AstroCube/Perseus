@@ -1,6 +1,6 @@
-import { Container } from 'typedi';
-import { Logger } from "winston";
-import { IGroup } from "../../interfaces/IGroup";
+import {Container} from 'typedi';
+import {Logger} from "winston";
+import {IGroup} from "../../interfaces/IGroup";
 import {ResponseError} from "../../interfaces/error/ResponseError";
 
 const permissions = (permission : string) => {

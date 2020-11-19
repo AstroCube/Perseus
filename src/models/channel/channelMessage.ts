@@ -1,5 +1,4 @@
 import mongoose, {Schema} from "mongoose";
-import {IChannel} from "../../interfaces/channel/IChannel";
 import {IChannelMessage} from "../../interfaces/channel/IChannelMessage";
 
 
