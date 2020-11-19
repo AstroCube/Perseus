@@ -4,7 +4,7 @@ import {Container} from "typedi";
 import * as stream from "stream";
 import {celebrate, Joi} from "celebrate";
 import MapService from "../../services/mapService";
-import {IMap} from "../../interfaces/IMap";
+import {IMap, IMapCreation} from "../../interfaces/IMap";
 const route = Router();
 
 export default (app: Router) => {
@@ -29,9 +29,8 @@ export default (app: Router) => {
     }),
     async (req: Request, res: Response, next: NextFunction) => {
       try {
-
         const service: MapService = Container.get(MapService);
-        return res.json(service.create(req.body as IMap)).status(200);
+        return res.json(service.create(req.body as IMapCreation)).status(200);
       } catch (e) {
         return next(e);
       }
@@ -41,10 +40,53 @@ export default (app: Router) => {
         '/:id',
         async (req: Request, res: Response, next: NextFunction) => {
             try {
-                const storage: StorageService = Container.get(StorageService);
+                const service: MapService = Container.get(MapService);
+                return res.json(service.get(req.params.id)).status(200);
+            } catch (e) {
+                return next(e);
+            }
+        });
+
+    route.get(
+        '/image/:id',
+        async (req: Request, res: Response, next: NextFunction) => {
+            try {
+                const service: MapService = Container.get(MapService);
                 const readStream = new stream.PassThrough();
-                readStream.end(await storage.readFile(req.params.id));
-                res.set('Content-disposition', 'attachment; filename=' + "demo.slime");
+                readStream.end(await service.getImage(req.params.id, req.query.version as any));
+                res.set('Content-disposition', 'attachment; filename=' + req.params.id + ".jpg");
+                res.set('Content-Type', 'text/plain');
+                readStream.pipe(res);
+                return res.status(200);
+            } catch (e) {
+                return next(e);
+            }
+        });
+
+    route.get(
+        '/file/:id',
+        async (req: Request, res: Response, next: NextFunction) => {
+            try {
+                const service: MapService = Container.get(MapService);
+                const readStream = new stream.PassThrough();
+                readStream.end(await service.getFile(req.params.id, req.query.version as any));
+                res.set('Content-disposition', 'attachment; filename=' + req.params.id + ".slime");
+                res.set('Content-Type', 'text/plain');
+                readStream.pipe(res);
+                return res.status(200);
+            } catch (e) {
+                return next(e);
+            }
+        });
+
+    route.get(
+        '/config/:id',
+        async (req: Request, res: Response, next: NextFunction) => {
+            try {
+                const service: MapService = Container.get(MapService);
+                const readStream = new stream.PassThrough();
+                readStream.end(await service.getConfiguration(req.params.id, req.query.version as any));
+                res.set('Content-disposition', 'attachment; filename=' + req.params.id + ".json");
                 res.set('Content-Type', 'text/plain');
                 readStream.pipe(res);
                 return res.status(200);

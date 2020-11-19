@@ -54,7 +54,7 @@ export default class MapService {
     try {
       const mapModel: IMap = await this.mapModel.findById(id)
           .select({versions: {file: -1, image: -1, configuration: -1}});
-      if (!mapModel) throw new ResponseError('The requested map was not found', 500);
+      if (!mapModel) throw new ResponseError('The requested map was not found', 404);
       return mapModel;
     } catch (e) {
       this.logger.error(e);
@@ -88,14 +88,70 @@ export default class MapService {
 
       const currentMap: IMap = await this.mapModel.findById(map._id);
 
-      if (
-          parseInt(map.version.replace(/\./g, ""), 10) <=
-          parseInt(currentMap.version.replace(/\./g, ""), 10)
-      ) {
-        throw new ResponseError('You can not update to a lower version this map', 400);
-      }
+      if (!currentMap)
+        throw new ResponseError('There was an error creating the map', 500);
 
       return await this.mapModel.findByIdAndUpdate(map._id, map);
+    } catch (e) {
+      this.logger.error(e);
+      throw e;
+    }
+  }
+
+  /**
+   * Update certain map from database
+   * @param map to update
+   * @param version to be added
+   */
+  public async updateFile(map: string, version: IMapVersion): Promise<IMap> {
+    try {
+
+      const currentMap: IMap = await this.mapModel.findById(map);
+
+      const file: IStorageManifest = await this.storageService.writeFile(version.file);
+      const image: IStorageManifest = await this.storageService.writeFile(version.image);
+      const configuration: IStorageManifest = await this.storageService.writeFile(version.configuration);
+
+      if (!currentMap) {
+        throw new ResponseError('The requested map was not found', 404);
+      }
+
+      return await this.mapModel.findByIdAndUpdate(map,
+          // @ts-ignore
+          {versions: {$push: {file, image, configuration, version: version.version}}}
+          );
+    } catch (e) {
+      this.logger.error(e);
+      throw e;
+    }
+  }
+
+  /**
+   * Return a certain image buffer.
+   * @param map
+   * @param version
+   */
+  public async getImage(map: string, version?: string): Promise<Buffer>  {
+    try {
+      return this.storageService.readFile((await this.getRequestedVersion(map, version)).image);
+    } catch (e) {
+      this.logger.error(e);
+      throw e;
+    }
+  }
+
+  public async getConfiguration(map: string, version?: string): Promise<Buffer>  {
+    try {
+      return this.storageService.readFile((await this.getRequestedVersion(map, version)).configuration);
+    } catch (e) {
+      this.logger.error(e);
+      throw e;
+    }
+  }
+
+  public async getFile(map: string, version?: string): Promise<Buffer>  {
+    try {
+      return this.storageService.readFile((await this.getRequestedVersion(map, version)).file);
     } catch (e) {
       this.logger.error(e);
       throw e;
@@ -113,6 +169,28 @@ export default class MapService {
       this.logger.error(e);
       throw e;
     }
+  }
+
+  private async getRequestedVersion(map: string, version?: string): Promise<IMapVersion> {
+    const currentMap: IMap = await this.mapModel.findById(map);
+    if (!currentMap) {
+      throw new ResponseError('The requested map was not found', 404);
+    }
+
+    const versions = currentMap.versions.sort((a, b) =>
+        // tslint:disable-next-line:radix
+        parseInt(b.version.replace(/\./g, "")) - parseInt(a.version.replace(/\./g, "")));
+
+    if (version) {
+
+      if (!versions.some(v => v.version === version)) {
+        throw new ResponseError('The requested map version was not found', 404);
+      }
+
+      return versions.find(s => s.version === version);
+    }
+
+    return versions[0];
   }
 
 }
