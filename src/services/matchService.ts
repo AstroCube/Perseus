@@ -15,6 +15,11 @@ export default class MatchService {
 
   public async createMatch(match: IMatch): Promise<IMatch> {
     try {
+
+      if (match.map === '') {
+        Reflect.deleteProperty(match, 'map');
+      }
+
       const matchRecord = await this.matchModel.create({
         ...match,
         status: 'Waiting'
