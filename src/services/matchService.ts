@@ -3,7 +3,7 @@ import {Logger} from "winston";
 import {ResponseError} from "../interfaces/error/ResponseError";
 import {IPaginateResult} from "mongoose";
 import {IMatch, MatchStatus} from "../interfaces/IMatch";
-import {IServer} from "../interfaces/IServer";
+import {IServer, ServerType} from "../interfaces/IServer";
 
 @Service()
 export default class MatchService {
@@ -13,17 +13,21 @@ export default class MatchService {
     @Inject('logger') private logger : Logger,
   ) {}
 
-  public async createMatch(match: IMatch): Promise<IMatch> {
+  public async createMatch(match: IMatch, server: IServer): Promise<IMatch> {
     try {
 
       if (match.map === '') {
         Reflect.deleteProperty(match, 'map');
       }
 
+      if (server.type !== ServerType.Game) {
+        throw new ResponseError('Unauthorized server type', 403);
+      }
+
       const matchRecord = await this.matchModel.create({
         ...match,
         status: MatchStatus.Lobby,
-
+        server: server._id
         // @ts-ignore
         createdAt: new Date()
       });

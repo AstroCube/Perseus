@@ -23,10 +23,11 @@ export default (app: Router) => {
             })
         }),
         middlewares.cluster,
+        middlewares.serverAttachment,
         async (req: Request, res: Response, next: NextFunction) => {
             try {
                 const matchService: MatchService = Container.get(MatchService);
-                const match: IMatch = await matchService.createMatch(req.body as IMatch);
+                const match: IMatch = await matchService.createMatch(req.body as IMatch, req.currentServer);
                 return res.json(match).status(200);
             } catch (e) {
                 return next(e);
