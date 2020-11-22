@@ -29,7 +29,7 @@ export default class MatchService {
         status: MatchStatus.Lobby,
         server: server._id,
         // @ts-ignore
-        createdAt: new Date()
+        createdAt: new Date().toISOString()
       });
 
       if (!matchRecord) throw new ResponseError('There was an error creating the match', 500);
