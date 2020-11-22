@@ -27,8 +27,8 @@ export default (app: Router) => {
           body: Joi.object({
               slug: Joi.string().required(),
               type: Joi.string().required(),
-              gamemode: Joi.string(),
-              subGamemode: Joi.array(),
+              gameMode: Joi.string(),
+              subGameMode: Joi.array(),
               maxRunning: Joi.number(),
               maxTotal: Joi.number(),
               cluster: Joi.string().required()
