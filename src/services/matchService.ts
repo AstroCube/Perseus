@@ -27,7 +27,7 @@ export default class MatchService {
       const matchRecord = await this.matchModel.create({
         ...match,
         status: MatchStatus.Lobby,
-        server: server._id
+        server: server._id,
         // @ts-ignore
         createdAt: new Date()
       });
