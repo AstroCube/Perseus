@@ -20,6 +20,8 @@ export default class MatchService {
         Reflect.deleteProperty(match, 'map');
       }
 
+      console.log(server);
+
       if (server.type === ServerType.Game) {
         throw new ResponseError('Unauthorized server type', 403);
       }
