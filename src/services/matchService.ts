@@ -22,7 +22,7 @@ export default class MatchService {
 
       const matchRecord = await this.matchModel.create({
         ...match,
-        status: MatchStatus.Preparing
+        status: MatchStatus.Lobby
       });
       if (!matchRecord) throw new ResponseError('There was an error creating the match', 500);
       return matchRecord;
