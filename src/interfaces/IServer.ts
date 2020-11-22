@@ -3,8 +3,8 @@ import {IModel} from "./IModel";
 export interface IServer extends IModel {
   slug: string;
   type: ServerType;
-  gamemode: string;
-  subGamemode: string;
+  gameMode: string;
+  subGameMode: string;
   maxRunning: number;
   maxTotal: number;
   cluster: string;

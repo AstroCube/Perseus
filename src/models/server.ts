@@ -13,11 +13,11 @@ const Server = new mongoose.Schema(
       lowercase: true
     },
     type: { type: String, enum: ['Lobby', 'Game', 'Special', 'Bungee'] },
-    gamemode: {
+    gameMode: {
       type: Schema.Types.ObjectId,
       ref: 'Gamemode'
     },
-    subGamemode: String,
+    subGameMode: String,
     maxRunning: {type: Number, default: 1},
     maxTotal: {type: Number, default: 1},
     cluster: {
