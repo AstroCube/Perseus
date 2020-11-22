@@ -11,5 +11,5 @@ export interface IServer extends IModel {
 }
 
 export enum ServerType {
-  Lobby, Game, Special, Bungee
+  Lobby = "Lobby", Game = "Game", Special = "Special", Bungee = "Bungee"
 }
