@@ -8,11 +8,15 @@ export interface IMatch extends IModel {
   spectators: string[];
   pending: IMatchAssignable[];
   winner: string[];
-  status: any;
+  status: MatchStatus;
   gamemode: string;
   subGamemode: string;
   query: any;
   requestedBy: string;
+}
+
+export enum MatchStatus {
+  Preparing = "Preparing", Lobby = "Lobby", Starting = "Starting", Running = "Running", Finished = "Finished", Invalidated = "Invalidated"
 }
 
 export interface IMatchTeam {

@@ -2,7 +2,7 @@ import {Inject, Service} from 'typedi';
 import {Logger} from "winston";
 import {ResponseError} from "../interfaces/error/ResponseError";
 import {IPaginateResult} from "mongoose";
-import {IMatch} from "../interfaces/IMatch";
+import {IMatch, MatchStatus} from "../interfaces/IMatch";
 import {IServer} from "../interfaces/IServer";
 
 @Service()
@@ -22,7 +22,7 @@ export default class MatchService {
 
       const matchRecord = await this.matchModel.create({
         ...match,
-        status: 'Waiting'
+        status: MatchStatus.Preparing
       });
       if (!matchRecord) throw new ResponseError('There was an error creating the match', 500);
       return matchRecord;
@@ -67,10 +67,10 @@ export default class MatchService {
     try {
       const matches: IMatch[] = await this.matchModel.find({server: server._id});
       for (const match of matches) {
-        if (match.status == 'Waiting') {
+        if (match.status === MatchStatus.Lobby) {
           await this.matchModel.findByIdAndDelete(matches);
         } else {
-          match.status = 'Invalidated';
+          match.status = MatchStatus.Invalidated;
           await this.update(match);
         }
       }

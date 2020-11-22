@@ -45,7 +45,7 @@ const Match = new mongoose.Schema(
             type: Schema.Types.ObjectId,
             ref: 'User'
         }],
-        status: { type: String, enum: ['Preparing', 'Waiting', 'Starting', 'Ingame', 'Finished', 'Invalidated', 'Forced']},
+        status: { type: String, enum: ['Preparing', 'Lobby', 'Starting', 'Running', 'Finished', 'Invalidated']},
         gamemode: {
             type: Schema.Types.ObjectId,
             ref: 'Gamemode'
