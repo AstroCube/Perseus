@@ -16,7 +16,7 @@ export default (app: Router) => {
         '/',
         celebrate({
             body: Joi.object({
-                map: Joi.string().required(),
+                map: Joi.string(),
                 teams: Joi.array().required(),
                 status: Joi.string().required(),
                 gamemode: Joi.string().required(),
