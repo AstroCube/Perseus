@@ -6,6 +6,7 @@ import {IServer} from "../../interfaces/IServer";
 import serverAttachment from "../middlewares/serverAttachment";
 import cluster from "../middlewares/cluster";
 import {celebrate, Joi} from "celebrate";
+import {IPaginateResult} from "mongoose";
 
 const route = Router();
 
@@ -68,7 +69,7 @@ export default (app: Router) => {
       const logger : Logger = Container.get('logger');
       try {
         const service: ServerService = Container.get(ServerService);
-        const server: IServer[] = await service.getServersByQuery(req.body);
+        const server: IPaginateResult<IServer> = await service.getServersByQuery(req.body, req.query);
         return res.json(server).status(200);
       } catch (e) {
         logger.error( e );

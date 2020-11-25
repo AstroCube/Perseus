@@ -6,6 +6,8 @@ import ClusterService from "./clusterService";
 import jwt from "jsonwebtoken";
 import config from "../config";
 import {ResponseError} from "../interfaces/error/ResponseError";
+import {IPaginateResult} from "mongoose";
+import {IMatch} from "../interfaces/IMatch";
 
 @Service()
 export default class ServerService {
@@ -44,10 +46,9 @@ export default class ServerService {
     }
   }
 
-  public async getServersByQuery(query?: any): Promise<IServer[]> {
+  public async getServersByQuery(query?: any, options?: any): Promise<IPaginateResult<IServer>> {
     try {
-      if (!query) return await this.serverModel.find();
-      return await this.serverModel.find(query);
+      return await this.serverModel.paginate(query, options);
     } catch (e) {
       this.logger.error(e);
       throw e;
