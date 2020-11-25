@@ -48,7 +48,7 @@ export default class ServerService {
 
   public async getServersByQuery(query?: any, options?: any): Promise<IPaginateResult<IServer>> {
     try {
-      return await this.serverModel.paginate(query, options);
+      return await this.serverModel.paginate(query, {...options, page: options.page === -1 ? undefined : options.page});
     } catch (e) {
       this.logger.error(e);
       throw e;
