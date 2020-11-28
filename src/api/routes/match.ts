@@ -65,6 +65,7 @@ export default (app: Router) => {
         async (req: Request, res: Response, next: NextFunction) => {
             try {
                 const matchService: MatchService = Container.get(MatchService);
+                console.log("Called cluster");
                 console.log(req.body);
                 const match: IMatch = await matchService.update(req.body as IMatch);
                 return res.json(match).status(200);
