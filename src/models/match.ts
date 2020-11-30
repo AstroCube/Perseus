@@ -29,6 +29,7 @@ const Match = new mongoose.Schema(
             unique: false
         }],
         pending: [{
+            _id: false,
             responsible: {
                 type: Schema.Types.ObjectId,
                 ref: 'User'
