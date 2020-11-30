@@ -25,8 +25,7 @@ const Match = new mongoose.Schema(
         }],
         spectators: [{
             type: Schema.Types.ObjectId,
-            ref: 'User',
-            unique: true
+            ref: 'User'
         }],
         pending: [{
             responsible: {
