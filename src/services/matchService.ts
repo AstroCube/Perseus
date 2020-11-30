@@ -147,7 +147,7 @@ export default class MatchService {
       }
        */
       console.log(pending);
-      await this.matchModel.findByIdAndUpdate(matchRecord._id, {pending: {$push: pending}} as any);
+      await this.matchModel.findByIdAndUpdate(matchRecord._id, {$push: {pending}} as any);
 
     } catch (e) {
       this.logger.error(e);
