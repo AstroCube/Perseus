@@ -130,7 +130,7 @@ export default class MatchService {
       // Hack in order to allow ObjectId query
       pending.involved.push(pending.responsible);
       const involved: Types.ObjectId[] = [];
-      pending.involved.forEach(i => new Types.ObjectId(i));
+      pending.involved.forEach(i => involved.push(new Types.ObjectId(i)));
 
       const pendingMatch: IMatch[] = await this.matchModel.find(
           {
