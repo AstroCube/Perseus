@@ -119,7 +119,7 @@ export default class MatchService {
     }
   }
 
-  public async assignPending(pending: IMatchAssignable[], match: string): Promise<void> {
+  public async assignPending(pending: IMatchAssignable, match: string): Promise<void> {
     try {
       const matchRecord: IMatch = await this.matchModel.findById(match);
 
@@ -127,20 +127,13 @@ export default class MatchService {
         throw new ResponseError('This match does not exists', 404);
       }
 
-      const involved: string[] = [];
-
-      pending.forEach(assignable => {
-        involved.push(assignable.responsible);
-        assignable.involved.forEach(a => involved.push(a));
-      });
-
-      const unique = Array.from(new Set(involved));
+      pending.involved.push(pending.responsible);
 
       const pendingMatch: IMatch[] = await this.matchModel.find(
           {
             $or: [
-              {pending: {responsible: {$in: unique}}},
-              {pending: {involved: {$in: unique}}}
+              {pending: {responsible: {$in: pending.involved}}},
+              {pending: {involved: {$in: pending.involved}}}
             ]
           } as any
       );

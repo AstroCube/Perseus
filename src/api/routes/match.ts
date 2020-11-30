@@ -129,12 +129,6 @@ export default (app: Router) => {
 
     route.post(
         '/pending',
-        celebrate({
-            body: Joi.object({
-                pending: Joi.array().required(),
-                match: Joi.string().required()
-            })
-        }),
         middlewares.cluster,
         middlewares.serverAttachment,
         async (req: Request, res: Response, next: NextFunction) => {
