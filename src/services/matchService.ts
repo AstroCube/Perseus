@@ -127,7 +127,8 @@ export default class MatchService {
         throw new ResponseError('This match does not exists', 404);
       }
 
-      // Hack in order to allow ObjectId query
+      // TODO: Hack in order to allow ObjectId query
+      /*
       pending.involved.push(pending.responsible);
       const involved: Types.ObjectId[] = [];
       pending.involved.forEach(i => involved.push(new Types.ObjectId(i)));
@@ -144,7 +145,7 @@ export default class MatchService {
       if (pendingMatch.length > 0) {
         throw new ResponseError('You can not be assigned to a match more than once', 400);
       }
-
+       */
       await this.matchModel.findByIdAndUpdate(matchRecord._id, {pending: {$push: pending}} as any);
 
     } catch (e) {
