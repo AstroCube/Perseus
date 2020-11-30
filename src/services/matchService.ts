@@ -1,7 +1,7 @@
 import {Inject, Service} from 'typedi';
 import {Logger} from "winston";
 import {ResponseError} from "../interfaces/error/ResponseError";
-import {Document, DocumentQuery, IPaginateResult} from "mongoose";
+import {IPaginateResult, Schema, Types} from "mongoose";
 import {IMatch, IMatchAssignable, IMatchTeam, MatchStatus} from "../interfaces/IMatch";
 import {IServer, ServerType} from "../interfaces/IServer";
 
@@ -127,13 +127,16 @@ export default class MatchService {
         throw new ResponseError('This match does not exists', 404);
       }
 
+      // Hack in order to allow ObjectId query
       pending.involved.push(pending.responsible);
+      const involved: Types.ObjectId[] = [];
+      pending.involved.forEach(i => new Types.ObjectId(i));
 
       const pendingMatch: IMatch[] = await this.matchModel.find(
           {
             $or: [
-              {pending: {responsible: {$in: pending.involved}}},
-              {pending: {involved: {$in: pending.involved}}}
+              {pending: {responsible: {$in: involved}}},
+              {pending: {involved: {$in: involved}}}
             ]
           } as any
       );
