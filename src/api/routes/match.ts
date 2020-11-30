@@ -65,8 +65,6 @@ export default (app: Router) => {
         async (req: Request, res: Response, next: NextFunction) => {
             try {
                 const matchService: MatchService = Container.get(MatchService);
-                console.log("Called cluster");
-                console.log(req.body);
                 const match: IMatch = await matchService.update(req.body as IMatch);
                 return res.json(match).status(200);
             } catch (e) {
@@ -83,6 +81,67 @@ export default (app: Router) => {
                 const matchService: MatchService = Container.get(MatchService);
                 await matchService.cleanupUnassigned(req.currentServer);
                 return res.json({}).status(200);
+            } catch (e) {
+                return next(e);
+            }
+        });
+
+    route.post(
+        '/spectator',
+        celebrate({
+            body: Joi.object({
+                user: Joi.string().required(),
+                match: Joi.string().required(),
+                join: Joi.boolean().required()
+            })
+        }),
+        middlewares.cluster,
+        middlewares.serverAttachment,
+        async (req: Request, res: Response, next: NextFunction) => {
+            try {
+                const matchService: MatchService = Container.get(MatchService);
+                await matchService.assignSpectator(req.body.user, req.body.match, req.body.join);
+                return res.json({updated: true}).status(200);
+            } catch (e) {
+                return next(e);
+            }
+        });
+
+    route.post(
+        '/teams',
+        celebrate({
+            body: Joi.object({
+                teams: Joi.array().required(),
+                match: Joi.string().required()
+            })
+        }),
+        middlewares.cluster,
+        middlewares.serverAttachment,
+        async (req: Request, res: Response, next: NextFunction) => {
+            try {
+                const matchService: MatchService = Container.get(MatchService);
+                await matchService.assignMatchTeams(req.body.teams, req.body.match);
+                return res.json({updated: true}).status(200);
+            } catch (e) {
+                return next(e);
+            }
+        });
+
+    route.post(
+        '/pending',
+        celebrate({
+            body: Joi.object({
+                pending: Joi.array().required(),
+                match: Joi.string().required()
+            })
+        }),
+        middlewares.cluster,
+        middlewares.serverAttachment,
+        async (req: Request, res: Response, next: NextFunction) => {
+            try {
+                const matchService: MatchService = Container.get(MatchService);
+                await matchService.assignPending(req.body.pending, req.body.match);
+                return res.json({updated: true}).status(200);
             } catch (e) {
                 return next(e);
             }

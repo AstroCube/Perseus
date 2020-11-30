@@ -1,8 +1,8 @@
 import {Inject, Service} from 'typedi';
 import {Logger} from "winston";
 import {ResponseError} from "../interfaces/error/ResponseError";
-import {IPaginateResult} from "mongoose";
-import {IMatch, MatchStatus} from "../interfaces/IMatch";
+import {Document, DocumentQuery, IPaginateResult} from "mongoose";
+import {IMatch, IMatchAssignable, IMatchTeam, MatchStatus} from "../interfaces/IMatch";
 import {IServer, ServerType} from "../interfaces/IServer";
 
 @Service()
@@ -53,9 +53,104 @@ export default class MatchService {
 
   public async update(match: IMatch): Promise<IMatch> {
     try {
+
+      delete match.pending;
+      delete match.spectators;
+      delete match.teams;
+
       const matchRecord = await this.matchModel.findByIdAndUpdate(match._id, match, {new: true});
       if (!matchRecord) throw new ResponseError('The requested match does not exist', 404);
       return matchRecord;
+    } catch (e) {
+      this.logger.error(e);
+      throw e;
+    }
+  }
+
+  public async assignSpectator(user: string, match: string, join: boolean): Promise<void> {
+    try {
+
+      const matchRecord: IMatch = await this.matchModel.findById(match);
+
+      if (!matchRecord) {
+        throw new ResponseError('This match does not exists', 404);
+      }
+
+      const assigned = matchRecord.spectators.map(m => m.toString()).includes(match);
+
+      if (join) {
+
+        if (assigned) {
+          throw new ResponseError('User already assigned to match', 400);
+        }
+
+        await this.matchModel.findByIdAndUpdate(matchRecord._id, {spectators: {$push: user}} as any);
+      } else {
+
+        if (!assigned) {
+          throw new ResponseError('User not assigned to match', 400);
+        }
+
+        await this.matchModel.findByIdAndUpdate(matchRecord._id, {spectators: {$pull: user}} as any);
+      }
+    } catch (e) {
+      this.logger.error(e);
+      throw e;
+    }
+  }
+
+  public async assignMatchTeams(teams: IMatchTeam[], match: string): Promise<void> {
+    try {
+      const matchRecord: IMatch = await this.matchModel.findById(match);
+
+      if (!matchRecord) {
+        throw new ResponseError('This match does not exists', 404);
+      }
+
+      if (matchRecord.teams.length > 0) {
+        throw new ResponseError('You can not update teams after registered', 400);
+      }
+
+      await this.matchModel.findByIdAndUpdate(matchRecord._id, {teams, pending: []});
+
+    } catch (e) {
+      this.logger.error(e);
+      throw e;
+    }
+  }
+
+  public async assignPending(pending: IMatchAssignable[], match: string): Promise<void> {
+    try {
+      const matchRecord: IMatch = await this.matchModel.findById(match);
+
+      if (!matchRecord) {
+        throw new ResponseError('This match does not exists', 404);
+      }
+
+      const involved: string[] = [];
+
+      pending.forEach(assignable => {
+        involved.push(assignable.responsible);
+        assignable.involved.forEach(a => involved.push(a));
+      });
+
+      const unique = Array.from(new Set(involved));
+
+      const pendingMatch: IMatch[] = await this.matchModel.find(
+          {
+            $or: [
+              {pending: {responsible: {$in: unique}}},
+              {pending: {involved: {$in: unique}}}
+            ]
+          } as any
+      );
+
+      if (pendingMatch.length > 0) {
+        throw new ResponseError('You can not be assigned to a match more than once', 400);
+      }
+
+      await this.matchModel.findByIdAndUpdate(matchRecord._id, {pending: {$push: pending}} as any);
+
     } catch (e) {
       this.logger.error(e);
       throw e;
