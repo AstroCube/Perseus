@@ -72,7 +72,7 @@ export default (app: Router) => {
             }
         });
 
-    route.get(
+    route.post(
         '/cleanup',
         middlewares.cluster,
         middlewares.serverAttachment,
