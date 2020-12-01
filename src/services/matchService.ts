@@ -146,7 +146,6 @@ export default class MatchService {
         throw new ResponseError('You can not be assigned to a match more than once', 400);
       }
        */
-      console.log(pending);
       await this.matchModel.findByIdAndUpdate(matchRecord._id, {$push: {pending}} as any);
 
     } catch (e) {
@@ -166,7 +165,8 @@ export default class MatchService {
 
   public async cleanupUnassigned(server: IServer): Promise<void> {
     try {
-      const matches: IMatch[] = await this.matchModel.find({server: server._id});
+      // @ts-ignore
+      const matches: IMatch[] = await this.matchModel.find({server: new Types.ObjectId(server._id)});
       for (const match of matches) {
         if (match.status === MatchStatus.Lobby) {
           await this.matchModel.findByIdAndDelete(matches);
