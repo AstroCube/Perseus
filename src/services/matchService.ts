@@ -169,7 +169,7 @@ export default class MatchService {
       const matches: IMatch[] = await this.matchModel.find({server: new Types.ObjectId(server._id)});
       for (const match of matches) {
         if (match.status === MatchStatus.Lobby) {
-          await this.matchModel.findByIdAndDelete(match);
+          await this.matchModel.findByIdAndDelete(match._id);
         } else {
           match.status = MatchStatus.Invalidated;
           await this.update(match);
