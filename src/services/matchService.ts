@@ -130,9 +130,10 @@ export default class MatchService {
 
       matchRecord.pending = matchRecord.pending.map(pending => {
 
-        if (pending.involved.length === 0) return null;
 
         if (pending.responsible.toString() === match) {
+          if (pending.involved.length === 0) return null;
+
           const leader: string = pending.involved[Math.floor(Math.random() * pending.involved.length)];
           return {
             responsible: leader,
