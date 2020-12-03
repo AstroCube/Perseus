@@ -1,7 +1,7 @@
 import {Inject, Service} from 'typedi';
 import {Logger} from "winston";
 import {ResponseError} from "../interfaces/error/ResponseError";
-import {IPaginateResult, Schema, Types} from "mongoose";
+import {Document, IPaginateResult, Schema, Types} from "mongoose";
 import {IMatch, IMatchAssignable, IMatchTeam, MatchStatus} from "../interfaces/IMatch";
 import {IServer, ServerType} from "../interfaces/IServer";
 
@@ -112,6 +112,40 @@ export default class MatchService {
       }
 
       await this.matchModel.findByIdAndUpdate(matchRecord._id, {teams, pending: []});
+
+    } catch (e) {
+      this.logger.error(e);
+      throw e;
+    }
+  }
+
+  public async unAssignPending(user: string, match: string): Promise<void> {
+    try {
+
+      const matchRecord: Document & IMatch = await this.matchModel.findById(match);
+
+      if (!matchRecord) {
+        throw new ResponseError('This match does not exists', 404);
+      }
+
+      matchRecord.pending = matchRecord.pending.map(pending => {
+
+        if (pending.responsible.toString() === match) {
+          const leader: string = pending.involved[Math.floor(Math.random() * pending.involved.length)];
+          return {
+            responsible: leader,
+            involved: pending.involved.filter(i => i !== leader)
+          };
+        }
+
+        return {
+          responsible: pending.responsible,
+          involved: pending.involved.filter(i => i !== user)
+        };
+
+      });
+
+      await matchRecord.save();
 
     } catch (e) {
       this.logger.error(e);
