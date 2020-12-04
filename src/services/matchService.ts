@@ -132,7 +132,6 @@ export default class MatchService {
 
 
         if (pending.responsible.toString() === user.toString()) {
-          console.log("Got here nigga");
           if (pending.involved.length === 0) return null;
 
           const leader: string = pending.involved[Math.floor(Math.random() * pending.involved.length)];
