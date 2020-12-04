@@ -148,7 +148,7 @@ export default (app: Router) => {
         async (req: Request, res: Response, next: NextFunction) => {
             try {
                 const matchService: MatchService = Container.get(MatchService);
-                await matchService.unAssignPending(req.body.pending, req.body.match);
+                await matchService.unAssignPending(req.body.user, req.body.match);
                 return res.json({updated: true}).status(200);
             } catch (e) {
                 return next(e);
