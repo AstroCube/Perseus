@@ -91,9 +91,23 @@ export default (app: Router) => {
         });
 
     route.post(
-        '/list',
+        '/list-web',
         middlewares.authentication,
         middlewares.userAttachment,
+        async (req: Request, res: Response, next: NextFunction) => {
+            try {
+                const service: MapService = Container.get(MapService);
+                const map: IPaginateResult<IMap> = await service.list(req.body, req.query);
+                return res.json(map).status(200);
+            } catch (e) {
+                return next(e);
+            }
+        });
+
+    route.post(
+        '/list',
+        middlewares.authentication,
+        middlewares.serverAttachment,
         async (req: Request, res: Response, next: NextFunction) => {
             try {
                 const service: MapService = Container.get(MapService);
@@ -147,18 +161,6 @@ export default (app: Router) => {
                 res.set('Content-Type', 'text/plain');
                 readStream.pipe(res);
                 return res.status(200);
-            } catch (e) {
-                return next(e);
-            }
-        });
-
-    route.get(
-        '/get/:id',
-        async (req: Request, res: Response, next: NextFunction) => {
-            try {
-                const service: PunishmentService = Container.get(PunishmentService);
-                const punishment: IPunishment = await service.getPunishment(req.params.id);
-                return res.json(punishment).status(200);
             } catch (e) {
                 return next(e);
             }
