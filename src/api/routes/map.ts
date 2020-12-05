@@ -97,7 +97,9 @@ export default (app: Router) => {
         async (req: Request, res: Response, next: NextFunction) => {
             try {
                 const service: MapService = Container.get(MapService);
-                const map: IPaginateResult<IMap> = await service.list(req.body, req.query);
+                const page: number = req.query.page && req.query.page !== '-1' ? parseInt(<string>req.query.page)  :  undefined;
+                const perPage: number = req.query.perPage ? parseInt(<string>req.query.perPage) : 10;
+                const map: IPaginateResult<IMap> = await service.list(req.body, {...req.query, page, perPage});
                 return res.json(map).status(200);
             } catch (e) {
                 return next(e);
@@ -111,7 +113,9 @@ export default (app: Router) => {
         async (req: Request, res: Response, next: NextFunction) => {
             try {
                 const service: MapService = Container.get(MapService);
-                const map: IPaginateResult<IMap> = await service.list(req.body, req.query);
+                const page: number = req.query.page && req.query.page !== '-1' ? parseInt(<string>req.query.page)  :  undefined;
+                const perPage: number = req.query.perPage ? parseInt(<string>req.query.perPage) : 10;
+                const map: IPaginateResult<IMap> = await service.list(req.body, {...req.query, page, perPage});
                 return res.json(map).status(200);
             } catch (e) {
                 return next(e);
