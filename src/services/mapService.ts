@@ -54,6 +54,7 @@ export default class MapService {
     try {
       const mapModel: IMap = await this.mapModel.findById(id)
           .select({versions: {file: -1, image: -1, configuration: -1}});
+      console.log(mapModel);
       if (!mapModel) throw new ResponseError('The requested map was not found', 404);
       return mapModel;
     } catch (e) {
