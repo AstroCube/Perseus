@@ -53,7 +53,6 @@ export default class MapService {
   public async get(id: string): Promise<IMap> {
     try {
       const mapModel: IMap = await this.mapModel.findById(id);
-      console.log(mapModel);
       if (!mapModel) throw new ResponseError('The requested map was not found', 404);
       return mapModel;
     } catch (e) {
