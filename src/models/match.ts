@@ -19,6 +19,7 @@ const Match = new mongoose.Schema(
                     type: Schema.Types.ObjectId,
                     ref: 'User'
                 },
+                active: Boolean,
                 joinedAt: String
             }],
             color: String

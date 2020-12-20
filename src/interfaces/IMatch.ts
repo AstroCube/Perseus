@@ -22,6 +22,7 @@ export enum MatchStatus {
 export interface IMatchTeam {
   name: string;
   members: IMatchMember[];
+  active: boolean;
   color: string;
 }
 
