@@ -120,6 +120,7 @@ export default (app: Router) => {
         async (req: Request, res: Response, next: NextFunction) => {
             try {
                 const matchService: MatchService = Container.get(MatchService);
+                console.log(req.body);
                 await matchService.assignMatchTeams(req.body.teams, req.body.match);
                 return res.json({updated: true}).status(200);
             } catch (e) {
