@@ -20,7 +20,7 @@ const Match = new mongoose.Schema(
                     ref: 'User'
                 },
                 active: Boolean,
-                joinedAt: String
+                joinedAt: Date
             }],
             color: String
         }],
