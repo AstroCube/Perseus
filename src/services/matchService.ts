@@ -193,7 +193,6 @@ export default class MatchService {
 
   public async list(query?: any, options?: any): Promise<IPaginateResult<IMatch>> {
     try {
-      console.log(query);
       return await this.matchModel.paginate(query, options);
     } catch (e) {
       this.logger.error(e);
