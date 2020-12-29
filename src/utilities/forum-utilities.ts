@@ -22,7 +22,7 @@ export class ForumUtilities {
     public async getHolders(query: any, user?: IUser): Promise<IForumHolder[]> {
         const children: IPaginateResult<IForum>
             = await this.forumService.list(query, {perPage: 10});
-        let holders: IForumHolder[] = [];
+        const holders: IForumHolder[] = [];
 
         for (const f of children.data) {
             const holder: IForumHolder = await this.getHolder(f as any, user);
@@ -33,7 +33,7 @@ export class ForumUtilities {
     }
 
     public async getHolder(forum: IForum, user?: IUser): Promise<IForumHolder> {
-        let finalForum: any = forum;
+        const finalForum: any = forum;
         const finalId = forum._id.toString();
         finalForum._id = finalId;
 
@@ -96,7 +96,7 @@ export class ForumUtilities {
             unread: user ? posts.data.filter(post => !(post.viewed as string[]).includes(user ? user._id : '')).length : 0,
             messages: posts.data.length,
             views: unique.length,
-            lastPost: posts.data.sort((a, b) => parseInt(b.createdAt) - parseInt(a.createdAt))[0]
+            lastPost: posts.data.sort((a, b) => parseInt(b.createdAt, 10) - parseInt(a.createdAt, 10))[0]
         };
     }
 

@@ -12,21 +12,21 @@ export default class UserSubscriber {
 
   @On(events.user.mailUpdate)
   public async onUserMailUpdate(update: IMailUpdateVerification) {
-    const Logger: Logger = Container.get('logger');
+    const logger: Logger = Container.get('logger');
     const mailer: MailerService = Container.get(MailerService);
     const redis: RedisService = Container.get(RedisService);
     try {
       await redis.setKey("verification_" + update.user._id, update.code + "");
       await mailer.mailUpdate(update);
     } catch (e) {
-      Logger.error("Error while sending verification request %o", e);
+      logger.error("Error while sending verification request %o", e);
       throw e;
     }
   }
 
   @On(events.user.serverLogin)
   public async onServerLogin(login: {user: IUser, address: IUserIP}) {
-    const Logger: Logger = Container.get('logger');
+    const logger: Logger = Container.get('logger');
     const service: UserService = Container.get(UserService);
     try {
       if (!login.user.address.some(address => address.number === login.address.number)) {
@@ -34,14 +34,14 @@ export default class UserSubscriber {
         await service.updateUser(login.user);
       }
     } catch (e) {
-      Logger.error("Error while executing login event %o", e);
+      logger.error("Error while executing login event %o", e);
       throw e;
     }
   }
 
   @On(events.user.mailVerifyRequest)
   public async onMailVerifyRequest(verification: IMailVerifyRequest) {
-    const Logger: Logger = Container.get('logger');
+    const logger: Logger = Container.get('logger');
     const mailer: MailerService = Container.get(MailerService);
     const redis: RedisService = Container.get(RedisService);
     try {
@@ -50,7 +50,7 @@ export default class UserSubscriber {
       await redis.setKeyExpiration(key, 600);
       await mailer.mailVerify(verification);
     } catch (e) {
-      Logger.error("Error while sending verification request %o", e);
+      logger.error("Error while sending verification request %o", e);
       throw e;
     }
   }

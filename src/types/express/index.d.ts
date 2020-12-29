@@ -49,7 +49,7 @@ declare global {
     export type TopicModel = DeletableModel<ITopic & Document>;
     export type UserModel = DeletableModel<IUser & Document>;
   }
-  
+
   export interface DeletableModel<T> extends PaginateModel<T & Document> {
 
     delete(query?: FilterQuery<T>);
