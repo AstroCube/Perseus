@@ -2,14 +2,18 @@ import jwt from 'express-jwt';
 import config from '../../config';
 
 const getTokenFromHeader = req => {
-  if (
-      (req.headers.authorization && req.headers.authorization.split(' ')[0] === 'Token') ||
-      (req.headers.authorization && req.headers.authorization.split(' ')[0] === 'Bearer')
-  ) {
-    return req.headers.authorization.split(' ')[1];
+  const authHeader = req.headers.authorization;
+  if (!authHeader) {
+    return null;
   }
+  const authHeaderParts = authHeader.split(' ');
+  const keyword = authHeaderParts[0];
 
-  return null;
+  if (keyword === 'Token' || keyword === 'Bearer') {
+    return authHeaderParts[1];
+  } else {
+    return null;
+  }
 };
 
 const authentication = jwt({
