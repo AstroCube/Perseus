@@ -1,7 +1,7 @@
 import jwt from 'express-jwt';
 import config from '../../config';
 
-const getTokenFromHeader = req => {
+const getToken = req => {
   const authHeader = req.headers.authorization;
   if (!authHeader) {
     return null;
@@ -19,7 +19,7 @@ const getTokenFromHeader = req => {
 const authentication = jwt({
   secret: config.jwtSecret,
   userProperty: 'token',
-  getToken: getTokenFromHeader,
+  getToken,
   credentialsRequired: false
 });
 
