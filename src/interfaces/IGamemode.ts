@@ -20,5 +20,5 @@ export interface ISubGamemode extends IModel {
 }
 
 export enum Pairing {
-  Substraction = "Substraction", Limit = "Limit", Multiplus = "Multiplus", Solo = "Solo"
+  Substraction = "Substraction", Limit = "Limit", Multiplus = "Multiple", Solo = "Solo"
 }
