@@ -15,6 +15,7 @@ const Gamemode = new mongoose.Schema(
       minPlayers: Number,
       maxPlayers: Number,
       permission: String,
+      pairing: { type: String, enum: ['Substraction', 'Limit', 'Multiplus', 'Solo'] },
       group: String
     }]
   },
