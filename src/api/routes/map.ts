@@ -27,7 +27,7 @@ export default (app: Router) => {
         gamemode: Joi.string().required(),
         subGamemode: Joi.array().required(),
         description: Joi.string().required(),
-        contributors: Joi.string()
+        contributors: Joi.array()
       })
     }),
     async (req: Request, res: Response, next: NextFunction) => {
