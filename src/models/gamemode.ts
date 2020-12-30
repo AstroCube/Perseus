@@ -14,6 +14,7 @@ const Gamemode = new mongoose.Schema(
       selectableMap: Boolean,
       minPlayers: Number,
       maxPlayers: Number,
+      teamSize: Number,
       permission: String,
       pairing: { type: String, enum: ['Substraction', 'Limit', 'Multiplus', 'Solo'] },
       group: String
