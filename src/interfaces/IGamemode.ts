@@ -14,11 +14,12 @@ export interface ISubGamemode extends IModel {
   minPlayers: number;
   maxPlayers: number;
   teamSize: number;
+  rejoin: boolean;
   pairing: Pairing;
   permission: string;
   group: string;
 }
 
 export enum Pairing {
-  Substraction = "Substraction", Limit = "Limit", Multiplus = "Multiple", Solo = "Solo"
+  Substraction = "Substraction", Limit = "Limit", Multiple = "Multiple", Solo = "Solo"
 }
