@@ -4,7 +4,7 @@ import {ResponseError} from "../../interfaces/error/ResponseError";
 import {IChannelMessage} from "../../interfaces/channel/IChannelMessage";
 import {IPaginateResult} from "mongoose";
 import {IChannel} from "../../interfaces/channel/IChannel";
-import * as mongoose from "mongoose";
+const ObjectId = require('mongoose').Types.ObjectId;
 
 @Service()
 export default class ChannelMessageService {
@@ -21,7 +21,7 @@ export default class ChannelMessageService {
 
             let finalChannelId: string = channel.channel as string;
 
-            if (!mongoose.isValidObjectId(channel.channel as string)) {
+            if (!ObjectId.isValid(channel.channel as string)) {
 
                 const channelByName: IChannel = await this.channelModel.findOne({name: channel.channel} as IChannel);
 
