@@ -22,7 +22,7 @@ const Channel = new mongoose.Schema(
         },
         visibility: {
             type: String,
-            enum: ['Public', 'Private', 'Permissions'],
+            enum: ['Public', 'Private', 'Permission'],
             default: 'Public'
         },
         participants: [

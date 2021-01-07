@@ -11,5 +11,5 @@ export interface IChannel extends IModel {
 }
 
 export enum ChannelVisibility {
-    Public = 'Public', Private = 'Private', Permissions = 'Permissions'
+    Public = 'Public', Private = 'Private', Permission = 'Permission'
 }

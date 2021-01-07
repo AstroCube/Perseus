@@ -23,7 +23,7 @@ export default (app: Router) => {
                 confirmation: Joi.boolean(),
                 visibility: Joi.string().valid(...Object.values(ChannelVisibility)),
                 participants: Joi.array().items(Joi.string()),
-                permissions: Joi.string()
+                permission: Joi.string()
             })
         }),
         middlewares.cluster,
