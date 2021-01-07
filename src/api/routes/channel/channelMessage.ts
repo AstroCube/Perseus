@@ -4,6 +4,11 @@ import {celebrate, Joi} from "celebrate";
 import middlewares from "../../middlewares";
 import {IChannelMessage, MessageOrigin} from "../../../interfaces/channel/IChannelMessage";
 import ChannelMessageService from "../../../services/channel/channelMessageService";
+import MapService from "../../../services/mapService";
+import {IPaginateResult} from "mongoose";
+import {IMap} from "../../../interfaces/IMap";
+import ChannelService from "../../../services/channel/channelService";
+import {IChannel} from "../../../interfaces/channel/IChannel";
 
 const route = Router();
 
@@ -65,6 +70,22 @@ export default (app: Router) => {
                 const service: ChannelMessageService = Container.get(ChannelMessageService);
                 const message: IChannelMessage = await service.update(req.body as IChannelMessage);
                 return res.json(message).status(200);
+            } catch (e) {
+                return next(e);
+            }
+        });
+
+    route.post(
+        '/list',
+        middlewares.authentication,
+        middlewares.serverAttachment,
+        async (req: Request, res: Response, next: NextFunction) => {
+            try {
+                const service: ChannelMessageService = Container.get(ChannelMessageService);
+                const page: number = req.query.page && req.query.page !== '-1' ? parseInt(<string>req.query.page)  :  undefined;
+                const perPage: number = req.query.perPage ? parseInt(<string>req.query.perPage) : 10;
+                const channel: IPaginateResult<IChannelMessage> = await service.list(req.body, {...req.query, page, perPage});
+                return res.json(channel).status(200);
             } catch (e) {
                 return next(e);
             }

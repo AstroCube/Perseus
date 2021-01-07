@@ -4,6 +4,9 @@ import ChannelService from "../../../services/channel/channelService";
 import {ChannelVisibility, IChannel} from "../../../interfaces/channel/IChannel";
 import {celebrate, Joi} from "celebrate";
 import middlewares from "../../middlewares";
+import MapService from "../../../services/mapService";
+import {IPaginateResult} from "mongoose";
+import {IMap} from "../../../interfaces/IMap";
 
 const route = Router();
 
@@ -46,6 +49,22 @@ export default (app: Router) => {
               return next(e);
           }
       });
+
+    route.post(
+        '/list',
+        middlewares.authentication,
+        middlewares.serverAttachment,
+        async (req: Request, res: Response, next: NextFunction) => {
+            try {
+                const service: ChannelService = Container.get(ChannelService);
+                const page: number = req.query.page && req.query.page !== '-1' ? parseInt(<string>req.query.page)  :  undefined;
+                const perPage: number = req.query.perPage ? parseInt(<string>req.query.perPage) : 10;
+                const channel: IPaginateResult<IChannel> = await service.list(req.body, {...req.query, page, perPage});
+                return res.json(channel).status(200);
+            } catch (e) {
+                return next(e);
+            }
+        });
 
     route.put(
         '/',

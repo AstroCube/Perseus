@@ -2,6 +2,8 @@ import {Inject, Service} from 'typedi';
 import Agenda from "agenda";
 import {ResponseError} from "../../interfaces/error/ResponseError";
 import {IChannelMessage} from "../../interfaces/channel/IChannelMessage";
+import {IPaginateResult} from "mongoose";
+import {IChannel} from "../../interfaces/channel/IChannel";
 
 @Service()
 export default class ChannelMessageService {
@@ -30,6 +32,15 @@ export default class ChannelMessageService {
             return channelMessage;
         } catch (e) {
             this.logger.error('There was an error obtaining a message channel: %o', e);
+            throw e;
+        }
+    }
+
+    public async list(query?: any, options?: any): Promise<IPaginateResult<IChannelMessage>> {
+        try {
+            return await this.channelMessageModel.paginate(query, {...options});
+        } catch (e) {
+            this.logger.error(e);
             throw e;
         }
     }
