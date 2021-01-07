@@ -77,7 +77,7 @@ export default (app: Router) => {
 
     route.post(
         '/list',
-        middlewares.authentication,
+        middlewares.cluster,
         middlewares.serverAttachment,
         async (req: Request, res: Response, next: NextFunction) => {
             try {

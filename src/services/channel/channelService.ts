@@ -49,7 +49,6 @@ export default class ChannelService {
 
     public async list(query?: any, options?: any): Promise<IPaginateResult<IChannel>> {
         try {
-            console.log("Orale kabron");
             return await this.channelModel.paginate(query, {...options});
         } catch (e) {
             this.logger.error(e);
