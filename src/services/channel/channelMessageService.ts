@@ -4,19 +4,35 @@ import {ResponseError} from "../../interfaces/error/ResponseError";
 import {IChannelMessage} from "../../interfaces/channel/IChannelMessage";
 import {IPaginateResult} from "mongoose";
 import {IChannel} from "../../interfaces/channel/IChannel";
+import * as mongoose from "mongoose";
 
 @Service()
 export default class ChannelMessageService {
 
     constructor(
         @Inject('channelMessageModel') private channelMessageModel: Models.ChannelMessageModel,
+        @Inject('channelModel') private channelModel: Models.ChannelModel,
         @Inject('logger') private logger,
         @Inject('agendaInstance') private agenda: Agenda
     ) {}
 
     public async create(channel: IChannelMessage): Promise<IChannelMessage> {
         try {
-            const channelRecord = await this.channelMessageModel.create(channel);
+
+            let finalChannelId: string = channel.channel as string;
+
+            if (!mongoose.Types.ObjectId.isValid(channel.channel as string)) {
+
+                const channelByName: IChannel = await this.channelModel.findOne({name: channel.channel} as IChannel);
+
+                if (channelByName === null) throw new ResponseError('Requested channel could not be found', 404);
+
+                finalChannelId = channelByName._id;
+
+            }
+
+
+            const channelRecord = await this.channelMessageModel.create({...channel, channel: finalChannelId});
             if (!channelRecord) throw new ResponseError('The message was not recorded successfully', 500);
             return channelRecord;
         } catch (e) {
