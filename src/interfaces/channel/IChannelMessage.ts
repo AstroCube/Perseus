@@ -6,6 +6,7 @@ export interface IChannelMessage extends IModel {
     sender: string | IUser;
     channel: string | IChannel;
     origin: MessageOrigin;
+    message: string;
     viewed?: string[] | IUser[];
     meta: any;
 }

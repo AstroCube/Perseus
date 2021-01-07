@@ -15,8 +15,9 @@ export default (app: Router) => {
         '/',
         celebrate({
             body: Joi.object({
-                name: Joi.string().required(),
+                sender: Joi.string().required(),
                 channel: Joi.string().required(),
+                message: Joi.string().required(),
                 origin: Joi.string().valid(...Object.values(MessageOrigin)),
                 viewed: Joi.array().items(Joi.string()),
                 meta: Joi.object()

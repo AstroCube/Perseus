@@ -14,6 +14,7 @@ const ChannelMessage = new mongoose.Schema(
             ref: 'Channel',
             required: true
         },
+        message: String,
         origin: {
             type: String,
             enum: ['InGame', 'Website'],
