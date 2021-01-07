@@ -1,5 +1,6 @@
 import mongoose, {Schema} from "mongoose";
 import {IChannelMessage} from "../../interfaces/channel/IChannelMessage";
+import {mongoosePagination} from "ts-mongoose-pagination";
 
 
 const ChannelMessage = new mongoose.Schema(
@@ -31,4 +32,5 @@ const ChannelMessage = new mongoose.Schema(
     { timestamps: true }
 );
 
+ChannelMessage.plugin(mongoosePagination);
 export default mongoose.model<IChannelMessage & mongoose.Document>('ChannelMessage', ChannelMessage);

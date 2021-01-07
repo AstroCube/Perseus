@@ -1,5 +1,6 @@
 import mongoose, {Schema} from "mongoose";
 import {IChannel} from "../../interfaces/channel/IChannel";
+import {mongoosePagination} from "ts-mongoose-pagination";
 
 
 const Channel = new mongoose.Schema(
@@ -35,4 +36,6 @@ const Channel = new mongoose.Schema(
     { timestamps: true }
 );
 
+
+Channel.plugin(mongoosePagination);
 export default mongoose.model<IChannel & mongoose.Document>('Channel', Channel);
