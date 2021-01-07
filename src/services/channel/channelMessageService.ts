@@ -21,11 +21,11 @@ export default class ChannelMessageService {
 
             let finalChannelId: string = channel.channel as string;
 
-            if (!mongoose.Types.ObjectId.isValid(channel.channel as string)) {
+            if (!mongoose.isValidObjectId(channel.channel as string)) {
 
                 const channelByName: IChannel = await this.channelModel.findOne({name: channel.channel} as IChannel);
 
-                if (channelByName === null) throw new ResponseError('Requested channel could not be found', 404);
+                if (!channelByName) throw new ResponseError('Requested channel could not be found', 404);
 
                 finalChannelId = channelByName._id;
 
