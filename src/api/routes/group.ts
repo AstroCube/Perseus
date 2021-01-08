@@ -67,7 +67,6 @@ export default (app: Router) => {
 
     route.post(
         '/list',
-        middlewares.permissions("group.manage"),
         async (req: Request, res: Response, next: NextFunction) => {
             try {
                 const service: GroupService = Container.get(GroupService);
