@@ -29,9 +29,6 @@ export default (app: Router) => {
 
     route.get(
         '/:id',
-        middlewares.authentication,
-        middlewares.userAttachment,
-        middlewares.permissions("group.manage"),
         async (req: Request, res: Response, next: NextFunction) => {
             try {
                 const groupService: GroupService = Container.get(GroupService);
@@ -70,8 +67,6 @@ export default (app: Router) => {
 
     route.post(
         '/list',
-        middlewares.authentication,
-        middlewares.userAttachment,
         middlewares.permissions("group.manage"),
         async (req: Request, res: Response, next: NextFunction) => {
             try {
