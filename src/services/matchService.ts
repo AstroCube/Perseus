@@ -1,7 +1,7 @@
 import {Inject, Service} from 'typedi';
 import {Logger} from "winston";
 import {ResponseError} from "../interfaces/error/ResponseError";
-import {Document, IPaginateResult, Schema, Types} from "mongoose";
+import {Document, IPaginateResult, Types} from "mongoose";
 import {IMatch, IMatchAssignable, IMatchTeam, MatchStatus} from "../interfaces/IMatch";
 import {IServer, ServerType} from "../interfaces/IServer";
 
@@ -212,6 +212,29 @@ export default class MatchService {
           await this.update(match);
         }
       }
+    } catch (e) {
+      this.logger.error(e);
+      throw e;
+    }
+  }
+
+  public async validateWinners(id: string, winners: string[]): Promise<void> {
+    try {
+
+      const match: Document & IMatch = await this.matchModel.findById(id);
+
+      match.teams = match.teams.map((team) => {
+        return {
+          ...team,
+          members: team.members.map(member => ({...member, active: false}))
+        };
+      });
+
+      match.winner = winners;
+      match.status = MatchStatus.Finished;
+
+      await match.save();
+
     } catch (e) {
       this.logger.error(e);
       throw e;

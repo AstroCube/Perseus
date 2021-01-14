@@ -154,4 +154,18 @@ export default (app: Router) => {
                 return next(e);
             }
         });
+
+    route.post(
+        '/validate-winners',
+        middlewares.cluster,
+        middlewares.serverAttachment,
+        async (req: Request, res: Response, next: NextFunction) => {
+            try {
+                const matchService: MatchService = Container.get(MatchService);
+                await matchService.validateWinners(req.params.id, req.body);
+                return res.json({updated: true}).status(200);
+            } catch (e) {
+                return next(e);
+            }
+        });
 };
