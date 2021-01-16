@@ -169,5 +169,25 @@ export default (app: Router) => {
             }
         });
 
+    route.post(
+        '/disqualify',
+        celebrate({
+            body: Joi.object({
+                user: Joi.string().required(),
+                match: Joi.string().required()
+            })
+        }),
+        middlewares.cluster,
+        middlewares.serverAttachment,
+        async (req: Request, res: Response, next: NextFunction) => {
+            try {
+                const matchService: MatchService = Container.get(MatchService);
+                await matchService.disqualify(req.body.user, req.body.match);
+                return res.json({updated: true}).status(200);
+            } catch (e) {
+                return next(e);
+            }
+        });
+
 
 };
