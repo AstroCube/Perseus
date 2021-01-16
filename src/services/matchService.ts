@@ -241,4 +241,29 @@ export default class MatchService {
     }
   }
 
+  public async disqualify(id: string, matchId: string): Promise<void> {
+    try {
+
+      const match: Document & IMatch = await this.matchModel.findById(matchId);
+
+      match.teams = match.teams.map((team) => {
+        return {
+          ...team,
+          members: team.members.map(member => {
+            if (member.user === id) {
+              return ({...member, active: false});
+            }
+            return member;
+          })
+        };
+      });
+
+      await match.save();
+
+    } catch (e) {
+      this.logger.error(e);
+      throw e;
+    }
+  }
+
 }
