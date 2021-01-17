@@ -123,7 +123,7 @@ export default (app: Router) => {
         });
 
     route.get(
-        '/image/:id',
+        '/files/image/:id',
         async (req: Request, res: Response, next: NextFunction) => {
             try {
                 const service: MapService = Container.get(MapService);
@@ -139,7 +139,7 @@ export default (app: Router) => {
         });
 
     route.get(
-        '/file/:id',
+        '/files/file/:id',
         async (req: Request, res: Response, next: NextFunction) => {
             try {
                 const service: MapService = Container.get(MapService);
@@ -155,7 +155,7 @@ export default (app: Router) => {
         });
 
     route.get(
-        '/config/:id',
+        '/files/config/:id',
         async (req: Request, res: Response, next: NextFunction) => {
             try {
                 const service: MapService = Container.get(MapService);
