@@ -84,14 +84,14 @@ export default class MatchService {
           throw new ResponseError('User already assigned to match', 400);
         }
 
-        await this.matchModel.findByIdAndUpdate(matchRecord._id, {spectators: {$push: user}} as any);
+        await this.matchModel.findByIdAndUpdate(matchRecord._id, {$push: {spectators: user}} as any);
       } else {
 
         if (!assigned) {
           throw new ResponseError('User not assigned to match', 400);
         }
 
-        await this.matchModel.findByIdAndUpdate(matchRecord._id, {spectators: {$pull: user}} as any);
+        await this.matchModel.findByIdAndUpdate(matchRecord._id, {$pull: {spectators: user}} as any);
       }
     } catch (e) {
       this.logger.error(e);
