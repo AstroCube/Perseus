@@ -244,10 +244,15 @@ export default class MatchService {
 
       match.teams = match.teams.map((team) => {
         return {
-          ...team,
+          name: team.name,
+          color: team.color,
           members: team.members.map(member => {
             if (member.user === id) {
-              return ({...member, active: false});
+              return {
+                user: member.user,
+                joinedAt: member.joinedAt,
+                active: false
+              };
             }
             return member;
           })

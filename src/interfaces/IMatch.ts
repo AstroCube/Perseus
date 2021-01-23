@@ -22,13 +22,13 @@ export enum MatchStatus {
 export interface IMatchTeam {
   name: string;
   members: IMatchMember[];
-  active: boolean;
   color: string;
 }
 
 export interface IMatchMember {
   user: string;
   joinedAt: string;
+  active: boolean;
 }
 
 export interface IMatchAssignable {
