@@ -70,7 +70,7 @@ export default class MatchService {
   public async assignSpectator(user: string, match: string, join: boolean): Promise<void> {
     try {
 
-      const matchRecord: IMatch = await this.matchModel.findById(match);
+      const matchRecord: IMatch & Document = await this.matchModel.findById(match);
 
       if (!matchRecord) {
         throw new ResponseError('This match does not exists', 404);
@@ -79,19 +79,15 @@ export default class MatchService {
       const assigned = matchRecord.spectators.map(m => m.toString()).includes(match);
 
       if (join) {
-
         if (assigned) {
           throw new ResponseError('User already assigned to match', 400);
         }
-
-        await this.matchModel.findByIdAndUpdate(matchRecord._id, {$push: {spectators: user}} as any);
+        matchRecord.spectators.push(user);
       } else {
-
         if (!assigned) {
           throw new ResponseError('User not assigned to match', 400);
         }
-
-        await this.matchModel.findByIdAndUpdate(matchRecord._id, {$pull: {spectators: user}} as any);
+        matchRecord.spectators = matchRecord.spectators.filter(s => s !== user);
       }
     } catch (e) {
       this.logger.error(e);
