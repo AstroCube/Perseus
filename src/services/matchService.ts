@@ -219,6 +219,10 @@ export default class MatchService {
 
       const match: Document & IMatch = await this.matchModel.findById(id);
 
+      if (!match) {
+        throw new ResponseError('This match does not exists', 404);
+      }
+
       match.teams = match.teams.map((team) => {
         return {
           ...team,
