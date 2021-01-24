@@ -156,7 +156,7 @@ export default (app: Router) => {
         });
 
     route.post(
-        '/validate-winners',
+        '/validate-winners/:id',
         middlewares.cluster,
         middlewares.serverAttachment,
         async (req: Request, res: Response, next: NextFunction) => {
