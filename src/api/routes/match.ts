@@ -79,8 +79,7 @@ export default (app: Router) => {
         async (req: Request, res: Response, next: NextFunction) => {
             try {
                 const matchService: MatchService = Container.get(MatchService);
-                await matchService.cleanupUnassigned(req.currentServer);
-                return res.json({}).status(200);
+                return res.json(await matchService.cleanupUnassigned(req.currentServer)).status(200);
             } catch (e) {
                 return next(e);
             }
@@ -100,8 +99,7 @@ export default (app: Router) => {
         async (req: Request, res: Response, next: NextFunction) => {
             try {
                 const matchService: MatchService = Container.get(MatchService);
-                await matchService.assignSpectator(req.body.user, req.body.match, req.body.join);
-                return res.json({updated: true}).status(200);
+                return res.json(await matchService.assignSpectator(req.body.user, req.body.match, req.body.join)).status(200);
             } catch (e) {
                 return next(e);
             }
@@ -120,8 +118,7 @@ export default (app: Router) => {
         async (req: Request, res: Response, next: NextFunction) => {
             try {
                 const matchService: MatchService = Container.get(MatchService);
-                await matchService.assignMatchTeams(req.body.teams, req.body.match);
-                return res.json({updated: true}).status(200);
+                return res.json(await matchService.assignMatchTeams(req.body.teams, req.body.match)).status(200);
             } catch (e) {
                 return next(e);
             }
@@ -134,8 +131,7 @@ export default (app: Router) => {
         async (req: Request, res: Response, next: NextFunction) => {
             try {
                 const matchService: MatchService = Container.get(MatchService);
-                await matchService.assignPending(req.body.pending, req.body.match);
-                return res.json({updated: true}).status(200);
+                return res.json(await matchService.assignPending(req.body.pending, req.body.match)).status(200);
             } catch (e) {
                 return next(e);
             }
@@ -148,8 +144,7 @@ export default (app: Router) => {
         async (req: Request, res: Response, next: NextFunction) => {
             try {
                 const matchService: MatchService = Container.get(MatchService);
-                await matchService.unAssignPending(req.body.user, req.body.match);
-                return res.json({updated: true}).status(200);
+                return res.json(await matchService.unAssignPending(req.body.user, req.body.match)).status(200);
             } catch (e) {
                 return next(e);
             }
@@ -162,8 +157,7 @@ export default (app: Router) => {
         async (req: Request, res: Response, next: NextFunction) => {
             try {
                 const matchService: MatchService = Container.get(MatchService);
-                await matchService.validateWinners(req.params.id, req.body);
-                return res.json({updated: true}).status(200);
+                return res.json(await matchService.validateWinners(req.params.id, req.body)).status(200);
             } catch (e) {
                 return next(e);
             }
@@ -182,8 +176,7 @@ export default (app: Router) => {
         async (req: Request, res: Response, next: NextFunction) => {
             try {
                 const matchService: MatchService = Container.get(MatchService);
-                await matchService.disqualify(req.body.user, req.body.match);
-                return res.json({updated: true}).status(200);
+                return res.json(await matchService.disqualify(req.body.user, req.body.match)).status(200);
             } catch (e) {
                 return next(e);
             }

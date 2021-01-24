@@ -67,7 +67,7 @@ export default class MatchService {
     }
   }
 
-  public async assignSpectator(user: string, match: string, join: boolean): Promise<void> {
+  public async assignSpectator(user: string, match: string, join: boolean): Promise<IMatch> {
     try {
 
       const matchRecord: IMatch & Document = await this.matchModel.findById(match);
@@ -89,13 +89,15 @@ export default class MatchService {
         }
         matchRecord.spectators = matchRecord.spectators.filter(s => s !== user);
       }
+
+      return await matchRecord.save();
     } catch (e) {
       this.logger.error(e);
       throw e;
     }
   }
 
-  public async assignMatchTeams(teams: IMatchTeam[], match: string): Promise<void> {
+  public async assignMatchTeams(teams: IMatchTeam[], match: string): Promise<IMatch> {
     try {
       const matchRecord: IMatch = await this.matchModel.findById(match);
 
@@ -107,15 +109,14 @@ export default class MatchService {
         throw new ResponseError('You can not update teams after registered', 400);
       }
 
-      await this.matchModel.findByIdAndUpdate(matchRecord._id, {teams, pending: []});
-
+      return await this.matchModel.findByIdAndUpdate(matchRecord._id, {teams, pending: []});
     } catch (e) {
       this.logger.error(e);
       throw e;
     }
   }
 
-  public async unAssignPending(user: string, match: string): Promise<void> {
+  public async unAssignPending(user: string, match: string): Promise<IMatch> {
     try {
 
       const matchRecord: Document & IMatch = await this.matchModel.findById(match);
@@ -144,7 +145,7 @@ export default class MatchService {
 
       }).filter(pending => pending !== null);
 
-      await matchRecord.save();
+      return await matchRecord.save();
 
     } catch (e) {
       this.logger.error(e);
@@ -152,7 +153,7 @@ export default class MatchService {
     }
   }
 
-  public async assignPending(pending: IMatchAssignable, match: string): Promise<void> {
+  public async assignPending(pending: IMatchAssignable, match: string): Promise<IMatch> {
     try {
       const matchRecord: IMatch = await this.matchModel.findById(match);
 
@@ -179,7 +180,7 @@ export default class MatchService {
         throw new ResponseError('You can not be assigned to a match more than once', 400);
       }
        */
-      await this.matchModel.findByIdAndUpdate(matchRecord._id, {$push: {pending}} as any);
+      return await this.matchModel.findByIdAndUpdate(matchRecord._id, {$push: {pending}} as any);
 
     } catch (e) {
       this.logger.error(e);
@@ -196,7 +197,7 @@ export default class MatchService {
     }
   }
 
-  public async cleanupUnassigned(server: IServer): Promise<void> {
+  public async cleanupUnassigned(server: IServer): Promise<IMatch> {
     try {
       // @ts-ignore
       const matches: IMatch[] = await this.matchModel.find({server: new Types.ObjectId(server._id)});
@@ -205,7 +206,7 @@ export default class MatchService {
           await this.matchModel.findByIdAndDelete(match._id);
         } else {
           match.status = MatchStatus.Invalidated;
-          await this.update(match);
+          return await this.update(match);
         }
       }
     } catch (e) {
@@ -214,7 +215,7 @@ export default class MatchService {
     }
   }
 
-  public async validateWinners(id: string, winners: string[]): Promise<void> {
+  public async validateWinners(id: string, winners: string[]): Promise<IMatch> {
     try {
 
       const match: Document & IMatch = await this.matchModel.findById(id);
@@ -240,7 +241,7 @@ export default class MatchService {
       match.winner = winners;
       match.status = MatchStatus.Finished;
 
-      await match.save();
+      return await match.save();
 
     } catch (e) {
       this.logger.error(e);
@@ -248,7 +249,7 @@ export default class MatchService {
     }
   }
 
-  public async disqualify(id: string, matchId: string): Promise<void> {
+  public async disqualify(id: string, matchId: string): Promise<IMatch> {
     try {
 
       const match: Document & IMatch = await this.matchModel.findById(matchId);
@@ -270,7 +271,7 @@ export default class MatchService {
         };
       });
 
-      await match.save();
+      return await match.save();
 
     } catch (e) {
       this.logger.error(e);
