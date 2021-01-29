@@ -57,7 +57,7 @@ export default class UserService {
 
   public async listUsers(query: any, options: any): Promise<IPaginateResult<IUser>> {
     try {
-      return await this.userModel.paginate(query, {...options, select: {password: 0, salt: 0}});
+      return await this.userModel.paginate(query, {...options});
     } catch (e) {
       this.logger.error(e);
       throw e;
