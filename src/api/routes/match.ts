@@ -53,7 +53,7 @@ export default (app: Router) => {
                 const perPage: number = req.query.perPage ? parseInt(<string>req.query.perPage) : 10;
                 const matchService: MatchService = Container.get(MatchService);
                 const match: IPaginateResult<IMatch> = await matchService.list(req.body, {...req.query, page, perPage});
-                return res.json({}).status(200);
+                return res.json(match).status(200);
             } catch (e) {
                 return next(e);
             }
@@ -79,7 +79,8 @@ export default (app: Router) => {
         async (req: Request, res: Response, next: NextFunction) => {
             try {
                 const matchService: MatchService = Container.get(MatchService);
-                return res.json(await matchService.cleanupUnassigned(req.currentServer)).status(200);
+                await matchService.cleanupUnassigned(req.currentServer);
+                return res.json({updated: true}).status(200);
             } catch (e) {
                 return next(e);
             }
