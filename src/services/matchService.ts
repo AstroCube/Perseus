@@ -197,7 +197,7 @@ export default class MatchService {
     }
   }
 
-  public async cleanupUnassigned(server: IServer): Promise<IMatch> {
+  public async cleanupUnassigned(server: IServer): Promise<void> {
     try {
       // @ts-ignore
       const matches: IMatch[] = await this.matchModel.find({server: new Types.ObjectId(server._id)});
@@ -206,7 +206,7 @@ export default class MatchService {
           await this.matchModel.findByIdAndDelete(match._id);
         } else {
           match.status = MatchStatus.Invalidated;
-          return await this.update(match);
+          await this.update(match);
         }
       }
     } catch (e) {
