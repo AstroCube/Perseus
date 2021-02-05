@@ -71,6 +71,7 @@ export default class SessionService {
       let userRecord = await this.userModel.findById(user);
       userRecord.session.lastSeen = new Date();
       userRecord.session.online = false;
+      console.log(userRecord);
       await userRecord.save();
     } catch (e) {
       this.logger.error('There was an error logging out an user: %o', e);
@@ -85,6 +86,7 @@ export default class SessionService {
       userRecord.session.online = true;
       if (switching.server) userRecord.session.lastGame = switching.server;
       if (switching.lobby) userRecord.session.lastLobby = switching.lobby;
+      console.log(userRecord);
       await userRecord.save();
     } catch (e) {
       this.logger.error('There was an error switching servers with user: %o', e);
