@@ -82,6 +82,7 @@ export default class SessionService {
     try {
       if (!switching.server && !switching.lobby) return;
       let userRecord = await this.userModel.findById(switching.user);
+      userRecord.session.online = true;
       if (switching.server) userRecord.session.lastGame = switching.server;
       if (switching.lobby) userRecord.session.lastLobby = switching.lobby;
       await userRecord.save();
