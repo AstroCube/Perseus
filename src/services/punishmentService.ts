@@ -28,7 +28,7 @@ export default class PunishmentService {
         if (!reportRecord) throw new ResponseError("Report to link was not found", 404);
       }
 
-      let match = undefined;
+      let match;
       if (punishment.match) match = punishment.match._id;
 
       if (issuer) {
@@ -49,13 +49,11 @@ export default class PunishmentService {
         }
       }
 
-      let model: IPunishment = await this.punishmentModel.create({
+      const model: IPunishment = await this.punishmentModel.create({
         ...punishment,
-        //@ts-ignore
-        issuer: punishment.issuer._id,
-        //@ts-ignore
-        punished: punishment.punished._id,
-        match: match
+        issuer: punishment.issuer,
+        punished: punishment.punished,
+        match
       });
 
       if (!model) throw new ResponseError("There was an error creating a punishment.", 500);

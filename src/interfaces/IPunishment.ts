@@ -4,8 +4,8 @@ import {IModel} from "./IModel";
 
 export interface IPunishment extends IModel {
     type: PunishmentType;
-    issuer: IUser;
-    punished: IUser;
+    issuer: IUser | string;
+    punished: IUser | string;
     server: string;
     match: IMatch;
     lastIp: string;
