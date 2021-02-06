@@ -21,12 +21,12 @@ export default class AppealService {
     public async createAppeal(body: IAppealCreation, requester: IUser): Promise<IAppeal> {
         try {
 
-            //@ts-ignore
+            // @ts-ignore
             const existingAppeal: IAppeal = await this.appealModel.findOne({punishment: body.punishment});
             if (existingAppeal) throw new ResponseError("The punishment was already appealed", 400);
 
             const appeal: IAppeal = await this.appealModel.create({
-                //@ts-ignore
+                // @ts-ignore
                 punishment: body.punishment,
                 registeredAddress: body.registeredAddress
             });
@@ -35,7 +35,7 @@ export default class AppealService {
                 appeal._id,
                 {
                     type: IAppealActionType.Create,
-                    //@ts-ignore
+                    // @ts-ignore
                     user: requester._id,
                     createdAt: new Date(),
                     content: body.comment
@@ -58,8 +58,8 @@ export default class AppealService {
                     throw new ResponseError("You do not have permission to watch this appeal", 403);
                 if (
                     (
-                        (appeal.punishment.punished._id.toString() !== user._id.toString() &&
-                            appeal.punishment.issuer._id.toString() !== user._id.toString())
+                        ((appeal.punishment.punished as IUser)._id.toString() !== user._id.toString() &&
+                            (appeal.punishment.issuer as IUser)._id.toString() !== user._id.toString())
                     )
                 ) throw new ResponseError("You do not have permission to watch this appeal", 403);
             }
@@ -80,8 +80,8 @@ export default class AppealService {
                 {$or: [{punished: user._id, appealed: true}, {issuer: user._id, appealed: true}]};
 
             if (encapsulation !== null || own) {
-                let punishments: IPaginateResult<IPunishment> = await this.punishmentService.listPunishments(encapsulation, undefined, perPage);
-                let punishmentIds = await punishments.data.map(p => p._id);
+                const punishments: IPaginateResult<IPunishment> = await this.punishmentService.listPunishments(encapsulation, undefined, perPage);
+                const punishmentIds = await punishments.data.map(p => p._id);
                 if (own) await this.appealModel.paginate({...query, punishment: {$in: punishmentIds}}, {page, perPage});
                 return await this.appealModel.paginate({...query, $or: [{punishment: {$in: punishmentIds}}, {supervisor: user._id}]}, {page, perPage});
             }
@@ -151,7 +151,7 @@ export default class AppealService {
             }
             case IAppealActionType.Create: {
                 if (appeal.punishment.appealed) throw new ResponseError("Already created", 400);
-                if (appeal.punishment.punished._id === user._id) throw new ResponseError("You are not allowed to appeal this punishment", 403);
+                if ((appeal.punishment.punished as IUser)._id === user._id) throw new ResponseError("You are not allowed to appeal this punishment", 403);
                 await this.punishmentService.updatePunishment({_id: appeal.punishment._id, appealed: true} as IPunishment);
                 break;
             }
@@ -216,7 +216,7 @@ export default class AppealService {
                 (
                     dotty.get(manifest, permission) === IAppealPermissible.Involved &&
                     (
-                        appeal.punishment.issuer._id.toString() === user._id.toString() ||
+                        (appeal.punishment.issuer as IUser)._id.toString() === user._id.toString() ||
                         (appeal.supervisor && appeal.supervisor._id.toString() === user._id.toString())
                     )
                 )
@@ -228,8 +228,8 @@ export default class AppealService {
                         dotty.get(manifest, permission) === IAppealPermissible.Own
                     ) &&
                     (
-                        appeal.punishment.issuer._id.toString() === user._id.toString() ||
-                        appeal.punishment.punished._id.toString() === user._id.toString() ||
+                        (appeal.punishment.issuer as IUser)._id.toString() === user._id.toString() ||
+                        (appeal.punishment.punished as IUser)._id.toString() === user._id.toString() ||
                         (appeal.supervisor && appeal.supervisor._id.toString() === user._id.toString())
                     )
                 )
