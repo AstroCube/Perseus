@@ -27,7 +27,7 @@ export default (app: Router) => {
       });
 
     route.post(
-        '/create',
+        '/',
         middlewares.cluster,
         async (req: Request, res: Response, next: NextFunction) => {
             try {
@@ -40,7 +40,7 @@ export default (app: Router) => {
         });
 
   route.get(
-    '/get/:id',
+    '/:id',
     async (req: Request, res: Response, next: NextFunction) => {
       try {
           const service: PunishmentService = Container.get(PunishmentService);
@@ -79,7 +79,7 @@ export default (app: Router) => {
         });
 
     route.put(
-        '/update',
+        '/',
         middlewares.authentication,
         middlewares.userAttachment,
         middlewares.permissions("punishments.manage"),
