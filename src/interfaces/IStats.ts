@@ -1,11 +1,11 @@
-import {IDungeonsStats} from "./stats/IDungeonsStats";
-import {ISkyWarsStats} from "./stats/ISkyWarsStats";
-import {ITNTStats} from "./stats/ITNTStats";
 import {IModel} from "./IModel";
+import {IGamemode, ISubGamemode} from "./IGamemode";
+import {IMatch} from "./IMatch";
 
 export interface IStats extends IModel{
-  username: string;
-  dungeon: IDungeonsStats;
-  skyWars: ISkyWarsStats;
-  tntGames: ITNTStats;
+  gameMode: string | IGamemode;
+  subGameMode: string | ISubGamemode;
+  type: string;
+  match: string | IMatch;
+  statistic: any;
 }
