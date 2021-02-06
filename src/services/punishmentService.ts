@@ -19,7 +19,7 @@ export default class PunishmentService {
     private groupService: GroupService
   ) {}
 
-  public async createPunishment(punishment: IPunishment, issuer?: IUser, report?: string): Promise<IPunishment> {
+  public async createPunishment(punishment: IPunishment, issuer?: IUser, report?: string, populate?: string): Promise<IPunishment> {
     try {
 
       let reportRecord: IReport;
