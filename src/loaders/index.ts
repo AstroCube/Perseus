@@ -121,7 +121,6 @@ export default async ({ expressApp }) => {
             forumModel,
             forumCategoryModel,
             gamemodeModel,
-            goalModel,
             groupModel,
             mapModel,
             matchModel,
