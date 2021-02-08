@@ -22,6 +22,8 @@ export default class PunishmentService {
   public async createPunishment(punishment: IPunishment, issuer?: IUser, report?: string, populate?: string): Promise<IPunishment> {
     try {
 
+      console.log(punishment);
+
       let reportRecord: IReport;
       if (report) {
         reportRecord = await this.reportService.getReport(report, issuer);
