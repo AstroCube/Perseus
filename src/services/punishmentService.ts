@@ -51,6 +51,8 @@ export default class PunishmentService {
         }
       }
 
+      console.log(punishment);
+
       const model: IPunishment = await this.punishmentModel.create({
         ...punishment,
         issuer: punishment.issuer,

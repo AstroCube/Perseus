@@ -33,7 +33,7 @@ const Punishment = new mongoose.Schema(
             default: -1
         },
         automatic: {
-            type: Boolean,
+            type: Date,
             default: false
         },
         appealed: {
