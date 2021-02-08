@@ -29,11 +29,11 @@ const Punishment = new mongoose.Schema(
         reason: String,
         evidence: String,
         expires: {
-            type: Number,
+            type: Date,
             default: -1
         },
         automatic: {
-            type: Date,
+            type: Boolean,
             default: false
         },
         appealed: {
