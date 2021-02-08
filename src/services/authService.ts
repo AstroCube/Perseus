@@ -43,7 +43,7 @@ export default class AuthService {
     }
   }
 
-  public async serverLogin(login: IServerAuthentication): Promise<Boolean> {
+  public async serverLogin(login: IServerAuthentication): Promise<boolean> {
     try {
       const userRecord = await this.userModel.findById(login.user);
       if (!userRecord) throw new ResponseError('The requested user does not exists', 404);
@@ -84,7 +84,6 @@ export default class AuthService {
           }
         }
       );
-      await this.stats.createStatsDocument(registeredUser._id);
       Reflect.deleteProperty(registeredUser, 'password');
       Reflect.deleteProperty(registeredUser, 'salt');
       return registeredUser;
