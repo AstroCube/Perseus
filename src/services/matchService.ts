@@ -182,7 +182,7 @@ export default class MatchService {
         throw new ResponseError('You can not be assigned to a match more than once', 400);
       }
        */
-      return await this.matchModel.findByIdAndUpdate(matchRecord._id, {$push: pending} as any);
+      return await this.matchModel.findByIdAndUpdate(matchRecord._id, {$push: {pending}} as any);
 
     } catch (e) {
       this.logger.error(e);
