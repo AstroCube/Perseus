@@ -157,6 +157,8 @@ export default class MatchService {
     try {
       const matchRecord: IMatch = await this.matchModel.findById(match);
 
+      console.log(pending);
+
       if (!matchRecord) {
         throw new ResponseError('This match does not exists', 404);
       }
