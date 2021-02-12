@@ -155,13 +155,15 @@ export default class MatchService {
 
   public async assignPending(pending: IMatchAssignable, match: string): Promise<IMatch> {
     try {
-      const matchRecord: IMatch = await this.matchModel.findById(match);
-
-      console.log(pending);
+      const matchRecord: IMatch & Document = await this.matchModel.findById(match);
 
       if (!matchRecord) {
         throw new ResponseError('This match does not exists', 404);
       }
+
+      matchRecord.pending.push(pending);
+
+      return matchRecord.save();
 
       // TODO: Hack in order to allow ObjectId query
       /*
@@ -182,7 +184,6 @@ export default class MatchService {
         throw new ResponseError('You can not be assigned to a match more than once', 400);
       }
        */
-      return await this.matchModel.findByIdAndUpdate(matchRecord._id, {$push: {pending}} as any);
 
     } catch (e) {
       this.logger.error(e);
