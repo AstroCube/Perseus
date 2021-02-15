@@ -30,6 +30,10 @@ export default class PunishmentService {
         if (!reportRecord) throw new ResponseError("Report to link was not found", 404);
       }
 
+      if (punishment.automatic) {
+        punishment.issuer = undefined;
+      }
+
       let match;
       if (punishment.match) match = punishment.match._id;
 

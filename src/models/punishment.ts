@@ -13,7 +13,8 @@ const Punishment = new mongoose.Schema(
         },
         punished: {
             type: Schema.Types.ObjectId,
-            ref: 'User'
+            ref: 'User',
+            required: true
         },
         server: {
             type: String,
