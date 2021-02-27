@@ -9,8 +9,8 @@ import {IServer, ServerType} from "../interfaces/IServer";
 export default class MatchService {
 
   constructor(
-    @Inject('matchModel') private matchModel : Models.MatchModel,
-    @Inject('logger') private logger : Logger,
+      @Inject('matchModel') private matchModel : Models.MatchModel,
+      @Inject('logger') private logger : Logger,
   ) {}
 
   public async createMatch(match: IMatch, server: IServer): Promise<IMatch> {
@@ -243,6 +243,31 @@ export default class MatchService {
 
       match.winner = winners;
       match.status = MatchStatus.Finished;
+
+      return await match.save();
+
+    } catch (e) {
+      this.logger.error(e);
+      throw e;
+    }
+  }
+
+  public async privatize(requester: string, id: string): Promise<IMatch> {
+    try {
+
+      const match: Document & IMatch = await this.matchModel.findById(id);
+
+      if (!match) {
+        throw new ResponseError("Match not found", 404);
+      }
+
+      if (!match.private) {
+        match.privatizedBy = requester;
+        match.private = true;
+      } else {
+        match.privatizedBy = null;
+        match.private = false;
+      }
 
       return await match.save();
 

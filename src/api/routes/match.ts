@@ -165,6 +165,19 @@ export default (app: Router) => {
         });
 
     route.post(
+        '/privatize',
+        middlewares.cluster,
+        middlewares.serverAttachment,
+        async (req: Request, res: Response, next: NextFunction) => {
+            try {
+                const matchService: MatchService = Container.get(MatchService);
+                return res.json(await matchService.privatize(req.body.requester, req.body.id)).status(200);
+            } catch (e) {
+                return next(e);
+            }
+        });
+
+    route.post(
         '/disqualify',
         celebrate({
             body: Joi.object({

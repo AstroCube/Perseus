@@ -55,6 +55,14 @@ const Match = new mongoose.Schema(
         },
         subGamemode: String,
         query: Schema.Types.Mixed,
+        private: {
+            type: Boolean,
+            default: false
+        },
+        privatizedBy: {
+            type: Schema.Types.ObjectId,
+            ref: 'User'
+        },
         requestedBy: {
             type: Schema.Types.ObjectId,
             ref: 'User'

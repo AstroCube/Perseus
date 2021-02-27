@@ -1,5 +1,6 @@
 import {IModel} from "./IModel";
 import {IServer} from "./IServer";
+import {IUser} from "./IUser";
 
 export interface IMatch extends IModel {
   map: string;
@@ -9,6 +10,8 @@ export interface IMatch extends IModel {
   pending: IMatchAssignable[];
   winner: string[];
   status: MatchStatus;
+  private: boolean;
+  privatizedBy: string | IUser;
   gamemode: string;
   subGamemode: string;
   query: any;
