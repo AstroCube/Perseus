@@ -68,7 +68,7 @@ export default class MapService {
    */
   public async list(query?: any, options?: any): Promise<IPaginateResult<IMap>> {
     try {
-      return await this.mapModel.paginate(query, {...options, select: {versions: -1}});
+      return await this.mapModel.paginate(query, {...options, select: {versions: 0}});
     } catch (e) {
       this.logger.error(e);
       throw e;
