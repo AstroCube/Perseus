@@ -29,6 +29,8 @@ export default class MapService {
       const mapModel: IMap = await this.mapModel.create(
           {
             ...map as any,
+            name: map.name.toLowerCase(),
+            identifierName: map.name,
             versions: [{
               file: mapFile.fid,
               image: image.fid,
