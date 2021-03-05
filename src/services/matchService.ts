@@ -109,7 +109,15 @@ export default class MatchService {
         throw new ResponseError('You can not update teams after registered', 400);
       }
 
-      return await this.matchModel.findByIdAndUpdate(matchRecord._id, {teams, pending: []});
+      const finalTeams: IMatchTeam[] = teams.map(team => ({
+        name: team.name,
+        members: team.members.filter((obj, pos, arr) => {
+          return arr.map(mapObj => mapObj.user).indexOf(obj.user) === pos
+        }),
+        color: team.color
+      }));
+
+      return await this.matchModel.findByIdAndUpdate(matchRecord._id, {teams: finalTeams, pending: []});
     } catch (e) {
       this.logger.error(e);
       throw e;
