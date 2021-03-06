@@ -299,7 +299,7 @@ export default class MatchService {
             console.log(member.user);
             console.log(id);
             console.log(member.user === id);
-            if (member.user === id) {
+            if (member.user.toString() === id) {
               return {
                 user: member.user,
                 joinedAt: member.joinedAt,
