@@ -298,6 +298,7 @@ export default class MatchService {
             console.log("----------------------");
             console.log(member.user);
             console.log(id);
+            console.log(member.user === id);
             if (member.user === id) {
               return {
                 user: member.user,
