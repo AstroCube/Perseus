@@ -295,6 +295,9 @@ export default class MatchService {
           name: team.name,
           color: team.color,
           members: team.members.map(member => {
+            console.log("----------------------");
+            console.log(member.user);
+            console.log(id);
             if (member.user === id) {
               return {
                 user: member.user,
