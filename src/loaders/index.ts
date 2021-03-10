@@ -82,6 +82,10 @@ export default async ({ expressApp }) => {
         name: 'postModel',
         model: require('../models/forum/post').default
     };
+    const perkModel =  {
+        name: 'perkModel',
+        model: require('../models/perk').default
+    };
     const punishmentModel = {
         name: 'punishmentModel',
         model: require('../models/punishment').default
@@ -124,6 +128,7 @@ export default async ({ expressApp }) => {
             groupModel,
             mapModel,
             matchModel,
+            perkModel,
             postModel,
             punishmentModel,
             reportModel,

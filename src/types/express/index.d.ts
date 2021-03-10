@@ -17,6 +17,7 @@ import {IPost} from "../../interfaces/forum/IPost";
 import {IFriend} from "../../interfaces/IFriend";
 import {IChannel} from "../../interfaces/channel/IChannel";
 import {IChannelMessage} from "../../interfaces/channel/IChannelMessage";
+import {IPerk} from "../../interfaces/IPerk";
 
 declare global {
   namespace Express {
@@ -41,6 +42,7 @@ declare global {
     export type GroupModel = DeletableModel<IGroup & Document>;
     export type MapModel = DeletableModel<IMap & Document>;
     export type MatchModel = DeletableModel<IMatch & Document>;
+    export type PerkModel = DeletableModel<IPerk & Document>;
     export type PostModel = DeletableModel<IPost & Document>;
     export type PunishmentModel = DeletableModel<IPunishment & Document>;
     export type ReportModel = DeletableModel<IReport & Document>;

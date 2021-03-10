@@ -18,6 +18,7 @@ import topic from "./routes/forum/topic";
 import post from "./routes/forum/post";
 import channel from "./routes/channel/channel";
 import channelMessage from "./routes/channel/channelMessage";
+import perk from "./routes/perk";
 
 export default () => {
     const app = Router();
@@ -35,6 +36,7 @@ export default () => {
     match(app);
     gamemode(app);
     post(app);
+    perk(app);
     punishment(app);
     topic(app);
     report(app);
