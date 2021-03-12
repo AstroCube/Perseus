@@ -8,22 +8,25 @@ const Perk = new mongoose.Schema(
     {
         gameMode: {
             type: Schema.Types.ObjectId,
-            ref: 'Gamemode'
+            ref: 'Gamemode',
+            required: true
         },
         subGameMode: {
             type: String,
-            required: true
+            required: false
         },
         responsible: {
             type: Schema.Types.ObjectId,
-            ref: 'User'
+            ref: 'User',
+            required: true
         },
         type: {
             type: String,
             required: true
         },
-        statistic: {
-            type: Schema.Types.Mixed
+        stored: {
+            type: Schema.Types.Mixed,
+            required: true
         },
     },
     { timestamps: true }
