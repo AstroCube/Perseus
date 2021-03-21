@@ -62,8 +62,6 @@ export default class PerkService {
   public async update(id: string, record: any): Promise<IPerk> {
     try {
 
-      console.log(record);
-
       const actualPerk: Document & IPerk = await this.perkModel.findById(id);
 
       if (!actualPerk) {
