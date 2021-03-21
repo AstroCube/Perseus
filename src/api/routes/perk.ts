@@ -43,8 +43,7 @@ export default (app: Router) => {
         async (req: Request, res: Response, next: NextFunction) => {
             try {
                 const perkService: PerkService = Container.get(PerkService);
-                await perkService.update(req.body._id, req.body.stored);
-                return res.json({updated: true}).status(200);
+                return res.json( await perkService.update(req.body._id, req.body.stored)).status(200);
             } catch (e) {
                 return next(e);
             }
