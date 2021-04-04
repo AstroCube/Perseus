@@ -55,7 +55,7 @@ export default class MapService {
    */
   public async get(id: string, options? : any): Promise<IMap> {
     try {
-      const mapModel: IMap = await this.mapModel.findById(id).populate(options.populate);
+      const mapModel: IMap = await this.mapModel.findById(id).populate("author");
       if (!mapModel) throw new ResponseError('The requested map was not found', 404);
       return mapModel;
     } catch (e) {
