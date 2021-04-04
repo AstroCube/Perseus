@@ -84,7 +84,7 @@ export default (app: Router) => {
         async (req: Request, res: Response, next: NextFunction) => {
             try {
                 const service: MapService = Container.get(MapService);
-                return res.json(await service.get(req.params.id)).status(200);
+                return res.json(await service.get(req.params.id, req.query)).status(200);
             } catch (e) {
                 return next(e);
             }

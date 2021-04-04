@@ -51,10 +51,11 @@ export default class MapService {
   /**
    * Retrieve certain map with an ID
    * @param id to be retrieved
+   * @param populate fields to expand
    */
-  public async get(id: string): Promise<IMap> {
+  public async get(id: string, populate? : any): Promise<IMap> {
     try {
-      const mapModel: IMap = await this.mapModel.findById(id);
+      const mapModel: IMap = await this.mapModel.findById(id).populate(populate);
       if (!mapModel) throw new ResponseError('The requested map was not found', 404);
       return mapModel;
     } catch (e) {
