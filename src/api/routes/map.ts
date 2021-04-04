@@ -92,8 +92,6 @@ export default (app: Router) => {
 
     route.post(
         '/list-web',
-        middlewares.authentication,
-        middlewares.userAttachment,
         async (req: Request, res: Response, next: NextFunction) => {
             try {
                 const service: MapService = Container.get(MapService);
