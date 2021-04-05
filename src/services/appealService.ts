@@ -94,7 +94,7 @@ export default class AppealService {
     }
 
     public async generateAction(id: string, action: IAppealAction, user: IUser): Promise<IAppeal> {
-        const appeal = await this.appealModel.findById(id);
+        const appeal  = await this.appealModel.findById(id);
         const manifest = await this.getAppealPermissions(user);
         switch (action.type) {
             case IAppealActionType.Open: {
