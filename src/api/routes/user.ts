@@ -77,7 +77,7 @@ export default (app: Router) => {
         });
 
     route.get(
-        '/list-all/:own?',
+        '/actions/list-all/:own?',
         middlewares.authentication,
         middlewares.userAttachment,
         async (req: Request, res: Response, next: NextFunction) => {
