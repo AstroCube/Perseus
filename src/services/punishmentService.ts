@@ -81,9 +81,9 @@ export default class PunishmentService {
     }
   }
 
-  public async getPunishment(id: string): Promise<IPunishment> {
+  public async getPunishment(id: string, options?: any): Promise<IPunishment> {
     try {
-      const punishment: IPunishment = await this.punishmentModel.findById(id);
+      const punishment: IPunishment = await this.punishmentModel.findById(id).populate(options.populate);
       if (!punishment) throw new ResponseError("Queried punishment does not exist.", 404);
       return punishment;
     } catch (e) {

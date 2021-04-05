@@ -49,7 +49,7 @@ export default (app: Router) => {
     async (req: Request, res: Response, next: NextFunction) => {
       try {
           const service: PunishmentService = Container.get(PunishmentService);
-          const punishment: IPunishment = await service.getPunishment(req.params.id);
+          const punishment: IPunishment = await service.getPunishment(req.params.id, req.query);
           return res.json(punishment).status(200);
       } catch (e) {
         return next(e);
