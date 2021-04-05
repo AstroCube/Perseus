@@ -80,7 +80,7 @@ export default class AppealService {
                 {$or: [{punished: user._id, appealed: true}, {issuer: user._id, appealed: true}]};
 
             if (encapsulation !== null || own) {
-                const punishments: IPaginateResult<IPunishment> = await this.punishmentService.listPunishments(encapsulation, undefined, perPage);
+                const punishments: IPaginateResult<IPunishment> = await this.punishmentService.listPunishments(encapsulation, {perPage});
                 const punishmentIds = await punishments.data.map(p => p._id);
                 if (own) await this.appealModel.paginate({...query, punishment: {$in: punishmentIds}}, {page, perPage});
                 return await this.appealModel.paginate({...query, $or: [{punishment: {$in: punishmentIds}}, {supervisor: user._id}]}, {page, perPage});
@@ -94,7 +94,7 @@ export default class AppealService {
     }
 
     public async generateAction(id: string, action: IAppealAction, user: IUser): Promise<IAppeal> {
-        let appeal = await this.appealModel.findById(id);
+        const appeal = await this.appealModel.findById(id);
         const manifest = await this.getAppealPermissions(user);
         switch (action.type) {
             case IAppealActionType.Open: {
