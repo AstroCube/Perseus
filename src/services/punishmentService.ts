@@ -92,13 +92,10 @@ export default class PunishmentService {
     }
   }
 
-  public async listPunishments(query: any, page: number, size: number): Promise<IPaginateResult<IPunishment>> {
+  public async listPunishments(query: any, options?: any): Promise<IPaginateResult<IPunishment>> {
     try {
       return await this.punishmentModel.paginate(query,
-          {
-            sort: {createdAt: 1},
-            page: page, perPage: size
-          });
+          {...options, sort: {createdAt: 1}});
     } catch (e) {
       this.logger.error('There was an error obtaining punishment lists: %o', e);
       throw e;
