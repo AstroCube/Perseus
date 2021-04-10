@@ -9,14 +9,12 @@ const Friend = new mongoose.Schema(
       sender: {
           type: Schema.Types.ObjectId,
           ref: 'User',
-          required: true,
-          autopopulate: true
+          required: true
       },
       receiver: {
           type: Schema.Types.ObjectId,
           ref: 'User',
-          required: true,
-          autopopulate: true
+          required: true
       },
       issuer: {
           type: Schema.Types.ObjectId,
