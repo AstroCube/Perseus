@@ -17,7 +17,8 @@ export default (app: Router) => {
       body: Joi.object({
         sender: Joi.string().required(),
         receiver: Joi.string().required(),
-        issuer: Joi.string()
+        issuer: Joi.string(),
+        alerted: Joi.boolean()
       })
     }),
     middlewares.cluster,
