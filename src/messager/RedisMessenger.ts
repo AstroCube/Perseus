@@ -10,6 +10,8 @@ export class RedisMessenger {
         @Inject("redis") private redis: RedisClient
     ) {
 
+        console.log("Added subscribe");
+
         this.redis.on("message", (channel, message : any) => {
 
             const messageCompound: Message<any> = message as Message<any>;
