@@ -9,6 +9,8 @@ import config from '../config';
 import Storage from 'node-seaweedfs';
 import { TransportOptions } from "nodemailer";
 import './events';
+import {RedisMessenger} from "../messager/RedisMessenger";
+import {Container} from "typedi";
 
 
 export default async ({ expressApp }) => {
@@ -145,4 +147,6 @@ export default async ({ expressApp }) => {
 
     await expressLoader({ app: expressApp });
     Logger.info('Express loaded');
+
+    const messenger = Container.get(RedisMessenger);
 };

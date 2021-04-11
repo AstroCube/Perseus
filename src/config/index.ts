@@ -44,7 +44,8 @@ export default {
     redis: {
         port: 6379,
         host: process.env.REDIS_HOST,
-        auth_pass: process.env.REDIS_PASS
+        auth_pass: process.env.REDIS_PASS,
+        subscriber: "centauri_redis"
     },
     defaultGroup: '5b52b2048284865491b1f56a'
 };

@@ -47,7 +47,7 @@
     "node-seaweedfs": "^1.4.0",
     "nodemailer": "^6.4.8",
     "path": "^0.12.7",
-    "redis": "^3.0.2",
+    "redis": "^3.1.0",
     "reflect-metadata": "^0.1.12",
     "shelljs": "^0.8.4",
     "ts-mongoose-pagination": "^1.1.2",
