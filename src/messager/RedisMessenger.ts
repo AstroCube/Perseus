@@ -18,6 +18,8 @@ export class RedisMessenger {
 
         });
 
+        this.redis.subscribe(config.redis.subscriber);
+
     }
 
 }
