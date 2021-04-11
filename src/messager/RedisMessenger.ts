@@ -12,12 +12,14 @@ export class RedisMessenger {
 
         console.log("Added subscribe");
 
+        this.redis.on("subscribe", function(channel, count) {
+            console.log(channel);
+        });
+
+
         this.redis.on("message", (channel, message : any) => {
-
-            const messageCompound: Message<any> = message as Message<any>;
-
             console.log(message);
-
+            const messageCompound: Message<any> = message as Message<any>;
         });
 
         this.redis.subscribe(config.redis.subscriber);
