@@ -80,20 +80,9 @@ export default class FriendService {
         }
     }
 
-    public async delete(request: IFriend): Promise<void> {
+    public async delete(id: string): Promise<void> {
         try {
-            await this.friendModel.findOneAndDelete({
-                $or: [
-                    {
-                        sender: request.sender,
-                        receiver: request.receiver
-                    },
-                    {
-                        receiver: request.sender,
-                        sender: request.receiver
-                    }
-                ]
-            });
+            await this.friendModel.findByIdAndDelete(id);
         } catch (e) {
             this.logger.error('There was an error creating an appeal: %o', e);
             throw e;

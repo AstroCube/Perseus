@@ -73,12 +73,12 @@ export default (app: Router) => {
         });
 
     route.delete(
-        '/delete',
+        '/:id',
         middlewares.cluster,
         async (req: Request, res: Response, next: NextFunction) => {
             try {
                 const friendService: FriendService = Container.get(FriendService);
-                return res.json(await friendService.delete(req.body));
+                return res.json(await friendService.delete(req.params.id as string));
             } catch (e) {
                 return next(e);
             }
