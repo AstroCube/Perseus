@@ -92,6 +92,7 @@ export default class ServerService {
 
   public async executePing(): Promise<void> {
     try {
+      console.log("Executing ping");
       const servers: IServer[] = await this.serverModel.find();
       servers.forEach(server => {
         this.redisMessenger.sendMessage("serverPing", {server: server._id, action: Action.Request});
