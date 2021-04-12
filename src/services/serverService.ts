@@ -1,6 +1,6 @@
 import {Inject, Service} from "typedi";
 import {Logger} from "winston";
-import {IServer} from "../interfaces/IServer";
+import {Action, IServer} from "../interfaces/IServer";
 import {ICluster} from "../interfaces/ICluster";
 import ClusterService from "./clusterService";
 import jwt from "jsonwebtoken";
@@ -35,6 +35,7 @@ export default class ServerService {
       });
       this.logger.info("Successfully loaded server %o to the database with name " + serverRecord.slug, serverRecord._id);
       if (!serverRecord) throw new ResponseError("Server could not be created", 500);
+
       return ServerService.generateToken(serverRecord._id);
     } catch (e) {
       this.logger.error(e);
@@ -83,6 +84,18 @@ export default class ServerService {
     try {
       await this.serverModel.findByIdAndDelete(id);
       this.logger.info("Successfully disconnected server %o", id);
+    } catch (e) {
+      this.logger.error(e);
+      throw e;
+    }
+  }
+
+  public async executePing(): Promise<void> {
+    try {
+      const servers: IServer[] = await this.serverModel.find();
+      servers.forEach(server => {
+        this.redisMessenger.sendMessage("serverPing", {server: server._id, action: Action.Request});
+      });
     } catch (e) {
       this.logger.error(e);
       throw e;

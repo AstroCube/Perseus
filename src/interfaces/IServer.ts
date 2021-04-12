@@ -13,3 +13,12 @@ export interface IServer extends IModel {
 export enum ServerType {
   Lobby = "Lobby", Game = "Game", Special = "Special", Bungee = "Bungee"
 }
+
+export interface IServerPing {
+  server: string;
+  action: Action
+}
+
+export enum Action {
+  Request = "Request", Confirm = "Confirm"
+}

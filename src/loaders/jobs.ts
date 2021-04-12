@@ -16,6 +16,12 @@ export default ({ agenda }: { agenda: Agenda }) => {
         new UnregisterChannel().handler
     );
 
-    agenda.every('60 minutes', 'unregistered-clean');
+    agenda.define(
+        'server-ping',
+        { priority: 'high', concurrency: config.agenda.concurrency },
+        new UnregisterChannel().handler
+    );
+
+    agenda.every(config.server.ping + ' seconds', 'unregistered-clean');
     agenda.start();
 };
