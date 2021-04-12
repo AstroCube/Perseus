@@ -20,7 +20,7 @@ export class ServerListener {
                 console.log(ping);
                 await this.serverPingService.removeCheck(ping.server);
             } catch (e) {
-                this.logger.log('Error while marking pinging of server %o', e);
+                this.logger.error('Error while marking pinging of server %o', e);
             }
         });
     }
