@@ -1,33 +1,26 @@
 import {Inject, Service} from "typedi";
 import {RedisClient} from "redis";
+import RedisService from "../redisService";
 
 @Service()
 export class ServerPingService {
 
     constructor(
-        @Inject("redis") private redis: RedisClient
+        private redisService: RedisService
     ) {
     }
 
-    public scheduleCheck(id: string): void {
-        const ping: number = this.getActualTries(id);
-        this.redis.set("scheduledPing:" + id, (ping + 1) + "");
+    public async scheduleCheck(id: string): Promise<void> {
+        const ping: number = await this.getActualTries(id);
+        await this.redisService.setKey("scheduledPing:" + id, (ping + 1) + "");
     }
 
-    public getActualTries(id: string): number {
-        return parseInt(String(this.redis.get("scheduledPing:" + id))) || 0;
+    public async getActualTries(id: string): Promise<number> {
+        return parseInt(String(await this.redisService.getKey("scheduledPing:" + id))) || 0;
     }
 
-    public removeCheck(id: string): void {
-        this.redis.del("scheduledPing:" + id);
-    }
-
-    public clearList(): void {
-        this.redis.keys("scheduledPing:*", (err, reply) => {
-            if (!err) {
-                reply.forEach(key => this.redis.del(key));
-            }
-        });
+    public async removeCheck(id: string): Promise<void> {
+        await this.redisService.deleteKey("scheduledPing:" + id);
     }
 
 }

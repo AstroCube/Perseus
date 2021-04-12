@@ -36,4 +36,9 @@ export default class RedisService {
     return await deleteAsync(s);
   }
 
+  public async getKeySet(pattern: string): Promise<string[]> {
+    const keysAsync = promisify(this.redis.keys).bind(this.redis);
+    return await keysAsync(pattern);
+  }
+
 }
