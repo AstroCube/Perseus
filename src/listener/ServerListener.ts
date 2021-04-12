@@ -16,8 +16,8 @@ export class ServerListener {
     public registerPing(): void {
         this.redisMessenger.registerListener("serveralivemessage", async (message) => {
             try {
+                console.log(message);
                 const ping : IServerPing = JSON.parse(message);
-                console.log(ping);
                 await this.serverPingService.removeCheck(ping.server);
             } catch (e) {
                 this.logger.error('Error while marking pinging of server %o', e);
