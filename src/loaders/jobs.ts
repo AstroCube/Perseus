@@ -24,6 +24,6 @@ export default async ({ agenda }: { agenda: Agenda }) => {
     );
 
     await agenda.every('30 minutes', 'unregistered-clean');
-    await agenda.every(config.server.ping + ' seconds', 'server-ping');
+    await agenda.every('30 seconds', 'server-ping');
     await agenda.start();
 };
