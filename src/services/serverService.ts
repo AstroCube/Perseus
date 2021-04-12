@@ -19,7 +19,7 @@ export default class ServerService {
     private redisMessenger: RedisMessenger
   ) {
 
-    this.redisMessenger.registerListener("serverPing", (message) => {
+    this.redisMessenger.registerListener("serveralivemessage", (message) => {
       console.log(message);
     });
 
@@ -95,7 +95,7 @@ export default class ServerService {
       console.log("Executing ping");
       const servers: IServer[] = await this.serverModel.find();
       servers.forEach(server => {
-        this.redisMessenger.sendMessage("serverPing", {server: server._id, action: Action.Request});
+        this.redisMessenger.sendMessage("serveralivemessage", {server: server._id, action: Action.Request});
       });
     } catch (e) {
       this.logger.error(e);
