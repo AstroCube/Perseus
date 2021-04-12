@@ -3,21 +3,25 @@ import {RedisClient} from "redis";
 import config from '../config';
 import {Message} from "./Metadata";
 import {Listener} from "./Listener";
+import redisLoader from "../loaders/redis";
+import {Logger} from "winston";
 
 @Service()
 export class RedisMessenger {
 
     private listeners : Listener[] = [];
+    private id: string;
 
     constructor(
-        @Inject("redis") private redis: RedisClient
+        @Inject("redis") private redis: RedisClient,
+        @Inject('logger') private logger : Logger
     ) {
 
         this.redis.on("message", (channel, message : any) => {
             const messageCompound: Message<any> = JSON.parse(message);
 
             this.listeners.forEach(listener => {
-                if (listener.name === messageCompound.metadata.appId) {
+                if (listener.name === messageCompound.metadata.appId && listener.name !== this.id) {
                     listener.action(messageCompound.message);
                 }
             });
@@ -25,27 +29,32 @@ export class RedisMessenger {
         });
 
         this.redis.subscribe(config.redis.subscriber);
-
+        this.id = "perseus_" + this.createUUID();
     }
 
     public registerListener(name: string, action: (message : any) => void): void {
         this.listeners.push({name, action} as Listener);
     }
 
-    public sendMessage<T>(name: string, message: T): void {
+    public async sendMessage<T>(name: string, message: T): Promise<void> {
 
-        const completeMessage: Message<T> = {
-            metadata: {
-                headers: [],
-                appId: name,
-                messageId: this.createUUID(),
-                instanceId: "perseus",
-                timestamp: new Date()
-            },
-            message
-        };
+        try {
+            const completeMessage: Message<T> = {
+                metadata: {
+                    headers: [],
+                    appId: name,
+                    messageId: this.createUUID(),
+                    instanceId: this.id,
+                    timestamp: new Date()
+                },
+                message
+            };
 
-        this.redis.publish(config.redis.subscriber, JSON.stringify(completeMessage));
+            (await this.getPublisherConnection()).publish(config.redis.subscriber, JSON.stringify(completeMessage));
+        } catch (e) {
+            this.logger.error('Error while sending message %o', e);
+            throw e;
+        }
     }
 
     private createUUID() {
@@ -58,7 +67,12 @@ export class RedisMessenger {
         return uuid;
     }
 
-
-
+    private async getPublisherConnection(): Promise<RedisClient> {
+        const redisPublisher = await redisLoader(config.redis);
+        redisPublisher.on("error", (err) => {
+            this.logger.error("Error with redis connection: %o", err);
+        });
+        return redisPublisher;
+    }
 
 }
