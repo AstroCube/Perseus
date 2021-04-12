@@ -10,8 +10,12 @@ export class ServerPingService {
     }
 
     public scheduleCheck(id: string): void {
-        const ping: number = parseInt(String(this.redis.get("scheduledPing:" + id))) || 0;
+        const ping: number = this.getActualTries(id);
         this.redis.set("scheduledPing:" + id, (ping + 1) + "");
+    }
+
+    public getActualTries(id: string): number {
+        return parseInt(String(this.redis.get("scheduledPing:" + id))) || 0;
     }
 
     public removeCheck(id: string): void {

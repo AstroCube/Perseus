@@ -1,6 +1,6 @@
 import {Inject, Service} from "typedi";
 import {Logger} from "winston";
-import {Action, IServer} from "../interfaces/IServer";
+import {Action, IServer, IServerPing} from "../interfaces/IServer";
 import {ICluster} from "../interfaces/ICluster";
 import ClusterService from "./clusterService";
 import jwt from "jsonwebtoken";
@@ -20,11 +20,10 @@ export default class ServerService {
     private redisMessenger: RedisMessenger,
     private serverPing: ServerPingService
   ) {
-
     this.redisMessenger.registerListener("serveralivemessage", (message) => {
-      console.log(message);
+      const ping : IServerPing = JSON.parse(message);
+      this.serverPing.removeCheck(ping.server);
     });
-
   }
 
   public async loadServer(authorization: IServer): Promise<string> {
@@ -95,15 +94,21 @@ export default class ServerService {
   public async executePing(): Promise<void> {
     try {
       const servers: IServer[] = await this.serverModel.find();
-      servers.forEach(server => {
-        this.redisMessenger.sendMessage("serveralivemessage", {server: server._id, action: Action.Request});
+      for (const server of servers) {
+
+        if (this.serverPing.getActualTries(server._id) >= config.server.retry) {
+          await this.disconnectServer(server._id);
+        }
+
+        await this.redisMessenger.sendMessage("serveralivemessage", {server: server._id, action: Action.Request});
         this.serverPing.scheduleCheck(server._id);
-      });
+      }
     } catch (e) {
       this.logger.error(e);
       throw e;
     }
   }
+
 
   private static generateToken(server: string) {
     return jwt.sign(
