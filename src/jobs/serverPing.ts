@@ -10,6 +10,7 @@ export default class ServerPing {
     const service: ServerService = Container.get(ServerService);
 
     try {
+      Logger.debug('Starting server pinging')
       await service.executePing();
       done();
     } catch (e) {

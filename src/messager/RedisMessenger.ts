@@ -14,7 +14,6 @@ export class RedisMessenger {
     ) {
 
         this.redis.on("message", (channel, message : any) => {
-            console.log(message);
             const messageCompound: Message<any> = JSON.parse(message);
 
             this.listeners.forEach(listener => {
