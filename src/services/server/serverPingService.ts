@@ -10,15 +10,20 @@ export class ServerPingService {
     }
 
     public scheduleCheck(id: string): void {
-        this.redis.lpush("scheduledPing", id);
+        const ping: number = parseInt(String(this.redis.get("scheduledPing:" + id))) || 0;
+        this.redis.set("scheduledPing:" + id, (ping + 1) + "");
     }
 
     public removeCheck(id: string): void {
-        this.redis.lrem("scheduledPing", 0, id);
+        this.redis.del("scheduledPing:" + id);
     }
 
     public clearList(): void {
-        this.redis.del("scheduledPing");
+        this.redis.keys("scheduledPing:*", (err, reply) => {
+            if (!err) {
+                reply.forEach(key => this.redis.del(key));
+            }
+        });
     }
 
 }

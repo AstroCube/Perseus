@@ -42,7 +42,8 @@ export default {
         port: 9333
     },
     server: {
-        ping: 30
+        ping: 30,
+        retry: 3
     },
     redis: {
         port: 6379,

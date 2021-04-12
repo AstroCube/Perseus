@@ -50,7 +50,10 @@ export class RedisMessenger {
                 message
             };
 
-            (await this.getPublisherConnection()).publish(config.redis.subscriber, JSON.stringify(completeMessage));
+            const client = await this.getPublisherConnection();
+            client.publish(config.redis.subscriber, JSON.stringify(completeMessage));
+            client.end();
+
         } catch (e) {
             this.logger.error('Error while sending message %o', e);
             throw e;
