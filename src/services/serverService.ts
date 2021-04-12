@@ -7,7 +7,7 @@ import jwt from "jsonwebtoken";
 import config from "../config";
 import {ResponseError} from "../interfaces/error/ResponseError";
 import {IPaginateResult} from "mongoose";
-import {IMatch} from "../interfaces/IMatch";
+import {RedisMessenger} from "../messager/RedisMessenger";
 
 @Service()
 export default class ServerService {
@@ -15,8 +15,15 @@ export default class ServerService {
   constructor(
     @Inject('serverModel') private serverModel : Models.ServerModel,
     @Inject('logger') private logger : Logger,
-    private clusterService: ClusterService
-  ) {}
+    private clusterService: ClusterService,
+    private redisMessenger: RedisMessenger
+  ) {
+
+    this.redisMessenger.registerListener("serverPing", (message) => {
+      console.log(message);
+    });
+
+  }
 
   public async loadServer(authorization: IServer): Promise<string> {
     try {
