@@ -8,6 +8,7 @@ import config from "../config";
 import {ResponseError} from "../interfaces/error/ResponseError";
 import {IPaginateResult} from "mongoose";
 import {RedisMessenger} from "../messager/RedisMessenger";
+import {ServerPingService} from "./server/serverPingService";
 
 @Service()
 export default class ServerService {
@@ -16,7 +17,8 @@ export default class ServerService {
     @Inject('serverModel') private serverModel : Models.ServerModel,
     @Inject('logger') private logger : Logger,
     private clusterService: ClusterService,
-    private redisMessenger: RedisMessenger
+    private redisMessenger: RedisMessenger,
+    private serverPing: ServerPingService
   ) {
 
     this.redisMessenger.registerListener("serveralivemessage", (message) => {
@@ -95,6 +97,7 @@ export default class ServerService {
       const servers: IServer[] = await this.serverModel.find();
       servers.forEach(server => {
         this.redisMessenger.sendMessage("serveralivemessage", {server: server._id, action: Action.Request});
+        this.serverPing.scheduleCheck(server._id);
       });
     } catch (e) {
       this.logger.error(e);
