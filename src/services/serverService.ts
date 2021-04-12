@@ -96,12 +96,12 @@ export default class ServerService {
       const servers: IServer[] = await this.serverModel.find();
       for (const server of servers) {
 
-        if (this.serverPing.getActualTries(server._id) >= config.server.retry) {
+        if (await this.serverPing.getActualTries(server._id) >= config.server.retry) {
           await this.disconnectServer(server._id);
         }
 
         await this.redisMessenger.sendMessage("serveralivemessage", {server: server._id, action: Action.Request});
-        this.serverPing.scheduleCheck(server._id);
+        await this.serverPing.scheduleCheck(server._id);
       }
     } catch (e) {
       this.logger.error(e);
