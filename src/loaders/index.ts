@@ -9,17 +9,16 @@ import config from '../config';
 import Storage from 'node-seaweedfs';
 import { TransportOptions } from "nodemailer";
 import './events';
+import {RedisClient} from "redis";
 
 
 export default async ({ expressApp }) => {
     const mongoConnection = await mongooseLoader();
     Logger.info('MongoDB successfully connected');
 
-    const redisClient = await redisLoader(config.redis);
-    redisClient.on("error", (err) => {
-       Logger.error("Error with redis connection: %o", err);
-    });
-    Logger.info('Redis successfully connected');
+    const redisClient = await getRedisClient();
+    const publisherClient = await getRedisClient();
+    const subscriberClient = await getRedisClient();
 
     const storageClient = await new Storage(config.storage);
 
@@ -114,6 +113,8 @@ export default async ({ expressApp }) => {
     const { agenda } = await dependencyInjectorLoader({
         mailer,
         redisClient,
+        publisherClient,
+        subscriberClient,
         mongoConnection,
         storageClient,
         models: [
@@ -146,3 +147,15 @@ export default async ({ expressApp }) => {
     await expressLoader({ app: expressApp });
     Logger.info('Express loaded');
 };
+
+async function getRedisClient(): Promise<RedisClient> {
+
+    const redisClient = await redisLoader(config.redis);
+    redisClient.on("error", (err) => {
+        Logger.error("Error with redis connection: %o", err);
+    });
+    Logger.info('Redis successfully connected');
+
+    return redisClient;
+
+}

@@ -3,7 +3,6 @@ import {RedisClient} from "redis";
 import config from '../config';
 import {Message} from "./Metadata";
 import {Listener} from "./Listener";
-import redisLoader from "../loaders/redis";
 import {Logger} from "winston";
 
 @Service()
@@ -13,11 +12,11 @@ export class RedisMessenger {
     private id: string;
 
     constructor(
-        @Inject("redis") private redis: RedisClient,
+        @Inject("redis-subscriber") private redisSubscriber: RedisClient,
+        @Inject("redis-publisher") private redisPublisher: RedisClient,
         @Inject('logger') private logger : Logger
     ) {
-
-        this.redis.on("message", (channel, message : any) => {
+        this.redisSubscriber.on("message", (channel, message : any) => {
             const messageCompound: Message<any> = JSON.parse(message);
 
             this.listeners.forEach(listener => {
@@ -28,7 +27,7 @@ export class RedisMessenger {
 
         });
 
-        this.redis.subscribe(config.redis.subscriber);
+        this.redisSubscriber.subscribe(config.redis.subscriber);
         this.id = "perseus_" + this.createUUID();
     }
 
@@ -50,10 +49,7 @@ export class RedisMessenger {
                 message
             };
 
-            const client = await this.getPublisherConnection();
-            client.publish(config.redis.subscriber, JSON.stringify(completeMessage));
-            client.end();
-
+            this.redisPublisher.publish(config.redis.subscriber, JSON.stringify(completeMessage));
         } catch (e) {
             this.logger.error('Error while sending message %o', e);
             throw e;
@@ -68,14 +64,6 @@ export class RedisMessenger {
             return (c=='x' ? r :(r &0x3|0x8)).toString(16);
         });
         return uuid;
-    }
-
-    private async getPublisherConnection(): Promise<RedisClient> {
-        const redisPublisher = await redisLoader(config.redis);
-        redisPublisher.on("error", (err) => {
-            this.logger.error("Error with redis connection: %o", err);
-        });
-        return redisPublisher;
     }
 
 }
