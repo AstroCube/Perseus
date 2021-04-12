@@ -24,6 +24,6 @@ export default ({ agenda }: { agenda: Agenda }) => {
     );
 
     agenda.every('30 minutes', 'unregistered-clean');
-    agenda.every(config.server.ping + ' seconds', 'unregistered-clean');
+    agenda.every(config.server.ping + ' seconds', 'server-ping');
     agenda.start();
 };
