@@ -20,9 +20,9 @@ export default class ServerService {
     private redisMessenger: RedisMessenger,
     private serverPing: ServerPingService
   ) {
-    this.redisMessenger.registerListener("serveralivemessage", (message) => {
+    this.redisMessenger.registerListener("serveralivemessage", async (message) => {
+      console.log(message);
       const ping : IServerPing = JSON.parse(message);
-      this.serverPing.removeCheck(ping.server);
     });
   }
 
