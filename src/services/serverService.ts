@@ -7,8 +7,9 @@ import jwt from "jsonwebtoken";
 import config from "../config";
 import {ResponseError} from "../interfaces/error/ResponseError";
 import {IPaginateResult} from "mongoose";
-import {RedisMessenger} from "../messager/RedisMessenger";
 import {ServerPingService} from "./server/serverPingService";
+import {ServerListener} from "../listener/ServerListener";
+import {RedisMessenger} from "../messager/RedisMessenger";
 
 @Service()
 export default class ServerService {
@@ -17,13 +18,11 @@ export default class ServerService {
     @Inject('serverModel') private serverModel : Models.ServerModel,
     @Inject('logger') private logger : Logger,
     private clusterService: ClusterService,
-    private redisMessenger: RedisMessenger,
-    private serverPing: ServerPingService
+    private serverPing: ServerPingService,
+    private redisMessager: RedisMessenger,
+    private serverListener: ServerListener
   ) {
-    this.redisMessenger.registerListener("serveralivemessage", async (message) => {
-      console.log(message);
-      const ping : IServerPing = JSON.parse(message);
-    });
+    this.serverListener.registerListener();
   }
 
   public async loadServer(authorization: IServer): Promise<string> {
@@ -100,7 +99,7 @@ export default class ServerService {
           await this.disconnectServer(server._id);
         }
 
-        await this.redisMessenger.sendMessage("serveralivemessage", {server: server._id, action: Action.Request});
+        await this.redisMessager.sendMessage("serveralivemessage", {server: server._id, action: Action.Request});
         await this.serverPing.scheduleCheck(server._id);
       }
     } catch (e) {
