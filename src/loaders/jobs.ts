@@ -4,7 +4,7 @@ import UnregisteredClearSequenceJob from "../jobs/unregisteredSequence";
 import UnregisterChannel from "../jobs/unregisterChannel";
 import ServerPing from "../jobs/serverPing";
 
-export default ({ agenda }: { agenda: Agenda }) => {
+export default async ({ agenda }: { agenda: Agenda }) => {
     agenda.define(
         'unregistered-clean',
         { priority: 'high', concurrency: config.agenda.concurrency },
@@ -23,7 +23,7 @@ export default ({ agenda }: { agenda: Agenda }) => {
         new ServerPing().handler
     );
 
-    agenda.every('30 minutes', 'unregistered-clean');
-    agenda.every(config.server.ping + ' seconds', 'server-ping');
-    agenda.start();
+    await agenda.every('30 minutes', 'unregistered-clean');
+    await agenda.every(config.server.ping + ' seconds', 'server-ping');
+    await agenda.start();
 };
