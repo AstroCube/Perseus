@@ -92,7 +92,7 @@ export default class ServerService {
 
   public async executePing(): Promise<void> {
     try {
-      const servers: IServer[] = await this.serverModel.find();
+      const servers: IServer[] = await this.serverModel.find({sandbox: false});
 
       const ids = servers.map(i => i._id);
 
@@ -101,11 +101,13 @@ export default class ServerService {
       for (const server of servers) {
 
         if (await this.serverPing.getActualTries(server._id) >= config.server.retry) {
+          this.logger.info("Killing authorization due to server %o disconnection", server._id);
           await this.disconnectServer(server._id);
         }
 
         await this.redisMessager.sendMessage("serveralivemessage", {server: server._id, action: Action.Request});
         await this.serverPing.scheduleCheck(server._id);
+
       }
     } catch (e) {
       this.logger.error(e);
