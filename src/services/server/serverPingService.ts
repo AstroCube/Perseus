@@ -23,4 +23,12 @@ export class ServerPingService {
         await this.redisService.deleteKey("scheduledPing:" + id);
     }
 
+    public async removeUnused(compare: string[]): Promise<void> {
+        (await this.redisService.getKeySet("scheduledPing:*")).forEach(key => {
+           if (!compare.includes(key)) {
+               this.redisService.deleteKey(key);
+           }
+        });
+    }
+
 }

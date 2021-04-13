@@ -93,6 +93,11 @@ export default class ServerService {
   public async executePing(): Promise<void> {
     try {
       const servers: IServer[] = await this.serverModel.find();
+
+      const ids = servers.map(i => i._id);
+
+      await this.serverPing.removeUnused(ids);
+
       for (const server of servers) {
 
         if (await this.serverPing.getActualTries(server._id) >= config.server.retry) {
