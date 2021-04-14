@@ -8,7 +8,7 @@ import config from "../config";
 import {ResponseError} from "../interfaces/error/ResponseError";
 import {IPaginateResult} from "mongoose";
 import {ServerPingService} from "./server/serverPingService";
-import {ServerListener} from "../listener/ServerListener";
+import {ServerListener} from "../api/listener/serverListener";
 import {RedisMessenger} from "../messager/RedisMessenger";
 
 @Service()

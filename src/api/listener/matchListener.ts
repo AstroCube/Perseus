@@ -1,7 +1,7 @@
 import {Inject, Service} from "typedi";
-import {IServerPing} from "../interfaces/IServer";
-import {RedisMessenger} from "../messager/RedisMessenger";
-import {ServerPingService} from "../services/server/serverPingService";
+import {IServerPing} from "../../interfaces/IServer";
+import {RedisMessenger} from "../../messager/RedisMessenger";
+import {ServerPingService} from "../../services/server/serverPingService";
 import {Logger} from "winston";
 
 @Service()
