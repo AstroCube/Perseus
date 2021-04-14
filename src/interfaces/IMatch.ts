@@ -38,3 +38,13 @@ export interface IMatchAssignable {
   responsible: string;
   involved: string[];
 }
+
+
+export interface ISpectatorAssignMessage extends IMatchActionMessage{
+  user: string;
+  join: boolean;
+}
+
+export interface IMatchActionMessage {
+  match: string;
+}
