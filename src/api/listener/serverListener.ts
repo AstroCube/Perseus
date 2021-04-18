@@ -1,7 +1,7 @@
 import {Inject, Service} from "typedi";
-import {IServerPing} from "../../interfaces/IServer";
+import {Action, IServerPing} from "../../interfaces/IServer";
 import {RedisMessenger} from "../../messager/RedisMessenger";
-import {ServerPingService} from "../../services/server/serverPingService";
+import {AlivePingService} from "../../services/alivePingService";
 import {Logger} from "winston";
 
 @Service()
@@ -10,14 +10,15 @@ export class ServerListener {
     constructor(
         private redisMessenger: RedisMessenger,
         @Inject('logger') private logger : Logger,
-        private serverPingService: ServerPingService
+        private serverPingService: AlivePingService
     ) {}
 
     public registerPing(): void {
-        this.redisMessenger.registerListener("serveralivemessage", async (message) => {
+        this.redisMessenger.registerListener("serveralivemessage", async (message : IServerPing) => {
             try {
-                const ping : IServerPing = message;
-                await this.serverPingService.removeCheck(ping.server);
+                if (message.action === Action.Confirm) {
+                    await this.serverPingService.removeCheck(message.server, "scheduledPing");
+                }
             } catch (e) {
                 this.logger.error('Error while marking pinging of server %o', e);
             }

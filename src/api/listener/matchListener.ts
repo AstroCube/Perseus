@@ -1,7 +1,7 @@
 import {Container, Inject, Service} from "typedi";
 import {IServerPing} from "../../interfaces/IServer";
 import {RedisMessenger} from "../../messager/RedisMessenger";
-import {ServerPingService} from "../../services/server/serverPingService";
+import {AlivePingService} from "../../services/alivePingService";
 import {Logger} from "winston";
 import MatchService from "../../services/matchService";
 import {

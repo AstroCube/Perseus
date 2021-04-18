@@ -16,3 +16,12 @@ export interface IServerSwitch {
   server: string;
   lobby: string;
 }
+
+export interface ISessionPing {
+  user: string;
+  action: PingAction;
+}
+
+export enum PingAction {
+  Request = "Request", Response = "Response", Disconnect = "Disconnect"
+}

@@ -7,7 +7,7 @@ import jwt from "jsonwebtoken";
 import config from "../config";
 import {ResponseError} from "../interfaces/error/ResponseError";
 import {IPaginateResult} from "mongoose";
-import {ServerPingService} from "./server/serverPingService";
+import {AlivePingService} from "./alivePingService";
 import {ServerListener} from "../api/listener/serverListener";
 import {RedisMessenger} from "../messager/RedisMessenger";
 
@@ -18,7 +18,7 @@ export default class ServerService {
     @Inject('serverModel') private serverModel : Models.ServerModel,
     @Inject('logger') private logger : Logger,
     private clusterService: ClusterService,
-    private serverPing: ServerPingService,
+    private serverPing: AlivePingService,
     private redisMessager: RedisMessenger,
     private serverListener: ServerListener
   ) {
@@ -96,17 +96,17 @@ export default class ServerService {
 
       const ids = servers.map(i => i._id);
 
-      await this.serverPing.removeUnused(ids);
+      await this.serverPing.removeUnused(ids, "scheduledPing");
 
       for (const server of servers) {
 
-        if (await this.serverPing.getActualTries(server._id) >= config.server.retry) {
+        if (await this.serverPing.getActualTries(server._id, "scheduledPing") >= config.server.retry) {
           this.logger.info("Killing authorization due to server %o disconnection", server._id);
           await this.disconnectServer(server._id);
         }
 
         await this.redisMessager.sendMessage("serveralivemessage", {server: server._id, action: Action.Request});
-        await this.serverPing.scheduleCheck(server._id);
+        await this.serverPing.scheduleCheck(server._id, "scheduledPing");
 
       }
     } catch (e) {

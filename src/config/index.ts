@@ -41,6 +41,9 @@ export default {
         server: '127.0.0.1',
         port: 9333
     },
+    session: {
+        ping: 120
+    },
     server: {
         ping: 30,
         retry: 3
