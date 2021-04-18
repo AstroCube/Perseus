@@ -56,7 +56,6 @@ export class MatchListener {
     public assignPending(): void {
         this.redisMessenger.registerListener("gc-pending-assign", async (message: IPendingAssignMessage) => {
             try {
-                console.log(this.matchService);
                 await this.matchService.assignPending(message.assignable, message.match);
             } catch (e) {
                 this.logger.error('Error while assigning pending %o', e);
