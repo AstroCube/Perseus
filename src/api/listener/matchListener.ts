@@ -1,4 +1,4 @@
-import {Inject, Service} from "typedi";
+import {Container, Inject, Service} from "typedi";
 import {IServerPing} from "../../interfaces/IServer";
 import {RedisMessenger} from "../../messager/RedisMessenger";
 import {ServerPingService} from "../../services/server/serverPingService";
@@ -19,7 +19,9 @@ export class MatchListener {
         private redisMessenger: RedisMessenger,
         private matchService: MatchService,
         @Inject('logger') private logger : Logger
-    ) {}
+    ) {
+        this.matchService = Container.get(MatchService);
+    }
 
     public assignSpectator(): void {
         this.redisMessenger.registerListener("gc-assign-spectator", async (message: ISpectatorAssignMessage) => {
