@@ -5,6 +5,7 @@ import {Document, IPaginateResult, Types} from "mongoose";
 import {IMatch, IMatchAssignable, IMatchTeam, MatchStatus} from "../interfaces/IMatch";
 import {IServer, ServerType} from "../interfaces/IServer";
 import {MatchListener} from "../api/listener/matchListener";
+import RedisService from "./redisService";
 
 @Service()
 export default class MatchService {
@@ -12,7 +13,8 @@ export default class MatchService {
   constructor(
       @Inject('matchModel') private matchModel : Models.MatchModel,
       @Inject('logger') private logger : Logger,
-      private matchListener: MatchListener
+      private matchListener: MatchListener,
+      private redisService: RedisService
   ) {
     this.matchListener.registerListener();
   }
@@ -64,6 +66,7 @@ export default class MatchService {
 
       const matchRecord = await this.matchModel.findByIdAndUpdate(match._id, match, {new: true});
       if (!matchRecord) throw new ResponseError('The requested match does not exist', 404);
+      await this.cacheMatch(matchRecord);
       return matchRecord;
     } catch (e) {
       this.logger.error(e);
@@ -93,8 +96,9 @@ export default class MatchService {
         }
         matchRecord.spectators = matchRecord.spectators.filter(s => s !== user);
       }
-
-      return await matchRecord.save();
+      const matchSave = await matchRecord.save();
+      await this.cacheMatch(matchSave);
+      return matchSave;
     } catch (e) {
       this.logger.error(e);
       throw e;
@@ -121,7 +125,9 @@ export default class MatchService {
         color: team.color
       }));
 
-      return await this.matchModel.findByIdAndUpdate(matchRecord._id, {teams: finalTeams, pending: []});
+      const matchSave = await this.matchModel.findByIdAndUpdate(matchRecord._id, {teams: finalTeams, pending: []});
+      await this.cacheMatch(matchSave);
+      return matchSave;
     } catch (e) {
       this.logger.error(e);
       throw e;
@@ -157,7 +163,9 @@ export default class MatchService {
 
       }).filter(pending => pending !== null);
 
-      return await matchRecord.save();
+      const matchSave = await matchRecord.save();
+      await this.cacheMatch(matchSave);
+      return matchSave;
 
     } catch (e) {
       this.logger.error(e);
@@ -256,7 +264,9 @@ export default class MatchService {
       match.winner = winners;
       match.status = MatchStatus.Finished;
 
-      return await match.save();
+      const matchSave = await match.save();
+      await this.cacheMatch(matchSave);
+      return matchSave;
 
     } catch (e) {
       this.logger.error(e);
@@ -281,7 +291,9 @@ export default class MatchService {
         match.private = false;
       }
 
-      return await match.save();
+      const matchSave = await match.save();
+      await this.cacheMatch(matchSave);
+      return matchSave;
 
     } catch (e) {
       this.logger.error(e);
@@ -311,12 +323,18 @@ export default class MatchService {
         };
       });
 
-      return await match.save();
+      const matchSave = await match.save();
+      await this.cacheMatch(matchSave);
+      return matchSave;
 
     } catch (e) {
       this.logger.error(e);
       throw e;
     }
+  }
+
+  public async cacheMatch(match: IMatch): Promise<void> {
+    await this.redisService.setKey("match:" + match._id, JSON.stringify(match));
   }
 
 }
