@@ -4,6 +4,7 @@ import {ResponseError} from "../interfaces/error/ResponseError";
 import {Document, IPaginateResult, Types} from "mongoose";
 import {IMatch, IMatchAssignable, IMatchTeam, MatchStatus} from "../interfaces/IMatch";
 import {IServer, ServerType} from "../interfaces/IServer";
+import {MatchListener} from "../api/listener/matchListener";
 
 @Service()
 export default class MatchService {
@@ -11,7 +12,10 @@ export default class MatchService {
   constructor(
       @Inject('matchModel') private matchModel : Models.MatchModel,
       @Inject('logger') private logger : Logger,
-  ) {}
+      private matchListener: MatchListener
+  ) {
+    this.matchListener.registerListener();
+  }
 
   public async createMatch(match: IMatch, server: IServer): Promise<IMatch> {
     try {

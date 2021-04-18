@@ -40,9 +40,33 @@ export interface IMatchAssignable {
 }
 
 
-export interface ISpectatorAssignMessage extends IMatchActionMessage{
+export interface ISpectatorAssignMessage extends IMatchActionMessage {
   user: string;
   join: boolean;
+}
+
+export interface ITeamAssignMessage extends IMatchActionMessage {
+  teams: IMatchTeam[];
+}
+
+export interface IPendingUnAssignMessage extends IMatchActionMessage {
+  user: string;
+}
+
+export interface IPendingAssignMessage extends IMatchActionMessage {
+  assignable: IMatchAssignable;
+}
+
+export interface IDisqualify extends IMatchActionMessage {
+  user: string;
+}
+
+export interface IPrivatization extends IMatchActionMessage {
+  requester: string;
+}
+
+export interface IWinners extends IMatchActionMessage {
+  winners: string[];
 }
 
 export interface IMatchActionMessage {
