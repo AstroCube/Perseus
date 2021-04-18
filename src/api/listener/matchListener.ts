@@ -17,8 +17,8 @@ export class MatchListener {
 
     constructor(
         private redisMessenger: RedisMessenger,
-        @Inject('logger') private logger : Logger,
-        private matchService: MatchService
+        private matchService: MatchService,
+        @Inject('logger') private logger : Logger
     ) {}
 
     public assignSpectator(): void {
@@ -54,6 +54,7 @@ export class MatchListener {
     public assignPending(): void {
         this.redisMessenger.registerListener("gc-pending-assign", async (message: IPendingAssignMessage) => {
             try {
+                console.log(this.matchService);
                 await this.matchService.assignPending(message.assignable, message.match);
             } catch (e) {
                 this.logger.error('Error while assigning pending %o', e);
