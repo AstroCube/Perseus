@@ -116,6 +116,7 @@ export default class SessionService {
             this.logger.info("Logged out user due to alive timeout %o", id);
             await this.serverDisconnect(id);
             await this.redisMessager.sendMessage("session-user-pingback", {user: id, action: PingAction.Disconnect});
+            await this.redisService.deleteKey(key);
           }
 
           await this.redisMessager.sendMessage("session-user-pingback", {user: id, action: PingAction.Request});

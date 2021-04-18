@@ -1,10 +1,8 @@
-import {Container, Inject, Service} from "typedi";
-import {IServerPing} from "../../interfaces/IServer";
+import {Inject, Service} from "typedi";
 import {RedisMessenger} from "../../messager/RedisMessenger";
 import {AlivePingService} from "../../services/alivePingService";
 import {Logger} from "winston";
-import {ISessionPing} from "../../interfaces/ISession";
-import SessionService from "../../services/sessionService";
+import {ISessionPing, PingAction} from "../../interfaces/ISession";
 
 @Service()
 export class UserListener {
@@ -18,7 +16,9 @@ export class UserListener {
     public registerPing(): void {
         this.redisMessenger.registerListener("session-user-pingback", async (message : ISessionPing) => {
             try {
-                await this.alivePingService.removeCheck(message.user, "scheduledUserPing");
+                if (message.action === PingAction.Response) {
+                    await this.alivePingService.removeCheck(message.user, "scheduledUserPing");
+                }
             } catch (e) {
                 this.logger.error('Error while marking pinging of user %o', e);
             }
