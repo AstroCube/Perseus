@@ -32,6 +32,7 @@ export default (app: Router) => {
               subGameMode: Joi.string(),
               maxRunning: Joi.number(),
               maxTotal: Joi.number(),
+              sandbox: Joi.boolean().required(),
               cluster: Joi.string().required()
           })
       }),
