@@ -190,7 +190,7 @@ export default class MatchService {
           } as any
       );
 
-      await this.matchModel.updateMany(
+      const involvedMatches: (IMatch & Document)[] = await this.matchModel.find(
           {
             $or: [
               {"pending.responsible": {$in: pending.involved}},
@@ -199,15 +199,64 @@ export default class MatchService {
               {"teams.members.user": {$in: pending.involved}}
             ]
           },
-          {
-            $pull: {
-              "pending.responsible": {$in: pending.involved},
-              "pending.involved": {$in: pending.involved},
-              "teams.members.user": {$in: pending.involved},
-              "spectators": {$in: pending.involved}
-            }
-          }
       );
+
+      for (const involvedMatch of involvedMatches) {
+
+        involvedMatch.spectators = involvedMatch.spectators.filter(spectator => pending.involved.includes(spectator.toString()));
+
+        involvedMatch.teams = involvedMatch.teams.map(team => {
+
+          if (!team.members.some(member => pending.involved.includes(member.user.toString()))) {
+            return team;
+          }
+
+          return {
+            color: team.color,
+            name: team.name,
+            members: team.members.map(member =>
+                (
+                    {
+                      user: member.user,
+                      joinedAt: member.joinedAt,
+                      active: member.active && !pending.involved.includes(member.user.toString())
+                    }
+                )
+            )
+          };
+
+        });
+
+        involvedMatch.pending = involvedMatch.pending.map(pendingRequest => {
+
+          const filteredRequest: IMatchAssignable = {
+            responsible: pendingRequest.responsible,
+            involved: pendingRequest.involved
+          };
+
+          if (pending.involved.includes(filteredRequest.responsible.toString())) {
+
+            if (filteredRequest.involved.length === 0) {
+              return null;
+            }
+
+            filteredRequest.responsible = filteredRequest.involved[Math.floor(Math.random() * filteredRequest.involved.length)];
+            filteredRequest.involved = filteredRequest.involved.filter(involved => involved.toString() === filteredRequest.responsible);
+
+            return filteredRequest;
+
+          }
+
+          filteredRequest.involved =
+              filteredRequest.involved.filter(involved => pending.involved.includes(involved.toString()));
+
+          return filteredRequest;
+
+        });
+
+        await involvedMatch.save();
+
+      }
 
       if (pendingMatch.length > 0) {
         throw new ResponseError('You can not be assigned to a match more than once', 400);
