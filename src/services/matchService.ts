@@ -190,8 +190,6 @@ export default class MatchService {
           } as any
       );
 
-      // TODO: Remove from other matches involveds
-
       const pendingInvolved: IMatch[] = await this.matchModel.find(
           {
             $or: [
@@ -210,7 +208,7 @@ export default class MatchService {
       }
 
 
-      matchRecord.pending.push(pending);
+      // matchRecord.pending.push(pending);
       return matchRecord.save();
 
     } catch (e) {
