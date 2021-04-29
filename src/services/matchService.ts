@@ -200,10 +200,12 @@ export default class MatchService {
             ]
           },
           {
-            "pending.responsible": {$pull: {$in: pending.involved}},
-            "pending.involved": {$pull: {$in: pending.involved}},
-            "teams.members.user": {$pull: {$in: pending.involved}},
-            "spectators": {$pull: {$in: pending.involved}} as any
+            $pull: {
+              "pending.responsible": {$in: pending.involved},
+              "pending.involved": {$in: pending.involved},
+              "teams.members.user": {$in: pending.involved},
+              "spectators": {$in: pending.involved}
+            }
           }
       );
 
