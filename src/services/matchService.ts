@@ -190,6 +190,10 @@ export default class MatchService {
           } as any
       );
 
+      if (pendingMatch.length > 0) {
+        throw new ResponseError('You can not be assigned to a match more than once', 400);
+      }
+
       const involvedMatches: (IMatch & Document)[] = await this.matchModel.find(
           {
             $or: [
@@ -256,10 +260,6 @@ export default class MatchService {
 
         await involvedMatch.save();
 
-      }
-
-      if (pendingMatch.length > 0) {
-        throw new ResponseError('You can not be assigned to a match more than once', 400);
       }
 
       matchRecord.pending.push(pending);
