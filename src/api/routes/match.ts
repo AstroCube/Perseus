@@ -59,6 +59,17 @@ export default (app: Router) => {
             }
         });
 
+    route.post(
+        '/match-assign-demo',
+        async (req: Request, res: Response, next: NextFunction) => {
+            try {
+
+                return res.json(Container.get(MatchService).assignPending(req.body, req.body.match)).status(200);
+            } catch (e) {
+                return next(e);
+            }
+        });
+
     route.put(
         '/',
         middlewares.cluster,

@@ -181,21 +181,11 @@ export default class MatchService {
         throw new ResponseError('This match does not exists', 404);
       }
 
-      matchRecord.pending.push(pending);
-
-      return matchRecord.save();
-
-      // TODO: Hack in order to allow ObjectId query
-      /*
-      pending.involved.push(pending.responsible);
-      const involved: Types.ObjectId[] = [];
-      pending.involved.forEach(i => involved.push(new Types.ObjectId(i)));
-
       const pendingMatch: IMatch[] = await this.matchModel.find(
           {
             $or: [
-              {pending: {responsible: {$in: involved}}},
-              {pending: {involved: {$in: involved}}}
+              {pending: {responsible: pending.responsible}},
+              {pending: {involved: {$in: pending.responsible}}}
             ]
           } as any
       );
@@ -203,7 +193,9 @@ export default class MatchService {
       if (pendingMatch.length > 0) {
         throw new ResponseError('You can not be assigned to a match more than once', 400);
       }
-       */
+
+      matchRecord.pending.push(pending);
+      return matchRecord.save();
 
     } catch (e) {
       this.logger.error(e);
