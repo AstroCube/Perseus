@@ -190,6 +190,8 @@ export default class MatchService {
           } as any
       );
 
+      // TODO: Remove from other matches involveds
+
       if (pendingMatch.length > 0) {
         throw new ResponseError('You can not be assigned to a match more than once', 400);
       }
