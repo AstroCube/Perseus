@@ -252,7 +252,7 @@ export default class MatchService {
 
           return filteredRequest;
 
-        });
+        }).filter(n => n !== null);
 
         await involvedMatch.save();
 
