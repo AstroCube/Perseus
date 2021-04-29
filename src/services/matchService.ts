@@ -192,9 +192,23 @@ export default class MatchService {
 
       // TODO: Remove from other matches involveds
 
+      const pendingInvolved: IMatch[] = await this.matchModel.find(
+          {
+            $or: [
+              {pending: {responsible: {$in: pending.involved}}},
+              {pending: {involved: {$in: pending.involved}}},
+              {spectators: {$in: pending.involved}},
+              {teams: {members: {user: pending.involved}}}
+            ]
+          } as any
+      );
+
+      pendingInvolved.forEach(inv => console.log(inv));
+
       if (pendingMatch.length > 0) {
         throw new ResponseError('You can not be assigned to a match more than once', 400);
       }
+
 
       matchRecord.pending.push(pending);
       return matchRecord.save();
