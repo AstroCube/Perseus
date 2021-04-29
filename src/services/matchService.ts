@@ -185,7 +185,7 @@ export default class MatchService {
           {
             $or: [
               {pending: {responsible: pending.responsible}},
-              {pending: {involved: {$in: pending.responsible}}}
+              {pending: {involved: pending.responsible}}
             ]
           } as any
       );
