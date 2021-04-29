@@ -196,6 +196,9 @@ export default class MatchService {
           {
             $or: [
               {"pending.responsible": {$in: pending.involved}},
+              {"pending.involved": {$in: pending.involved}},
+              {spectators: {$in: pending.involved}},
+              {"teams.members.user": {$in: pending.involved}}
             ]
           } as any
       );
