@@ -63,8 +63,8 @@ export default (app: Router) => {
         '/match-assign-demo',
         async (req: Request, res: Response, next: NextFunction) => {
             try {
-
-                return res.json(Container.get(MatchService).assignPending(req.body, req.body.match)).status(200);
+                const service: MatchService = Container.get(MatchService);
+                return res.json(service.assignPending(req.body, req.body.match)).status(200);
             } catch (e) {
                 return next(e);
             }
