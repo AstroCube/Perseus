@@ -195,16 +195,7 @@ export default class MatchService {
       const pendingInvolved: IMatch[] = await this.matchModel.find(
           {
             $or: [
-              {
-                pending: {
-                  $elemMatch: {
-                    involved: {
-                      $in: []
-                    }
-                  }
-                }
-              },
-              {teams: {members: {user: {$in: []}}}}
+              {"pending.responsible": []}
             ]
           } as any
       );
