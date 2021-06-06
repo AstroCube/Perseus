@@ -39,7 +39,7 @@ export default {
     },
     storage: {
         server: '127.0.0.1',
-        port: 9333
+        port: 1025
     },
     session: {
         ping: 120
