@@ -33,7 +33,7 @@ export default (app: Router) => {
     async (req: Request, res: Response, next: NextFunction) => {
       try {
         const service: MapService = Container.get(MapService);
-        return res.json(service.create(req.body as IMapCreation)).status(200);
+        return res.json(await service.create(req.body as IMapCreation)).status(200);
       } catch (e) {
         return next(e);
       }
@@ -53,7 +53,7 @@ export default (app: Router) => {
         async (req: Request, res: Response, next: NextFunction) => {
             try {
                 const service: MapService = Container.get(MapService);
-                return res.json(service.updateFile(req.body._id, req.body)).status(200);
+                return res.json(await service.updateFile(req.body._id, req.body)).status(200);
             } catch (e) {
                 return next(e);
             }
@@ -73,7 +73,7 @@ export default (app: Router) => {
         async (req: Request, res: Response, next: NextFunction) => {
             try {
                 const service: MapService = Container.get(MapService);
-                return res.json(service.updateFile(req.body._id, req.body)).status(200);
+                return res.json(await service.updateFile(req.body._id, req.body)).status(200);
             } catch (e) {
                 return next(e);
             }
@@ -173,7 +173,7 @@ export default (app: Router) => {
         async (req: Request, res: Response, next: NextFunction) => {
             try {
                 const service: MapService = Container.get(MapService);
-                return res.json(service.delete(req.params.id)).status(200);
+                return res.json(await service.delete(req.params.id)).status(200);
             } catch (e) {
                 return next(e);
             }
