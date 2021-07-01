@@ -2,7 +2,6 @@ import {IUser} from '../interfaces/IUser';
 import mongoose, {Schema} from "mongoose";
 import {mongoosePagination} from "ts-mongoose-pagination";
 
-
 const User = new mongoose.Schema(
   {
     username: {
@@ -36,6 +35,7 @@ const User = new mongoose.Schema(
       online: {type: Boolean, default: false},
       lastGame: {type: String, default: "register"},
       lastLobby: {type: String, default: "main_lobby"},
+      lastReplyById: {type: String, default: ""},
       authorize: {type: String, default: "Password", enum: ['Password', 'Premium'] }
     },
     verified: {type: Boolean, default: false},
